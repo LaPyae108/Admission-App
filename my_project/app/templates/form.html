@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+
+        {% if edit_mode %}
+            Edit Student
+        {% else %}
+            Add Student
+        {% endif %}
+
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for(
+            'static',
+            filename='css/styleedit.css'
+        ) }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link active"
+            >
+                Students
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+            >
+                Applications
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+            >
+                Payments
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+            >
+                Settings
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main-content">
+
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+
+                    {% if edit_mode %}
+                        Edit Student
+                    {% else %}
+                        Add Student
+                    {% endif %}
+
+                </h1>
+
+                <p>
+
+                    {% if edit_mode %}
+                        Update student information
+                    {% else %}
+                        Register a new student
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <div class="admin-profile">
+
+                <span>
+                    Admin
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <section class="content">
+
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+
+                        {% if edit_mode %}
+                            Edit Student Information
+                        {% else %}
+                            Student Registration
+                        {% endif %}
+
+                    </h2>
+
+                    <p>
+                        Enter the student's information below.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="add-student-btn"
+                >
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 FORM
+                 ================================================= -->
+
+            <form
+                method="POST"
+
+                action="{% if edit_mode %}{{ url_for(
+                    'main.edit_student',
+                    student_id=student.id
+                ) }}{% else %}{{ url_for(
+                    'main.add_student'
+                ) }}{% endif %}"
+
+                class="student-form"
+            >
+
+
+                <!-- =================================================
+                     STUDENT INFORMATION
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Student Information
+                        </h3>
+
+                        <p>
+                            Basic information about the student.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- NAME -->
+
+                        <div class="form-group">
+
+                            <label for="full_name">
+                                Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
+
+                                value="{{ form_data.get(
+                                    'full_name',
+                                    ''
+                                ) }}"
+
+                                placeholder="Enter student's full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- STUDENT ID -->
+
+                        <div class="form-group">
+
+                            <label for="student_id">
+                                Student ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="student_id"
+                                name="student_id"
+
+                                value="{{ form_data.get(
+                                    'student_id',
+                                    ''
+                                ) }}"
+
+                                placeholder="Enter student ID"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="form-group">
+
+                            <label for="phone_number">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="text"
+                                id="phone_number"
+                                name="phone_number"
+
+                                value="{{ form_data.get(
+                                    'phone_number',
+                                    ''
+                                ) }}"
+
+                                placeholder="Enter phone number"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- NRC -->
+
+                        <div class="form-group">
+
+                            <label for="nrc">
+                                NRC
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nrc"
+                                name="nrc"
+
+                                value="{{ form_data.get(
+                                    'nrc',
+                                    ''
+                                ) }}"
+
+                                placeholder="Enter NRC number"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- STUDENT TYPE -->
+
+                        <div class="form-group">
+
+                            <label for="student_type_id">
+                                Student Type
+                            </label>
+
+                            <select
+                                id="student_type_id"
+                                name="student_type_id"
+                                required
+                            >
+
+                                <option value="">
+                                    Select student type
+                                </option>
+
+
+                                {% for type in student_types %}
+
+                                <option
+                                    value="{{ type.id }}"
+
+                                    {% if form_data.get(
+                                        'student_type_id'
+                                    )|string == type.id|string %}
+
+                                        selected
+
+                                    {% endif %}
+                                >
+
+                                    {{ type.name }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- UNIFORM -->
+
+                        <div class="form-group">
+
+                            <label for="uniform_size">
+                                Uniform Size
+                            </label>
+
+                            <input
+                                type="text"
+                                id="uniform_size"
+                                name="uniform_size"
+
+                                value="{{ form_data.get(
+                                    'uniform_size',
+                                    ''
+                                ) }}"
+
+                                placeholder="Enter uniform size"
+                            >
+
+                        </div>
+
+
+                        <!-- ADMISSION DATE -->
+
+                        <div class="form-group">
+
+                            <label for="intake_date">
+                                Admission Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="intake_date"
+                                name="intake_date"
+
+                                value="{{ form_data.get(
+                                    'intake_date',
+                                    ''
+                                ) }}"
+
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     INITIAL PAYMENT
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Initial Payment
+                        </h3>
+
+                        <p>
+                            Optional payment record for this student.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- VOUCHER -->
+
+                        <div class="form-group">
+
+                            <label for="voucher_id">
+                                Voucher ID
+                            </label>
+
+                            <input
+                                type="text"
+                                name="voucher_id"
+                                id="voucher_id"
+
+                                value="{{ form_data.get(
+                                    'voucher_id',
+                                    ''
+                                ) }}"
+
+                                placeholder="Enter voucher ID"
+                            >
+
+                        </div>
+
+
+                        <!-- TOTAL -->
+
+                        <div class="form-group">
+
+                            <label for="total_amount">
+                                Total Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                id="total_amount"
+                                name="total_amount"
+
+                                value="{{ form_data.get(
+                                    'total_amount',
+                                    ''
+                                ) }}"
+
+                                placeholder="0.00"
+                                min="0"
+                                step="0.01"
+                            >
+
+                        </div>
+
+
+                        <!-- PAID -->
+
+                        <div class="form-group">
+
+                            <label for="amount_paid">
+                                Amount Paid
+                            </label>
+
+                            <input
+                                type="number"
+                                id="amount_paid"
+                                name="amount_paid"
+
+                                value="{{ form_data.get(
+                                    'amount_paid',
+                                    ''
+                                ) }}"
+
+                                placeholder="0.00"
+                                min="0"
+                                step="0.01"
+                            >
+
+                        </div>
+
+
+                        <!-- PENDING -->
+
+                        <div class="form-group">
+
+                            <label for="pending_amount">
+                                Pending Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                id="pending_amount"
+                                name="pending_amount"
+
+                                value="{{ form_data.get(
+                                    'pending_amount',
+                                    ''
+                                ) }}"
+
+                                placeholder="Automatically calculated"
+
+                                readonly
+
+                                step="0.01"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ACTIONS
+                     ================================================= -->
+
+                <div class="form-actions">
+
+                    <a
+                        href="{{ url_for('main.dashboard') }}"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="save-btn"
+                    >
+
+                        {% if edit_mode %}
+                            Save Changes
+                        {% else %}
+                            Save Student
+                        {% endif %}
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     PAYMENT CALCULATION
+     ========================================================= -->
+
+<script>
+
+const totalAmount =
+    document.getElementById("total_amount");
+
+const amountPaid =
+    document.getElementById("amount_paid");
+
+const pendingAmount =
+    document.getElementById("pending_amount");
+
+
+function calculatePendingAmount() {
+
+    const total =
+        parseFloat(totalAmount.value) || 0;
+
+    const paid =
+        parseFloat(amountPaid.value) || 0;
+
+    const pending =
+        Math.max(total - paid, 0);
+
+    pendingAmount.value =
+        pending.toFixed(2);
+}
+
+
+totalAmount.addEventListener(
+    "input",
+    calculatePendingAmount
+);
+
+amountPaid.addEventListener(
+    "input",
+    calculatePendingAmount
+);
+
+
+calculatePendingAmount();
+
+</script>
+
+
+</body>
+
+</html>
