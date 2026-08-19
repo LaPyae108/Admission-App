@@ -214,6 +214,10 @@ class StudentPayment(db.Model):
         db.Numeric(12, 2),
         default=0
     )
+    comment = db.Column(
+    db.Text,
+    nullable=True
+                )
 
     student = db.relationship(
         "Student",

@@ -424,7 +424,6 @@
 
                         </div>
 
-
                     </div>
 
 
@@ -441,6 +440,8 @@
 
                 </form>
 
+
+                <!-- EXISTING COURSES -->
 
                 {% if results %}
 
@@ -485,6 +486,105 @@
 
                             {% for result in results %}
 
+
+                            {% if edit_course and edit_course.id == result.id %}
+
+                            <tr>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'main.edit_course',
+                                        course_id=result.id
+                                    ) }}"
+                                >
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            name="course_name"
+                                            value="{{ result.course_name }}"
+                                            required
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            name="course_id"
+                                            value="{{ result.course_id }}"
+                                            required
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="date"
+                                            name="start_date"
+                                            value="{% if result.start_date %}{{ result.start_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="date"
+                                            name="end_date"
+                                            value="{% if result.end_date %}{{ result.end_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            name="result"
+                                            value="{{ result.result or '' }}"
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <button
+                                            type="submit"
+                                            class="save-btn"
+                                        >
+                                            Save
+                                        </button>
+
+
+                                        <a
+                                            href="{{ url_for(
+                                                'main.student_details',
+                                                student_id=student.id
+                                            ) }}"
+                                            class="action-btn"
+                                        >
+                                            Cancel
+                                        </a>
+
+                                    </td>
+
+                                </form>
+
+                            </tr>
+
+
+                            {% else %}
+
                             <tr>
 
                                 <td>
@@ -520,6 +620,7 @@
                                         Edit
                                     </a>
 
+
                                     <form
                                         method="POST"
                                         action="{{ url_for(
@@ -544,6 +645,8 @@
                                 </td>
 
                             </tr>
+
+                            {% endif %}
 
                             {% endfor %}
 
@@ -636,7 +739,9 @@
                 </div>
 
 
-                <!-- ADD PAYMENT -->
+                <!-- =================================================
+                     ADD PAYMENT
+                     ================================================= -->
 
                 <div class="payment-add-form">
 
@@ -657,6 +762,8 @@
                         <div class="form-grid">
 
 
+                            <!-- VOUCHER -->
+
                             <div class="form-group">
 
                                 <label>
@@ -673,6 +780,8 @@
                             </div>
 
 
+                            <!-- PAYMENT DATE -->
+
                             <div class="form-group">
 
                                 <label>
@@ -688,6 +797,8 @@
 
                             </div>
 
+
+                            <!-- TOTAL -->
 
                             <div class="form-group">
 
@@ -708,6 +819,8 @@
                             </div>
 
 
+                            <!-- PAID -->
+
                             <div class="form-group">
 
                                 <label>
@@ -727,6 +840,8 @@
                             </div>
 
 
+                            <!-- PENDING -->
+
                             <div class="form-group">
 
                                 <label>
@@ -739,6 +854,26 @@
                                     value="0.00"
                                     readonly
                                 >
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 PAYMENT COMMENT
+                                 ================================================= -->
+
+                            <div class="form-group">
+
+                                <label for="payment_comment">
+                                    Payment Comment
+                                </label>
+
+                                <textarea
+                                    id="payment_comment"
+                                    name="payment_comment"
+                                    rows="4"
+                                    placeholder="Enter the reason for this payment..."
+                                ></textarea>
 
                             </div>
 
@@ -763,7 +898,9 @@
                 </div>
 
 
-                <!-- PAYMENT TABLE -->
+                <!-- =================================================
+                     PAYMENT TABLE
+                     ================================================= -->
 
                 {% if payments %}
 
@@ -801,6 +938,10 @@
 
                                 <th>
                                     Status
+                                </th>
+
+                                <th>
+                                    Comment
                                 </th>
 
                             </tr>
@@ -872,6 +1013,8 @@
                                 </td>
 
 
+                                <!-- STATUS -->
+
                                 <td>
 
                                     {% if payment.pending_amount == 0
@@ -896,6 +1039,24 @@
                                     {% endif %}
 
                                 </td>
+
+
+                                <!-- COMMENT -->
+
+                                <<td>
+
+                    {% if payment.comment %}
+
+                        {{ payment.comment }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </td>
+
 
                             </tr>
 
@@ -935,6 +1096,8 @@
                                     ) }}
 
                                 </th>
+
+                                <th></th>
 
                                 <th></th>
 

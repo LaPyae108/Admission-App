@@ -252,6 +252,10 @@ def add_student():
             "voucher_id",
             ""
         ).strip()
+        payment_comment = request.form.get(
+                "payment_comment",
+                ""
+            ).strip()
 
         total_amount = float(
             request.form.get(
@@ -301,7 +305,8 @@ def add_student():
 
                 amount_received=amount_paid,
 
-                pending_amount=pending_amount
+                pending_amount=pending_amount,
+                comment=payment_comment
             )
 
             db.session.add(payment)
@@ -574,6 +579,11 @@ def add_payment(student_id):
         ""
     ).strip()
 
+    payment_comment = request.form.get(
+        "payment_comment",
+        ""
+    ).strip()
+
     total_amount = float(
         request.form.get(
             "total_amount",
@@ -623,7 +633,9 @@ def add_payment(student_id):
 
         amount_received=amount_paid,
 
-        pending_amount=pending_amount
+        pending_amount=pending_amount,
+
+        comment=payment_comment
     )
 
     db.session.add(payment)
@@ -679,7 +691,6 @@ def add_payment(student_id):
             student_id=student.id
         )
     )
-
 
 # ============================================================
 # DELETE STUDENT
