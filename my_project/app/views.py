@@ -718,7 +718,7 @@ def delete_student(student_id):
 
 
 # ============================================================
-# STUDENT DETAILS
+# STUDENT DETAILS/Course/result
 # ============================================================
 
 @main.route(
@@ -781,6 +781,8 @@ def student_details(student_id):
 
     edit_course = None
 
+    
+
     if edit_course_id:
 
         edit_course = StudentResult.query.filter_by(
@@ -788,6 +790,7 @@ def student_details(student_id):
             student_id=student.id
         ).first()
 
+    
     return render_template(
         "student.html",
 
@@ -806,6 +809,7 @@ def student_details(student_id):
         total_received=total_received,
 
         total_pending=total_pending
+        
     )
 
 
@@ -864,6 +868,11 @@ def add_course(student_id):
         ""
     ).strip()
 
+    collected = request.form.get(
+            "collected",
+            "no"
+        ) == "yes"
+
     published_date = None
 
     if result:
@@ -884,7 +893,8 @@ def add_course(student_id):
 
         result=result or None,
 
-        published_date=published_date
+        published_date=published_date, 
+        collected = collected
     )
 
     db.session.add(course)
@@ -961,6 +971,12 @@ def edit_course(course_id):
     elif not result:
 
         course.published_date = None
+    course.collected = (
+    request.form.get(
+        "collected",
+        "no"
+    ) == "yes"
+)
 
     db.session.commit()
 

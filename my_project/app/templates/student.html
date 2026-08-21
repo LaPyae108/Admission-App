@@ -98,6 +98,10 @@
     <main class="main-content">
 
 
+        <!-- =================================================
+             TOP BAR
+             ================================================= -->
+
         <header class="topbar">
 
             <div>
@@ -124,6 +128,10 @@
         </header>
 
 
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
         <section class="content">
 
 
@@ -140,10 +148,13 @@
                     </h2>
 
                     <p>
+
                         Student ID:
+
                         <strong>
                             {{ student.student_id }}
                         </strong>
+
                     </p>
 
                 </div>
@@ -160,6 +171,7 @@
                     >
                         Edit Student
                     </a>
+
 
                     <a
                         href="{{ url_for(
@@ -193,6 +205,8 @@
                 <div class="form-grid">
 
 
+                    <!-- FULL NAME -->
+
                     <div class="form-group">
 
                         <label>
@@ -207,6 +221,8 @@
 
                     </div>
 
+
+                    <!-- STUDENT ID -->
 
                     <div class="form-group">
 
@@ -223,6 +239,8 @@
                     </div>
 
 
+                    <!-- PHONE -->
+
                     <div class="form-group">
 
                         <label>
@@ -237,6 +255,8 @@
 
                     </div>
 
+
+                    <!-- NRC -->
 
                     <div class="form-group">
 
@@ -253,6 +273,8 @@
                     </div>
 
 
+                    <!-- STUDENT TYPE -->
+
                     <div class="form-group">
 
                         <label>
@@ -267,6 +289,8 @@
 
                     </div>
 
+
+                    <!-- UNIFORM -->
 
                     <div class="form-group">
 
@@ -283,6 +307,8 @@
                     </div>
 
 
+                    <!-- ADMISSION DATE -->
+
                     <div class="form-group">
 
                         <label>
@@ -297,6 +323,8 @@
 
                     </div>
 
+
+                    <!-- PAYMENT STATUS -->
 
                     <div class="form-group">
 
@@ -337,7 +365,9 @@
                 </div>
 
 
-                <!-- ADD COURSE -->
+                <!-- =================================================
+                     ADD COURSE
+                     ================================================= -->
 
                 <form
                     method="POST"
@@ -349,6 +379,8 @@
 
                     <div class="form-grid">
 
+
+                        <!-- COURSE NAME -->
 
                         <div class="form-group">
 
@@ -366,6 +398,8 @@
                         </div>
 
 
+                        <!-- COURSE ID -->
+
                         <div class="form-group">
 
                             <label>
@@ -382,6 +416,8 @@
                         </div>
 
 
+                        <!-- START DATE -->
+
                         <div class="form-group">
 
                             <label>
@@ -395,6 +431,8 @@
 
                         </div>
 
+
+                        <!-- END DATE -->
 
                         <div class="form-group">
 
@@ -410,6 +448,8 @@
                         </div>
 
 
+                        <!-- RESULT -->
+
                         <div class="form-group">
 
                             <label>
@@ -423,6 +463,38 @@
                             >
 
                         </div>
+
+
+                        <!-- COLLECTED -->
+
+                        <div class="form-group">
+
+                            <label for="course_collected">
+                                Collected
+                            </label>
+
+                            <select
+                                id="course_collected"
+                                name="collected"
+                            >
+
+                                <option
+                                    value="no"
+                                    selected
+                                >
+                                    No
+                                </option>
+
+                                <option
+                                    value="yes"
+                                >
+                                    Yes
+                                </option>
+
+                            </select>
+
+                        </div>
+
 
                     </div>
 
@@ -441,7 +513,9 @@
                 </form>
 
 
-                <!-- EXISTING COURSES -->
+                <!-- =================================================
+                     EXISTING COURSES
+                     ================================================= -->
 
                 {% if results %}
 
@@ -474,6 +548,10 @@
                                 </th>
 
                                 <th>
+                                    Collected
+                                </th>
+
+                                <th>
                                     Action
                                 </th>
 
@@ -487,125 +565,277 @@
                             {% for result in results %}
 
 
+                            <!-- =================================================
+                                 EDIT COURSE
+                                 ================================================= -->
+
                             {% if edit_course and edit_course.id == result.id %}
 
                             <tr>
 
-                                <form
-                                    method="POST"
-                                    action="{{ url_for(
-                                        'main.edit_course',
-                                        course_id=result.id
-                                    ) }}"
-                                >
+                                <td colspan="7">
 
-                                    <td>
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'main.edit_course',
+                                            course_id=result.id
+                                        ) }}"
+                                        class="course-edit-form"
+                                    >
 
-                                        <input
-                                            type="text"
-                                            name="course_name"
-                                            value="{{ result.course_name }}"
-                                            required
-                                        >
-
-                                    </td>
+                                        <div class="course-edit-grid">
 
 
-                                    <td>
+                                            <!-- COURSE NAME -->
 
-                                        <input
-                                            type="text"
-                                            name="course_id"
-                                            value="{{ result.course_id }}"
-                                            required
-                                        >
+                                            <div class="form-group">
 
-                                    </td>
+                                                <label>
+                                                    Course Name
+                                                </label>
 
+                                                <input
+                                                    type="text"
+                                                    name="course_name"
+                                                    value="{{ result.course_name }}"
+                                                    required
+                                                >
 
-                                    <td>
-
-                                        <input
-                                            type="date"
-                                            name="start_date"
-                                            value="{% if result.start_date %}{{ result.start_date.strftime('%Y-%m-%d') }}{% endif %}"
-                                        >
-
-                                    </td>
+                                            </div>
 
 
-                                    <td>
+                                            <!-- COURSE ID -->
 
-                                        <input
-                                            type="date"
-                                            name="end_date"
-                                            value="{% if result.end_date %}{{ result.end_date.strftime('%Y-%m-%d') }}{% endif %}"
-                                        >
+                                            <div class="form-group">
 
-                                    </td>
+                                                <label>
+                                                    Course ID
+                                                </label>
 
+                                                <input
+                                                    type="text"
+                                                    name="course_id"
+                                                    value="{{ result.course_id }}"
+                                                    required
+                                                >
 
-                                    <td>
-
-                                        <input
-                                            type="text"
-                                            name="result"
-                                            value="{{ result.result or '' }}"
-                                        >
-
-                                    </td>
+                                            </div>
 
 
-                                    <td>
+                                            <!-- START DATE -->
 
-                                        <button
-                                            type="submit"
-                                            class="save-btn"
-                                        >
-                                            Save
-                                        </button>
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Start Date
+                                                </label>
+
+                                                <input
+                                                    type="date"
+                                                    name="start_date"
+                                                    value="{% if result.start_date %}{{ result.start_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                >
+
+                                            </div>
 
 
-                                        <a
-                                            href="{{ url_for(
-                                                'main.student_details',
-                                                student_id=student.id
-                                            ) }}"
-                                            class="action-btn"
-                                        >
-                                            Cancel
-                                        </a>
+                                            <!-- END DATE -->
 
-                                    </td>
+                                            <div class="form-group">
 
-                                </form>
+                                                <label>
+                                                    End Date
+                                                </label>
+
+                                                <input
+                                                    type="date"
+                                                    name="end_date"
+                                                    value="{% if result.end_date %}{{ result.end_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                >
+
+                                            </div>
+
+
+                                            <!-- RESULT -->
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Result
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="result"
+                                                    value="{{ result.result or '' }}"
+                                                >
+
+                                            </div>
+
+
+                                            <!-- COLLECTED -->
+
+                                            <div class="form-group">
+
+                                                <label
+                                                    for="edit_collected_{{ result.id }}"
+                                                >
+                                                    Collected
+                                                </label>
+
+                                                <select
+                                                    id="edit_collected_{{ result.id }}"
+                                                    name="collected"
+                                                >
+
+                                                    <option
+                                                        value="no"
+                                                        {% if not result.collected %}
+                                                            selected
+                                                        {% endif %}
+                                                    >
+                                                        No
+                                                    </option>
+
+                                                    <option
+                                                        value="yes"
+                                                        {% if result.collected %}
+                                                            selected
+                                                        {% endif %}
+                                                    >
+                                                        Yes
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <!-- EDIT BUTTONS -->
+
+                                        <div class="form-actions">
+
+                                            <button
+                                                type="submit"
+                                                class="save-btn"
+                                            >
+                                                Save Changes
+                                            </button>
+
+
+                                            <a
+                                                href="{{ url_for(
+                                                    'main.student_details',
+                                                    student_id=student.id
+                                                ) }}"
+                                                class="cancel-btn"
+                                            >
+                                                Cancel
+                                            </a>
+
+                                        </div>
+
+                                    </form>
+
+                                </td>
 
                             </tr>
 
+
+                            <!-- =================================================
+                                 NORMAL COURSE
+                                 ================================================= -->
 
                             {% else %}
 
                             <tr>
 
+
+                                <!-- COURSE NAME -->
+
                                 <td>
                                     {{ result.course_name }}
                                 </td>
+
+
+                                <!-- COURSE ID -->
 
                                 <td>
                                     {{ result.course_id }}
                                 </td>
 
-                                <td>
-                                    {{ result.start_date or '-' }}
-                                </td>
+
+                                <!-- START DATE -->
 
                                 <td>
-                                    {{ result.end_date or '-' }}
+
+                                    {% if result.start_date %}
+
+                                        {{ result.start_date.strftime(
+                                            "%d %b %Y"
+                                        ) }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
                                 </td>
+
+
+                                <!-- END DATE -->
+
+                                <td>
+
+                                    {% if result.end_date %}
+
+                                        {{ result.end_date.strftime(
+                                            "%d %b %Y"
+                                        ) }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- RESULT -->
 
                                 <td>
                                     {{ result.result or '-' }}
                                 </td>
+
+
+                                <!-- COLLECTED -->
+
+                                <td>
+
+                                    {% if result.collected %}
+
+                                        <span class="collected yes">
+                                            Yes
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="collected no">
+                                            No
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- ACTION -->
 
                                 <td>
 
@@ -643,6 +873,7 @@
                                     </form>
 
                                 </td>
+
 
                             </tr>
 
@@ -686,7 +917,9 @@
                 </div>
 
 
-                <!-- PAYMENT SUMMARY -->
+                <!-- =================================================
+                     PAYMENT SUMMARY
+                     ================================================= -->
 
                 <div class="payment-summary">
 
@@ -698,9 +931,11 @@
                         </span>
 
                         <strong>
+
                             {{ "{:,.2f}".format(
                                 total_payment
                             ) }}
+
                         </strong>
 
                     </div>
@@ -713,9 +948,11 @@
                         </span>
 
                         <strong>
+
                             {{ "{:,.2f}".format(
                                 total_received
                             ) }}
+
                         </strong>
 
                     </div>
@@ -728,9 +965,11 @@
                         </span>
 
                         <strong>
+
                             {{ "{:,.2f}".format(
                                 total_pending
                             ) }}
+
                         </strong>
 
                     </div>
@@ -858,9 +1097,7 @@
                             </div>
 
 
-                            <!-- =================================================
-                                 PAYMENT COMMENT
-                                 ================================================= -->
+                            <!-- PAYMENT COMMENT -->
 
                             <div class="form-group">
 
@@ -955,10 +1192,15 @@
 
                             <tr>
 
+
+                                <!-- NUMBER -->
+
                                 <td>
                                     {{ loop.index }}
                                 </td>
 
+
+                                <!-- VOUCHER -->
 
                                 <td>
 
@@ -968,6 +1210,8 @@
 
                                 </td>
 
+
+                                <!-- DATE -->
 
                                 <td>
 
@@ -986,6 +1230,8 @@
                                 </td>
 
 
+                                <!-- TOTAL -->
+
                                 <td>
 
                                     {{ "{:,.2f}".format(
@@ -995,6 +1241,8 @@
                                 </td>
 
 
+                                <!-- PAID -->
+
                                 <td>
 
                                     {{ "{:,.2f}".format(
@@ -1003,6 +1251,8 @@
 
                                 </td>
 
+
+                                <!-- PENDING -->
 
                                 <td>
 
@@ -1043,19 +1293,19 @@
 
                                 <!-- COMMENT -->
 
-                                <<td>
+                                <td>
 
-                    {% if payment.comment %}
+                                    {% if payment.comment %}
 
-                        {{ payment.comment }}
+                                        {{ payment.comment }}
 
-                    {% else %}
+                                    {% else %}
 
-                        -
+                                        -
 
-                    {% endif %}
+                                    {% endif %}
 
-                </td>
+                                </td>
 
 
                             </tr>
@@ -1181,6 +1431,7 @@
 
                     <div class="remark-card">
 
+
                         <div>
 
                             <strong>
@@ -1213,6 +1464,7 @@
                             </button>
 
                         </form>
+
 
                     </div>
 
@@ -1271,7 +1523,11 @@ const today =
         .split("T")[0];
 
 
-paymentDate.value = today;
+if (paymentDate) {
+
+    paymentDate.value = today;
+
+}
 
 
 function calculatePaymentPending() {
@@ -1294,22 +1550,27 @@ function calculatePaymentPending() {
 
     paymentPending.value =
         pending.toFixed(2);
+
 }
 
 
-paymentTotal.addEventListener(
-    "input",
-    calculatePaymentPending
-);
+if (paymentTotal && paymentPaid && paymentPending) {
+
+    paymentTotal.addEventListener(
+        "input",
+        calculatePaymentPending
+    );
 
 
-paymentPaid.addEventListener(
-    "input",
-    calculatePaymentPending
-);
+    paymentPaid.addEventListener(
+        "input",
+        calculatePaymentPending
+    );
 
 
-calculatePaymentPending();
+    calculatePaymentPending();
+
+}
 
 </script>
 

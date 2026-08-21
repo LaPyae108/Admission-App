@@ -166,6 +166,12 @@ class StudentResult(db.Model):
         db.Date
     )
 
+    collected = db.Column(
+    db.Boolean,
+    nullable=False,
+    default=False
+)
+
     student = db.relationship(
         "Student",
         back_populates="results"
