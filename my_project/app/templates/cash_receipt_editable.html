@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cash Receipt</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eee;font-family:Arial,Helvetica,sans-serif;color:#111}
+.page{width:210mm;min-height:297mm;margin:20px auto;background:#fff;padding:16mm 17mm 12mm;box-shadow:0 0 12px #aaa}
+.header{text-align:center;border-bottom:1.5px solid #222;padding-bottom:7px}
+.header h1{font-family:Georgia,serif;font-size:29px;margin:0 0 8px;font-weight:800}
+.header h2{font-size:21px;margin:0;font-weight:700}
+.title{text-align:center;font-family:Georgia,serif;font-size:25px;font-weight:800;margin:15px 0 27px}
+.info{display:grid;grid-template-columns:1fr 1fr;column-gap:25mm;row-gap:12px;font-size:16px}
+.info .row{display:grid;grid-template-columns:37mm 1fr}
+.info .label{font-weight:800}
+.info .value{white-space:nowrap}
+.table{border:1px solid #222;margin-top:24px}
+.tr{display:grid;grid-template-columns:73mm 1fr;min-height:18mm;border-bottom:1px solid #222}
+.tr:last-child{border-bottom:0}
+.tr>div{padding:12px 10px;font-size:17px}
+.tr>div:first-child{border-right:1px solid #222;font-weight:800;text-align:center}
+.tr>div:last-child{text-align:center;font-weight:700}
+.signatures{display:flex;justify-content:space-between;margin-top:73mm;padding:0 18mm}
+.sig{width:50mm;text-align:center}
+.sig .line{height:35px;border-bottom:1px solid #222;margin-bottom:5px}
+.sig .caption{font-weight:500}
+.footer{text-align:center;margin-top:7mm;font-weight:700;line-height:1.55}
+.print-date{display:flex;justify-content:space-between;margin-top:8mm;font-size:13px}
+@media print{body{background:#fff}.page{margin:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="header">
+    <h1>STAR INTERNATIONAL COLLEGE</h1>
+    <h2>Hospitality &amp; Business Management</h2>
+</header>
+
+<div class="title">Cash receipt</div>
+
+<div class="info">
+    <div class="row"><div class="label">Customer name</div><div class="value">: Thant Zin</div></div>
+    <div class="row"><div class="label">Date</div><div class="value">: 21/08/2026</div></div>
+
+    <div class="row"><div class="label">Phone</div><div class="value">: 09949134447&nbsp;&nbsp;&nbsp;09449004867</div></div>
+    <div class="row"><div class="label">Invoice No.</div><div class="value">: CRSCI-26082100001</div></div>
+
+    <div class="row"><div class="label">Address</div><div class="value">: South Okkalapa Township</div></div>
+    <div class="row"><div class="label">Payment</div><div class="value">: Payment</div></div>
+
+    <div class="row"><div class="label">Account name</div><div class="value">: Kpay- Daw Nay Yi Aung</div></div>
+    <div class="row"><div class="label">Currency</div><div class="value">: MMK</div></div>
+
+    <div class="row"><div class="label">Student ID:</div><div class="value">9036632</div></div>
+</div>
+
+<div class="table">
+    <div class="tr"><div>Previous balance</div><div>655,000</div></div>
+    <div class="tr"><div>Receive amount</div><div>655,000</div></div>
+    <div class="tr"><div>Discount</div><div>0</div></div>
+    <div class="tr"><div>Current balance</div><div>0</div></div>
+</div>
+
+<div class="signatures">
+    <div class="sig">
+        <div class="line"></div>
+        <div class="caption">&nbsp;</div>
+    </div>
+    <div class="sig">
+        <div class="line"></div>
+        <div class="caption">Signature</div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div>Address. 252A, Uwisara Road, Kamayut Township, Yangon</div>
+    <div>Phone : 09 - 797004988, 09 - 797004989, 09 - 771199604</div>
+    <div>Email: info@staruniversity.edu.mm, Website.www.staruniversitymyanmar.com</div>
+</footer>
+
+<div class="print-date">
+    <span>Print Date : 21/8/2026 9:13:38 am</span>
+    <span>Page 1 of 1</span>
+</div>
+
+</div>
+</body>
+</html>

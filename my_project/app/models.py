@@ -224,6 +224,25 @@ class StudentPayment(db.Model):
     db.Text,
     nullable=True
                 )
+    discount = db.Column(
+    db.Numeric(12, 2),
+    nullable=False,
+    default=0
+    )
+
+    total_after_discount = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    currency = db.Column(
+        db.String(10),
+        nullable=False,
+        default="MMK"
+    )
+
+    
 
     student = db.relationship(
         "Student",

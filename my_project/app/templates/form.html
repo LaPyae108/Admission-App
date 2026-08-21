@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -32,6 +33,7 @@
 
 
 <body>
+
 
 <div class="layout">
 
@@ -71,27 +73,6 @@
                 Students
             </a>
 
-            <a
-                href="#"
-                class="nav-link"
-            >
-                Applications
-            </a>
-
-            <a
-                href="#"
-                class="nav-link"
-            >
-                Payments
-            </a>
-
-            <a
-                href="#"
-                class="nav-link"
-            >
-                Settings
-            </a>
-
         </nav>
 
     </aside>
@@ -119,13 +100,7 @@
                 </h1>
 
                 <p>
-
-                    {% if edit_mode %}
-                        Update student information
-                    {% else %}
-                        Register a new student
-                    {% endif %}
-
+                    Student information and payment setup
                 </p>
 
             </div>
@@ -142,12 +117,13 @@
         </header>
 
 
-        <!-- =================================================
-             CONTENT
-             ================================================= -->
 
         <section class="content">
 
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
 
             <div class="page-header">
 
@@ -156,15 +132,15 @@
                     <h2>
 
                         {% if edit_mode %}
-                            Edit Student Information
+                            Edit Student
                         {% else %}
-                            Student Registration
+                            New Student
                         {% endif %}
 
                     </h2>
 
                     <p>
-                        Enter the student's information below.
+                        Enter student information below.
                     </p>
 
                 </div>
@@ -172,109 +148,90 @@
 
                 <a
                     href="{{ url_for('main.dashboard') }}"
-                    class="add-student-btn"
+                    class="cancel-btn"
                 >
-                    Back to Dashboard
+                    Back
                 </a>
 
             </div>
 
 
-            <!-- ERROR -->
+
+            <!-- =================================================
+                 ERROR
+                 ================================================= -->
 
             {% if error %}
 
             <div class="error-message">
+
                 {{ error }}
+
             </div>
 
             {% endif %}
 
 
+
             <!-- =================================================
-                 FORM
+                 STUDENT INFORMATION
                  ================================================= -->
 
-            <form
-                method="POST"
+            <div class="form-section">
 
-                action="{% if edit_mode %}{{ url_for(
-                    'main.edit_student',
-                    student_id=student.id
-                ) }}{% else %}{{ url_for(
-                    'main.add_student'
-                ) }}{% endif %}"
+                <div class="form-section-header">
 
-                class="student-form"
-            >
+                    <h3>
+                        Student Information
+                    </h3>
+
+                </div>
 
 
-                <!-- =================================================
-                     STUDENT INFORMATION
-                     ================================================= -->
-
-                <div class="form-section">
-
-                    <div class="form-section-header">
-
-                        <h3>
-                            Student Information
-                        </h3>
-
-                        <p>
-                            Basic information about the student.
-                        </p>
-
-                    </div>
+                <form
+                    method="POST"
+                >
 
 
                     <div class="form-grid">
-
-
-                        <!-- NAME -->
-
-                        <div class="form-group">
-
-                            <label for="full_name">
-                                Name
-                            </label>
-
-                            <input
-                                type="text"
-                                id="full_name"
-                                name="full_name"
-
-                                value="{{ form_data.get(
-                                    'full_name',
-                                    ''
-                                ) }}"
-
-                                placeholder="Enter student's full name"
-                                required
-                            >
-
-                        </div>
 
 
                         <!-- STUDENT ID -->
 
                         <div class="form-group">
 
-                            <label for="student_id">
+                            <label>
                                 Student ID
                             </label>
 
                             <input
                                 type="text"
-                                id="student_id"
                                 name="student_id"
-
                                 value="{{ form_data.get(
                                     'student_id',
                                     ''
                                 ) }}"
+                                required
+                            >
 
-                                placeholder="Enter student ID"
+                        </div>
+
+
+                        <!-- FULL NAME -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                name="full_name"
+                                value="{{ form_data.get(
+                                    'full_name',
+                                    ''
+                                ) }}"
                                 required
                             >
 
@@ -285,22 +242,17 @@
 
                         <div class="form-group">
 
-                            <label for="phone_number">
+                            <label>
                                 Phone Number
                             </label>
 
                             <input
                                 type="text"
-                                id="phone_number"
                                 name="phone_number"
-
                                 value="{{ form_data.get(
                                     'phone_number',
                                     ''
                                 ) }}"
-
-                                placeholder="Enter phone number"
-                                required
                             >
 
                         </div>
@@ -310,22 +262,17 @@
 
                         <div class="form-group">
 
-                            <label for="nrc">
+                            <label>
                                 NRC
                             </label>
 
                             <input
                                 type="text"
-                                id="nrc"
                                 name="nrc"
-
                                 value="{{ form_data.get(
                                     'nrc',
                                     ''
                                 ) }}"
-
-                                placeholder="Enter NRC number"
-                                required
                             >
 
                         </div>
@@ -335,12 +282,11 @@
 
                         <div class="form-group">
 
-                            <label for="student_type_id">
+                            <label>
                                 Student Type
                             </label>
 
                             <select
-                                id="student_type_id"
                                 name="student_type_id"
                                 required
                             >
@@ -350,21 +296,18 @@
                                 </option>
 
 
-                                {% for type in student_types %}
+                                {% for student_type in student_types %}
 
                                 <option
-                                    value="{{ type.id }}"
-
+                                    value="{{ student_type.id }}"
                                     {% if form_data.get(
                                         'student_type_id'
-                                    )|string == type.id|string %}
-
+                                    )|string == student_type.id|string %}
                                         selected
-
                                     {% endif %}
                                 >
 
-                                    {{ type.name }}
+                                    {{ student_type.name }}
 
                                 </option>
 
@@ -379,45 +322,37 @@
 
                         <div class="form-group">
 
-                            <label for="uniform_size">
+                            <label>
                                 Uniform Size
                             </label>
 
                             <input
                                 type="text"
-                                id="uniform_size"
                                 name="uniform_size"
-
                                 value="{{ form_data.get(
                                     'uniform_size',
                                     ''
                                 ) }}"
-
-                                placeholder="Enter uniform size"
                             >
 
                         </div>
 
 
-                        <!-- ADMISSION DATE -->
+                        <!-- INTAKE DATE -->
 
                         <div class="form-group">
 
-                            <label for="intake_date">
+                            <label>
                                 Admission Date
                             </label>
 
                             <input
                                 type="date"
-                                id="intake_date"
                                 name="intake_date"
-
                                 value="{{ form_data.get(
                                     'intake_date',
                                     ''
                                 ) }}"
-
-                                required
                             >
 
                         </div>
@@ -425,23 +360,20 @@
 
                     </div>
 
-                </div>
 
 
-                <!-- =================================================
-                     INITIAL PAYMENT
-                     ================================================= -->
-
-                <div class="form-section">
+                    <!-- =================================================
+                         PAYMENT INFORMATION
+                         ================================================= -->
 
                     <div class="form-section-header">
 
                         <h3>
-                            Initial Payment
+                            Payment Information
                         </h3>
 
                         <p>
-                            Optional payment record for this student.
+                            Enter the original payment amount and discount.
                         </p>
 
                     </div>
@@ -454,73 +386,131 @@
 
                         <div class="form-group">
 
-                            <label for="voucher_id">
+                            <label>
                                 Voucher ID
                             </label>
 
                             <input
                                 type="text"
                                 name="voucher_id"
-                                id="voucher_id"
-
                                 value="{{ form_data.get(
                                     'voucher_id',
                                     ''
                                 ) }}"
-
-                                placeholder="Enter voucher ID"
+                                placeholder="Voucher ID"
                             >
 
                         </div>
 
 
-                        <!-- TOTAL -->
+                        <!-- ORIGINAL AMOUNT -->
 
                         <div class="form-group">
 
-                            <label for="total_amount">
-                                Total Amount
+                            <label>
+                                Original Total Amount
                             </label>
 
                             <input
                                 type="number"
                                 id="total_amount"
                                 name="total_amount"
-
+                                min="0"
+                                step="0.01"
                                 value="{{ form_data.get(
                                     'total_amount',
                                     ''
                                 ) }}"
-
-                                placeholder="0.00"
-                                min="0"
-                                step="0.01"
+                                placeholder="5000"
                             >
 
                         </div>
 
 
-                        <!-- PAID -->
+                        <!-- DISCOUNT -->
 
                         <div class="form-group">
 
-                            <label for="amount_paid">
-                                Amount Paid
+                            <label>
+                                Discount (%)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="discount"
+                                name="discount"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                value="{{ form_data.get(
+                                    'discount',
+                                    '0'
+                                ) }}"
+                                placeholder="20"
+                            >
+
+                        </div>
+
+
+                        <!-- DISCOUNT AMOUNT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Discount Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                id="discount_amount"
+                                value="0"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- TOTAL AFTER DISCOUNT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Total After Discount
+                            </label>
+
+                            <input
+                                type="number"
+                                id="total_after_discount"
+                                name="total_after_discount"
+                                value="{{ form_data.get(
+                                    'total_after_discount',
+                                    ''
+                                ) }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- AMOUNT PAID -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Initial Amount Paid
                             </label>
 
                             <input
                                 type="number"
                                 id="amount_paid"
                                 name="amount_paid"
-
-                                value="{{ form_data.get(
-                                    'amount_paid',
-                                    ''
-                                ) }}"
-
-                                placeholder="0.00"
                                 min="0"
                                 step="0.01"
+                                value="{{ form_data.get(
+                                    'amount_paid',
+                                    '0'
+                                ) }}"
+                                placeholder="2000"
                             >
 
                         </div>
@@ -530,45 +520,32 @@
 
                         <div class="form-group">
 
-                            <label for="pending_amount">
-                                Pending Amount
+                            <label>
+                                Pending After Payment
                             </label>
 
                             <input
                                 type="number"
                                 id="pending_amount"
-                                name="pending_amount"
-
-                                value="{{ form_data.get(
-                                    'pending_amount',
-                                    ''
-                                ) }}"
-
-                                placeholder="Automatically calculated"
-
+                                value="0"
                                 readonly
-
-                                step="0.01"
                             >
 
                         </div>
 
 
-                        <!-- =================================================
-                             PAYMENT COMMENT
-                             ================================================= -->
+                        <!-- COMMENT -->
 
                         <div class="form-group">
 
-                            <label for="payment_comment">
+                            <label>
                                 Payment Comment
                             </label>
 
                             <textarea
-                                id="payment_comment"
                                 name="payment_comment"
                                 rows="4"
-                                placeholder="Enter the reason for this payment..."
+                                placeholder="Enter payment comment..."
                             >{{ form_data.get(
                                 'payment_comment',
                                 ''
@@ -579,45 +556,51 @@
 
                     </div>
 
-                </div>
 
 
-                <!-- =================================================
-                     ACTIONS
-                     ================================================= -->
+                    <!-- =================================================
+                         ACTIONS
+                         ================================================= -->
 
-                <div class="form-actions">
+                    <div class="form-actions">
 
-                    <a
-                        href="{{ url_for('main.dashboard') }}"
-                        class="cancel-btn"
-                    >
-                        Cancel
-                    </a>
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
 
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
+                            {% if edit_mode %}
+                                Save Changes
+                            {% else %}
+                                Add Student
+                            {% endif %}
 
-                        {% if edit_mode %}
-                            Save Changes
-                        {% else %}
-                            Save Student
-                        {% endif %}
-
-                    </button>
-
-                </div>
+                        </button>
 
 
-            </form>
+                        <a
+                            href="{{ url_for(
+                                'main.dashboard'
+                            ) }}"
+                            class="cancel-btn"
+                        >
+                            Cancel
+                        </a>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
 
         </section>
 
     </main>
 
 </div>
+
 
 
 <!-- =========================================================
@@ -627,43 +610,169 @@
 <script>
 
 const totalAmount =
-    document.getElementById("total_amount");
+    document.getElementById(
+        "total_amount"
+    );
+
+const discount =
+    document.getElementById(
+        "discount"
+    );
+
+const discountAmount =
+    document.getElementById(
+        "discount_amount"
+    );
+
+const totalAfterDiscount =
+    document.getElementById(
+        "total_after_discount"
+    );
 
 const amountPaid =
-    document.getElementById("amount_paid");
+    document.getElementById(
+        "amount_paid"
+    );
 
 const pendingAmount =
-    document.getElementById("pending_amount");
+    document.getElementById(
+        "pending_amount"
+    );
 
 
-function calculatePendingAmount() {
+function calculatePayment() {
 
     const total =
-        parseFloat(totalAmount.value) || 0;
+        parseFloat(
+            totalAmount.value
+        ) || 0;
 
-    const paid =
-        parseFloat(amountPaid.value) || 0;
+
+    let discountPercent =
+        parseFloat(
+            discount.value
+        ) || 0;
+
+
+    /*
+     * Keep discount between 0 and 100.
+     */
+
+    if (discountPercent < 0) {
+
+        discountPercent = 0;
+
+    }
+
+    if (discountPercent > 100) {
+
+        discountPercent = 100;
+
+    }
+
+
+    const discountValue =
+        total
+        * discountPercent
+        / 100;
+
+
+    const finalAmount =
+        total
+        - discountValue;
+
+
+    discountAmount.value =
+        discountValue.toFixed(2);
+
+
+    totalAfterDiscount.value =
+        finalAmount.toFixed(2);
+
+
+    /*
+     * Calculate pending.
+     */
+
+    let paid =
+        parseFloat(
+            amountPaid.value
+        ) || 0;
+
+
+    if (paid < 0) {
+
+        paid = 0;
+
+        amountPaid.value =
+            "0";
+
+    }
+
+
+    /*
+     * Do not allow payment
+     * greater than final amount.
+     */
+
+    if (paid > finalAmount) {
+
+        paid = finalAmount;
+
+        amountPaid.value =
+            finalAmount.toFixed(2);
+
+    }
+
 
     const pending =
-        Math.max(total - paid, 0);
+        Math.max(
+            finalAmount - paid,
+            0
+        );
+
 
     pendingAmount.value =
         pending.toFixed(2);
+
 }
 
 
-totalAmount.addEventListener(
-    "input",
-    calculatePendingAmount
-);
+if (totalAmount) {
 
-amountPaid.addEventListener(
-    "input",
-    calculatePendingAmount
-);
+    totalAmount.addEventListener(
+        "input",
+        calculatePayment
+    );
+
+}
 
 
-calculatePendingAmount();
+if (discount) {
+
+    discount.addEventListener(
+        "input",
+        calculatePayment
+    );
+
+}
+
+
+if (amountPaid) {
+
+    amountPaid.addEventListener(
+        "input",
+        calculatePayment
+    );
+
+}
+
+
+/*
+ * Calculate when page loads.
+ */
+
+calculatePayment();
 
 </script>
 

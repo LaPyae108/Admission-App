@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Official Receive
+</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    background: #eee;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color: #111;
+}
+
+
+.page {
+
+    width: 210mm;
+
+    min-height: 297mm;
+
+    margin: 20px auto;
+
+    background: #fff;
+
+    padding:
+        16mm
+        17mm
+        12mm;
+
+    box-shadow:
+        0 0 12px #aaa;
+}
+
+
+.header {
+
+    text-align: center;
+
+    border-bottom:
+        1.5px solid #222;
+
+    padding-bottom: 7px;
+}
+
+
+.header h1 {
+
+    font-family: Georgia, serif;
+
+    font-size: 29px;
+
+    margin:
+        0 0 8px;
+
+    font-weight: 800;
+}
+
+
+.header h2 {
+
+    font-size: 21px;
+
+    margin: 0;
+
+    font-weight: 700;
+}
+
+
+.top {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    margin-top: 13px;
+}
+
+
+.receive {
+
+    font-family: Georgia, serif;
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    text-align: center;
+
+    flex: 1;
+
+    margin-top: 4px;
+}
+
+
+.invoice {
+
+    width: 78mm;
+
+    border: 1px solid #222;
+}
+
+
+.invoice div {
+
+    display: grid;
+
+    grid-template-columns:
+        35mm 1fr;
+
+    border-bottom:
+        1px solid #222;
+}
+
+
+.invoice div:last-child {
+
+    border-bottom: 0;
+}
+
+
+.invoice b,
+.invoice span {
+
+    padding: 5px 7px;
+
+    font-size: 15px;
+}
+
+
+.invoice b {
+
+    border-right:
+        1px solid #222;
+}
+
+
+.section {
+
+    margin-top: 13px;
+
+    border:
+        1px solid #222;
+}
+
+
+.section-title {
+
+    font-weight: 800;
+
+    padding: 7px;
+
+    border-bottom:
+        1px solid #222;
+
+    font-size: 16px;
+}
+
+
+.student-row {
+
+    display: grid;
+
+    grid-template-columns:
+        47mm 1fr;
+
+    border-bottom:
+        1px solid #222;
+}
+
+
+.student-row:last-child {
+
+    border-bottom: 0;
+}
+
+
+.student-row b,
+.student-row span {
+
+    padding: 7px;
+
+    font-size: 17px;
+}
+
+
+.student-row b {
+
+    border-right:
+        1px solid #222;
+}
+
+
+.items {
+
+    margin-top: 25px;
+
+    border:
+        1px solid #222;
+}
+
+
+.items-head,
+.item {
+
+    display: grid;
+
+    grid-template-columns:
+        17mm 1fr 39mm;
+}
+
+
+.items-head {
+
+    background: #eee;
+
+    font-weight: 800;
+}
+
+
+.items-head > div,
+.item > div {
+
+    padding: 8px;
+
+    border-right:
+        1px solid #222;
+}
+
+
+.items-head > div:last-child,
+.item > div:last-child {
+
+    border-right: 0;
+}
+
+
+.item {
+
+    min-height: 27mm;
+}
+
+
+.item .num {
+
+    font-size: 17px;
+
+    text-align: center;
+}
+
+
+.item .name {
+
+    font-size: 18px;
+
+    line-height: 1.45;
+}
+
+
+.item .amount {
+
+    text-align: right;
+
+    font-size: 17px;
+}
+
+
+.bottom {
+
+    display: flex;
+
+    justify-content:
+        flex-end;
+
+    margin-top: 0;
+}
+
+
+.totals {
+
+    width: 82mm;
+
+    border:
+        1px solid #222;
+
+    border-top: 0;
+}
+
+
+.total-row {
+
+    display: grid;
+
+    grid-template-columns:
+        52mm 1fr;
+
+    border-bottom:
+        1px solid #222;
+}
+
+
+.total-row:last-child {
+
+    border-bottom: 0;
+}
+
+
+.total-row div {
+
+    padding: 7px;
+
+    font-size: 16px;
+}
+
+
+.total-row div:first-child {
+
+    text-align: right;
+
+    border-right:
+        1px solid #222;
+}
+
+
+.total-row div:last-child {
+
+    text-align: right;
+}
+
+
+.installment-row {
+
+    font-weight: 800;
+
+    background: #f5f5f5;
+}
+
+
+.notes {
+
+    margin-top: -2px;
+}
+
+
+.no-refund {
+
+    width: 61mm;
+
+    margin-top: -3px;
+
+    border:
+        1px solid #222;
+}
+
+
+.nr-top {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+}
+
+
+.nr-top div {
+
+    padding: 8px;
+
+    text-align: center;
+
+    font-weight: 700;
+
+    border-right:
+        1px solid #222;
+}
+
+
+.nr-top div:last-child {
+
+    border-right: 0;
+}
+
+
+.thanks {
+
+    border-top:
+        1px solid #222;
+
+    padding: 8px;
+
+    font-weight: 700;
+}
+
+
+.remark {
+
+    margin-top: 15px;
+
+    font-size: 16px;
+}
+
+
+.signatures {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    margin-top: 28mm;
+
+    padding:
+        0 17mm;
+}
+
+
+.sig {
+
+    text-align: center;
+
+    width: 50mm;
+
+    font-weight: 700;
+}
+
+
+.line {
+
+    border-bottom:
+        1px dotted #222;
+
+    height: 25px;
+
+    margin-bottom: 6px;
+}
+
+
+.footer {
+
+    text-align: center;
+
+    margin-top: 12mm;
+
+    font-weight: 700;
+
+    line-height: 1.55;
+}
+
+
+.print-date {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    margin-top: 8mm;
+
+    font-size: 13px;
+}
+
+
+@media print {
+
+    body {
+
+        background: #fff;
+    }
+
+
+    .page {
+
+        margin: 0;
+
+        box-shadow: none;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+<!-- ========================================================
+     HEADER
+     ======================================================== -->
+
+<header class="header">
+
+    <h1>
+        STAR INTERNATIONAL COLLEGE
+    </h1>
+
+    <h2>
+        Hospitality &amp; Business Management
+    </h2>
+
+</header>
+
+
+<!-- ========================================================
+     RECEIPT HEADER
+     ======================================================== -->
+
+<div class="top">
+
+    <div class="receive">
+        OFFICIAL RECEIPT
+    </div>
+
+
+    <div class="invoice">
+
+        <div>
+
+            <b>
+                Invoice
+            </b>
+
+            <span>
+                {{ payment.voucher_id }}
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <b>
+                Date
+            </b>
+
+            <span>
+                {{ payment.payment_date }}
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================
+     STUDENT INFORMATION
+     ======================================================== -->
+
+<div class="section">
+
+
+    <div class="section-title">
+        STUDENT INFORMATION
+    </div>
+
+
+    <div class="student-row">
+
+        <b>
+            NAME
+        </b>
+
+        <span>
+            {{ student.full_name }}
+        </span>
+
+    </div>
+
+
+    <div class="student-row">
+
+        <b>
+            STUDENT ID
+        </b>
+
+        <span>
+            {{ student.student_id }}
+        </span>
+
+    </div>
+
+
+</div>
+
+
+<!-- ========================================================
+     COURSE
+     ======================================================== -->
+
+<div class="items">
+
+
+    <div class="items-head">
+
+        <div>
+            No.
+        </div>
+
+        <div>
+            Item name
+        </div>
+
+        <div style="text-align:right">
+            Amount
+        </div>
+
+    </div>
+
+
+    {% if results %}
+
+        {% for result in results %}
+
+        <div class="item">
+
+            <div class="num">
+
+                {{ loop.index }}
+
+            </div>
+
+
+            <div class="name">
+
+                {{ result.course_name }}
+
+                {% if result.course_id %}
+
+                    <br>
+
+                    Course ID:
+                    {{ result.course_id }}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="amount">
+
+                {{ "{:,.2f}".format(
+                    payment.total_amount or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="item">
+
+            <div class="num">
+                1
+            </div>
+
+
+            <div class="name">
+                Course Payment
+            </div>
+
+
+            <div class="amount">
+
+                {{ "{:,.2f}".format(
+                    payment.total_amount or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- ========================================================
+     PAYMENT SUMMARY
+     ======================================================== -->
+
+<div class="bottom">
+
+
+    <div class="totals">
+
+
+        <!-- COURSE TOTAL -->
+
+        <div class="total-row">
+
+            <div>
+                Course Total
+            </div>
+
+            <div>
+
+                {{ "{:,.2f}".format(
+                    payment.total_amount or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+
+        <!-- DISCOUNT -->
+
+        <div class="total-row">
+
+            <div>
+                Discount
+            </div>
+
+            <div>
+
+                {{ "{:,.2f}".format(
+                    payment.discount or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL AFTER DISCOUNT -->
+
+        <div class="total-row">
+
+            <div>
+                Total After Discount
+            </div>
+
+            <div>
+
+                {{ "{:,.2f}".format(
+                    payment.total_after_discount or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+
+        <!-- THIS INSTALLMENT -->
+
+        <div class="total-row installment-row">
+
+            <div>
+                This Payment
+            </div>
+
+            <div>
+
+                {{ "{:,.2f}".format(
+                    payment.amount_received or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL RECEIVED -->
+
+        <div class="total-row">
+
+            <div>
+                Total Received
+            </div>
+
+            <div>
+
+                {{ "{:,.2f}".format(
+                    total_received or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+
+        <!-- REMAINING BALANCE -->
+
+        <div class="total-row">
+
+            <div>
+                Balance
+            </div>
+
+            <div>
+
+                {{ "{:,.2f}".format(
+                    total_pending or 0
+                ) }}
+
+                {{ payment.currency }}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================
+     NOTES
+     ======================================================== -->
+
+<div class="notes">
+
+
+    <div class="no-refund">
+
+
+        <div class="nr-top">
+
+            <div>
+                No Refund
+            </div>
+
+            <div>
+                No Transfer
+            </div>
+
+        </div>
+
+
+        <div class="thanks">
+            Thank You
+        </div>
+
+
+    </div>
+
+
+    <div class="remark">
+
+        Remark
+
+        &nbsp;&nbsp;
+
+        {{ payment.comment or "" }}
+
+    </div>
+
+
+</div>
+
+
+<!-- ========================================================
+     SIGNATURES
+     ======================================================== -->
+
+<div class="signatures">
+
+
+    <div class="sig">
+
+        <div>
+            Paid By
+        </div>
+
+        <div class="line"></div>
+
+    </div>
+
+
+    <div class="sig">
+
+        <div>
+            Received By
+        </div>
+
+        <div class="line"></div>
+
+    </div>
+
+
+</div>
+
+
+<!-- ========================================================
+     FOOTER
+     ======================================================== -->
+
+<footer class="footer">
+
+    <div>
+        Address. 252A, Uwisara Road,
+        Kamayut Township, Yangon
+    </div>
+
+    <div>
+        Phone : 09 - 797004988,
+        09 - 797004989,
+        09 - 771199604
+    </div>
+
+    <div>
+        Email: info@staruniversity.edu.mm,
+        Website.www.staruniversitymyanmar.com
+    </div>
+
+</footer>
+
+
+<!-- ========================================================
+     PRINT DATE
+     ======================================================== -->
+
+<div class="print-date">
+
+    <span>
+
+        Print Date :
+
+        {{ now.strftime(
+            "%d/%m/%Y %I:%M:%S %p"
+        ) if now else "" }}
+
+    </span>
+
+
+    <span>
+        Page 1 of 1
+    </span>
+
+</div>
+
+
+</div>
+
+
+</body>
+
+</html>

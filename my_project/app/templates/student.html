@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -205,8 +206,6 @@
                 <div class="form-grid">
 
 
-                    <!-- FULL NAME -->
-
                     <div class="form-group">
 
                         <label>
@@ -221,8 +220,6 @@
 
                     </div>
 
-
-                    <!-- STUDENT ID -->
 
                     <div class="form-group">
 
@@ -239,8 +236,6 @@
                     </div>
 
 
-                    <!-- PHONE -->
-
                     <div class="form-group">
 
                         <label>
@@ -255,8 +250,6 @@
 
                     </div>
 
-
-                    <!-- NRC -->
 
                     <div class="form-group">
 
@@ -273,8 +266,6 @@
                     </div>
 
 
-                    <!-- STUDENT TYPE -->
-
                     <div class="form-group">
 
                         <label>
@@ -289,8 +280,6 @@
 
                     </div>
 
-
-                    <!-- UNIFORM -->
 
                     <div class="form-group">
 
@@ -307,8 +296,6 @@
                     </div>
 
 
-                    <!-- ADMISSION DATE -->
-
                     <div class="form-group">
 
                         <label>
@@ -323,8 +310,6 @@
 
                     </div>
 
-
-                    <!-- PAYMENT STATUS -->
 
                     <div class="form-group">
 
@@ -380,8 +365,6 @@
                     <div class="form-grid">
 
 
-                        <!-- COURSE NAME -->
-
                         <div class="form-group">
 
                             <label>
@@ -397,8 +380,6 @@
 
                         </div>
 
-
-                        <!-- COURSE ID -->
 
                         <div class="form-group">
 
@@ -416,8 +397,6 @@
                         </div>
 
 
-                        <!-- START DATE -->
-
                         <div class="form-group">
 
                             <label>
@@ -432,8 +411,6 @@
                         </div>
 
 
-                        <!-- END DATE -->
-
                         <div class="form-group">
 
                             <label>
@@ -447,8 +424,6 @@
 
                         </div>
 
-
-                        <!-- RESULT -->
 
                         <div class="form-group">
 
@@ -465,16 +440,13 @@
                         </div>
 
 
-                        <!-- COLLECTED -->
-
                         <div class="form-group">
 
-                            <label for="course_collected">
+                            <label>
                                 Collected
                             </label>
 
                             <select
-                                id="course_collected"
                                 name="collected"
                             >
 
@@ -565,10 +537,6 @@
                             {% for result in results %}
 
 
-                            <!-- =================================================
-                                 EDIT COURSE
-                                 ================================================= -->
-
                             {% if edit_course and edit_course.id == result.id %}
 
                             <tr>
@@ -587,8 +555,6 @@
                                         <div class="course-edit-grid">
 
 
-                                            <!-- COURSE NAME -->
-
                                             <div class="form-group">
 
                                                 <label>
@@ -604,8 +570,6 @@
 
                                             </div>
 
-
-                                            <!-- COURSE ID -->
 
                                             <div class="form-group">
 
@@ -623,8 +587,6 @@
                                             </div>
 
 
-                                            <!-- START DATE -->
-
                                             <div class="form-group">
 
                                                 <label>
@@ -639,8 +601,6 @@
 
                                             </div>
 
-
-                                            <!-- END DATE -->
 
                                             <div class="form-group">
 
@@ -657,8 +617,6 @@
                                             </div>
 
 
-                                            <!-- RESULT -->
-
                                             <div class="form-group">
 
                                                 <label>
@@ -674,18 +632,13 @@
                                             </div>
 
 
-                                            <!-- COLLECTED -->
-
                                             <div class="form-group">
 
-                                                <label
-                                                    for="edit_collected_{{ result.id }}"
-                                                >
+                                                <label>
                                                     Collected
                                                 </label>
 
                                                 <select
-                                                    id="edit_collected_{{ result.id }}"
                                                     name="collected"
                                                 >
 
@@ -714,8 +667,6 @@
 
                                         </div>
 
-
-                                        <!-- EDIT BUTTONS -->
 
                                         <div class="form-actions">
 
@@ -746,30 +697,20 @@
                             </tr>
 
 
-                            <!-- =================================================
-                                 NORMAL COURSE
-                                 ================================================= -->
-
                             {% else %}
 
                             <tr>
 
-
-                                <!-- COURSE NAME -->
 
                                 <td>
                                     {{ result.course_name }}
                                 </td>
 
 
-                                <!-- COURSE ID -->
-
                                 <td>
                                     {{ result.course_id }}
                                 </td>
 
-
-                                <!-- START DATE -->
 
                                 <td>
 
@@ -788,8 +729,6 @@
                                 </td>
 
 
-                                <!-- END DATE -->
-
                                 <td>
 
                                     {% if result.end_date %}
@@ -807,14 +746,10 @@
                                 </td>
 
 
-                                <!-- RESULT -->
-
                                 <td>
                                     {{ result.result or '-' }}
                                 </td>
 
-
-                                <!-- COLLECTED -->
 
                                 <td>
 
@@ -834,8 +769,6 @@
 
                                 </td>
 
-
-                                <!-- ACTION -->
 
                                 <td>
 
@@ -927,7 +860,7 @@
                     <div class="payment-summary-card">
 
                         <span>
-                            Total Amount
+                            Total After Discount
                         </span>
 
                         <strong>
@@ -976,6 +909,19 @@
 
 
                 </div>
+
+
+                <!-- =================================================
+                     FIXED PAYMENT INFORMATION
+                     ================================================= -->
+
+                {% if payments %}
+
+                {% set original_payment = payments|last %}
+
+                
+
+                {% endif %}
 
 
                 <!-- =================================================
@@ -1037,28 +983,24 @@
                             </div>
 
 
-                            <!-- TOTAL -->
+                            <!-- FIXED TOTAL -->
 
                             <div class="form-group">
 
                                 <label>
-                                    Total Amount
+                                    Total After Discount
                                 </label>
 
                                 <input
                                     type="number"
-                                    id="payment_total"
-                                    name="total_amount"
-                                    min="0"
-                                    step="0.01"
-                                    placeholder="0.00"
-                                    required
+                                    value="{{ total_payment }}"
+                                    readonly
                                 >
 
                             </div>
 
 
-                            <!-- PAID -->
+                            <!-- AMOUNT PAID -->
 
                             <div class="form-group">
 
@@ -1072,7 +1014,7 @@
                                     name="amount_paid"
                                     min="0"
                                     step="0.01"
-                                    placeholder="0.00"
+                                    placeholder="Enter payment amount"
                                     required
                                 >
 
@@ -1084,13 +1026,13 @@
                             <div class="form-group">
 
                                 <label>
-                                    Pending Amount
+                                    Pending After Payment
                                 </label>
 
                                 <input
                                     type="number"
                                     id="payment_pending"
-                                    value="0.00"
+                                    value="{{ total_pending }}"
                                     readonly
                                 >
 
@@ -1162,7 +1104,18 @@
                                 </th>
 
                                 <th>
-                                    Total Amount
+                                    Original Amount
+                                </th>
+
+                                <th>
+                                    Discount
+                                </th>
+
+                                <th>
+                                    Total After Discount
+                                </th>
+                                <th>
+                                    Current Recievable
                                 </th>
 
                                 <th>
@@ -1230,7 +1183,7 @@
                                 </td>
 
 
-                                <!-- TOTAL -->
+                                <!-- ORIGINAL AMOUNT -->
 
                                 <td>
 
@@ -1238,6 +1191,41 @@
                                         payment.total_amount or 0
                                     ) }}
 
+                                </td>
+
+
+                                <!-- DISCOUNT -->
+
+                                <td>
+
+                                    {{ "{:,.2f}".format(
+                                        payment.discount or 0
+                                    ) }}%
+
+                                </td>
+
+
+                                <!-- TOTAL AFTER DISCOUNT -->
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ "{:,.2f}".format(
+                                            payment.total_after_discount or 0
+                                        ) }}
+
+                                    </strong>
+
+                                </td>
+                                <!--Current Recievable-->
+                                <td><strong>
+
+                            {{ "{:,.2f}".format(
+                                payment.current_receivable or 0
+                            ) }}
+
+                        </strong>
                                 </td>
 
 
@@ -1319,7 +1307,7 @@
 
                             <tr>
 
-                                <th colspan="3">
+                                <th colspan="5">
                                     Total
                                 </th>
 
@@ -1501,14 +1489,14 @@ const paymentDate =
         "payment_date"
     );
 
-const paymentTotal =
-    document.getElementById(
-        "payment_total"
-    );
-
 const paymentPaid =
     document.getElementById(
         "payment_paid"
+    );
+
+const paymentReceivable =
+    document.getElementById(
+        "payment_receivable"
     );
 
 const paymentPending =
@@ -1516,6 +1504,10 @@ const paymentPending =
         "payment_pending"
     );
 
+
+/*
+ * Automatically set today's date.
+ */
 
 const today =
     new Date()
@@ -1530,23 +1522,75 @@ if (paymentDate) {
 }
 
 
-function calculatePaymentPending() {
+/*
+ * Current outstanding amount
+ * before the new payment.
+ */
 
-    const total =
-        parseFloat(
-            paymentTotal.value
-        ) || 0;
+const currentReceivable =
+    parseFloat(
+        "{{ total_pending }}"
+    ) || 0;
 
-    const paid =
+
+/*
+ * Calculate the balance after
+ * the new payment.
+ */
+
+function calculateNewPaymentPending() {
+
+    if (!paymentPaid || !paymentPending) {
+        return;
+    }
+
+    let paid =
         parseFloat(
             paymentPaid.value
         ) || 0;
 
+
+    /*
+     * Prevent negative payment.
+     */
+
+    if (paid < 0) {
+
+        paid = 0;
+
+        paymentPaid.value = "0";
+
+    }
+
+
+    /*
+     * Prevent overpayment.
+     */
+
+    if (paid > currentReceivable) {
+
+        paid = currentReceivable;
+
+        paymentPaid.value =
+            currentReceivable.toFixed(2);
+
+    }
+
+
     const pending =
         Math.max(
-            total - paid,
+            currentReceivable - paid,
             0
         );
+
+
+    if (paymentReceivable) {
+
+        paymentReceivable.value =
+            currentReceivable.toFixed(2);
+
+    }
+
 
     paymentPending.value =
         pending.toFixed(2);
@@ -1554,21 +1598,14 @@ function calculatePaymentPending() {
 }
 
 
-if (paymentTotal && paymentPaid && paymentPending) {
-
-    paymentTotal.addEventListener(
-        "input",
-        calculatePaymentPending
-    );
-
+if (paymentPaid) {
 
     paymentPaid.addEventListener(
         "input",
-        calculatePaymentPending
+        calculateNewPaymentPending
     );
 
-
-    calculatePaymentPending();
+    calculateNewPaymentPending();
 
 }
 
@@ -1578,3 +1615,63 @@ if (paymentTotal && paymentPaid && paymentPending) {
 </body>
 
 </html>
+
+<!--
+<div class="payment-add-form">
+
+                    <h3>
+                        Payment Information
+                    </h3>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Original Total Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                value="{{ original_payment.total_amount or 0 }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Discount (%)
+                            </label>
+
+                            <input
+                                type="number"
+                                value="{{ original_payment.discount or 0 }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Total After Discount
+                            </label>
+
+                            <input
+                                type="number"
+                                value="{{ original_payment.total_after_discount or 0 }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>-->
