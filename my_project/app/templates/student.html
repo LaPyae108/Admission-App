@@ -15,13 +15,478 @@
         {{ student.full_name }} - Student Details
     </title>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for(
-            'static',
-            filename='css/stylestudent.css'
-        ) }}"
-    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            background: #f4f6f8;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #222;
+        }
+
+        .layout {
+
+            display: flex;
+
+            min-height: 100vh;
+        }
+
+        .sidebar {
+
+            width: 240px;
+
+            background: #17202a;
+
+            color: white;
+
+            padding: 25px 15px;
+        }
+
+        .logo {
+
+            text-align: center;
+
+            margin-bottom: 35px;
+        }
+
+        .logo h2 {
+
+            margin: 0 0 5px;
+        }
+
+        .logo p {
+
+            margin: 0;
+
+            font-size: 13px;
+
+            color: #bbb;
+        }
+
+        .navigation {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+        .nav-link {
+
+            text-decoration: none;
+
+            color: #ddd;
+
+            padding: 12px 15px;
+
+            border-radius: 6px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+
+            background: #2c3e50;
+
+            color: white;
+        }
+
+        .main-content {
+
+            flex: 1;
+        }
+
+        .topbar {
+
+            background: white;
+
+            padding: 25px 35px;
+
+            border-bottom: 1px solid #ddd;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .topbar h1 {
+
+            margin: 0 0 5px;
+        }
+
+        .topbar p {
+
+            margin: 0;
+
+            color: #777;
+        }
+
+        .content {
+
+            padding: 30px;
+
+            max-width: 1450px;
+
+            margin: auto;
+        }
+
+        .page-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+
+            margin: 0 0 5px;
+        }
+
+        .form-section {
+
+            background: white;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            margin-bottom: 25px;
+
+            padding: 25px;
+
+            overflow-x: auto;
+        }
+
+        .form-section-header {
+
+            margin-bottom: 25px;
+        }
+
+        .form-section-header h3 {
+
+            margin: 0 0 5px;
+        }
+
+        .form-section-header p {
+
+            margin: 0;
+
+            color: #777;
+        }
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+        }
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .form-group label {
+
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+
+            width: 100%;
+
+            padding: 11px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            font-size: 15px;
+        }
+
+        input[readonly] {
+
+            background: #f1f1f1;
+        }
+
+        .form-actions {
+
+            margin-top: 20px;
+
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+        }
+
+        button,
+        .save-btn,
+        .cancel-btn,
+        .add-student-btn,
+        .action-btn,
+        .print-btn {
+
+            border: none;
+
+            padding: 9px 14px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            display: inline-block;
+        }
+
+        .save-btn,
+        .add-student-btn {
+
+            background: #222;
+
+            color: white;
+        }
+
+        .cancel-btn {
+
+            background: #ddd;
+
+            color: #222;
+        }
+
+        .action-btn {
+
+            background: #555;
+
+            color: white;
+
+            margin: 2px;
+        }
+
+        .print-btn {
+
+            background: #333;
+
+            color: white;
+
+            margin: 2px;
+        }
+
+        .print-btn:hover {
+
+            background: #000;
+        }
+
+        .table-container {
+
+            overflow-x: auto;
+
+            margin-top: 20px;
+        }
+
+        .student-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 900px;
+        }
+
+        .student-table th,
+        .student-table td {
+
+            padding: 11px;
+
+            border: 1px solid #ddd;
+
+            text-align: left;
+
+            vertical-align: middle;
+        }
+
+        .student-table th {
+
+            background: #f1f1f1;
+
+            font-weight: 700;
+        }
+
+        .student-table tfoot th {
+
+            background: #e8e8e8;
+        }
+
+        .payment-summary {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .payment-summary-card {
+
+            border: 1px solid #ddd;
+
+            border-radius: 7px;
+
+            padding: 18px;
+
+            background: #fafafa;
+        }
+
+        .payment-summary-card span {
+
+            display: block;
+
+            color: #777;
+
+            font-size: 14px;
+
+            margin-bottom: 8px;
+        }
+
+        .payment-summary-card strong {
+
+            font-size: 22px;
+        }
+
+        .payment {
+
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 15px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .payment.paid {
+
+            background: #d8f5df;
+
+            color: #176b2c;
+        }
+
+        .payment.partial {
+
+            background: #fff0c2;
+
+            color: #775b00;
+        }
+
+        .payment.unpaid {
+
+            background: #ffdada;
+
+            color: #8a1c1c;
+        }
+
+        .collected.yes {
+
+            color: green;
+
+            font-weight: 700;
+        }
+
+        .collected.no {
+
+            color: #999;
+        }
+
+        .payment-add-form {
+
+            background: #f8f8f8;
+
+            border: 1px solid #ddd;
+
+            padding: 20px;
+
+            border-radius: 7px;
+
+            margin-top: 20px;
+        }
+
+        .payment-add-form h3 {
+
+            margin-top: 0;
+        }
+
+        .highlight {
+
+            font-weight: 700;
+        }
+
+        @media (
+            max-width: 900px
+        ) {
+
+            .sidebar {
+
+                display: none;
+            }
+
+            .form-grid,
+            .payment-summary {
+
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+
+                padding: 15px;
+            }
+
+            .page-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -66,27 +531,6 @@
                 Students
             </a>
 
-            <a
-                href="#"
-                class="nav-link"
-            >
-                Applications
-            </a>
-
-            <a
-                href="#"
-                class="nav-link"
-            >
-                Payments
-            </a>
-
-            <a
-                href="#"
-                class="nav-link"
-            >
-                Settings
-            </a>
-
         </nav>
 
     </aside>
@@ -98,10 +542,6 @@
 
     <main class="main-content">
 
-
-        <!-- =================================================
-             TOP BAR
-             ================================================= -->
 
         <header class="topbar">
 
@@ -117,21 +557,12 @@
 
             </div>
 
-
-            <div class="admin-profile">
-
-                <span>
-                    Admin
-                </span>
-
+            <div>
+                Admin
             </div>
 
         </header>
 
-
-        <!-- =================================================
-             CONTENT
-             ================================================= -->
 
         <section class="content">
 
@@ -172,7 +603,6 @@
                     >
                         Edit Student
                     </a>
-
 
                     <a
                         href="{{ url_for(
@@ -350,9 +780,7 @@
                 </div>
 
 
-                <!-- =================================================
-                     ADD COURSE
-                     ================================================= -->
+                <!-- ADD COURSE -->
 
                 <form
                     method="POST"
@@ -450,16 +878,11 @@
                                 name="collected"
                             >
 
-                                <option
-                                    value="no"
-                                    selected
-                                >
+                                <option value="no">
                                     No
                                 </option>
 
-                                <option
-                                    value="yes"
-                                >
+                                <option value="yes">
                                     Yes
                                 </option>
 
@@ -484,10 +907,6 @@
 
                 </form>
 
-
-                <!-- =================================================
-                     EXISTING COURSES
-                     ================================================= -->
 
                 {% if results %}
 
@@ -536,181 +955,15 @@
 
                             {% for result in results %}
 
-
-                            {% if edit_course and edit_course.id == result.id %}
-
                             <tr>
-
-                                <td colspan="7">
-
-                                    <form
-                                        method="POST"
-                                        action="{{ url_for(
-                                            'main.edit_course',
-                                            course_id=result.id
-                                        ) }}"
-                                        class="course-edit-form"
-                                    >
-
-                                        <div class="course-edit-grid">
-
-
-                                            <div class="form-group">
-
-                                                <label>
-                                                    Course Name
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="course_name"
-                                                    value="{{ result.course_name }}"
-                                                    required
-                                                >
-
-                                            </div>
-
-
-                                            <div class="form-group">
-
-                                                <label>
-                                                    Course ID
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="course_id"
-                                                    value="{{ result.course_id }}"
-                                                    required
-                                                >
-
-                                            </div>
-
-
-                                            <div class="form-group">
-
-                                                <label>
-                                                    Start Date
-                                                </label>
-
-                                                <input
-                                                    type="date"
-                                                    name="start_date"
-                                                    value="{% if result.start_date %}{{ result.start_date.strftime('%Y-%m-%d') }}{% endif %}"
-                                                >
-
-                                            </div>
-
-
-                                            <div class="form-group">
-
-                                                <label>
-                                                    End Date
-                                                </label>
-
-                                                <input
-                                                    type="date"
-                                                    name="end_date"
-                                                    value="{% if result.end_date %}{{ result.end_date.strftime('%Y-%m-%d') }}{% endif %}"
-                                                >
-
-                                            </div>
-
-
-                                            <div class="form-group">
-
-                                                <label>
-                                                    Result
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="result"
-                                                    value="{{ result.result or '' }}"
-                                                >
-
-                                            </div>
-
-
-                                            <div class="form-group">
-
-                                                <label>
-                                                    Collected
-                                                </label>
-
-                                                <select
-                                                    name="collected"
-                                                >
-
-                                                    <option
-                                                        value="no"
-                                                        {% if not result.collected %}
-                                                            selected
-                                                        {% endif %}
-                                                    >
-                                                        No
-                                                    </option>
-
-                                                    <option
-                                                        value="yes"
-                                                        {% if result.collected %}
-                                                            selected
-                                                        {% endif %}
-                                                    >
-                                                        Yes
-                                                    </option>
-
-                                                </select>
-
-                                            </div>
-
-
-                                        </div>
-
-
-                                        <div class="form-actions">
-
-                                            <button
-                                                type="submit"
-                                                class="save-btn"
-                                            >
-                                                Save Changes
-                                            </button>
-
-
-                                            <a
-                                                href="{{ url_for(
-                                                    'main.student_details',
-                                                    student_id=student.id
-                                                ) }}"
-                                                class="cancel-btn"
-                                            >
-                                                Cancel
-                                            </a>
-
-                                        </div>
-
-                                    </form>
-
-                                </td>
-
-                            </tr>
-
-
-                            {% else %}
-
-                            <tr>
-
 
                                 <td>
                                     {{ result.course_name }}
                                 </td>
 
-
                                 <td>
                                     {{ result.course_id }}
                                 </td>
-
 
                                 <td>
 
@@ -728,7 +981,6 @@
 
                                 </td>
 
-
                                 <td>
 
                                     {% if result.end_date %}
@@ -745,11 +997,9 @@
 
                                 </td>
 
-
                                 <td>
                                     {{ result.result or '-' }}
                                 </td>
-
 
                                 <td>
 
@@ -769,7 +1019,6 @@
 
                                 </td>
 
-
                                 <td>
 
                                     <a
@@ -782,7 +1031,6 @@
                                     >
                                         Edit
                                     </a>
-
 
                                     <form
                                         method="POST"
@@ -807,10 +1055,7 @@
 
                                 </td>
 
-
                             </tr>
-
-                            {% endif %}
 
                             {% endfor %}
 
@@ -837,6 +1082,7 @@
 
             <div class="form-section">
 
+
                 <div class="form-section-header">
 
                     <h3>
@@ -860,7 +1106,7 @@
                     <div class="payment-summary-card">
 
                         <span>
-                            Total After Discount
+                            Fixed Total After Discount
                         </span>
 
                         <strong>
@@ -868,6 +1114,8 @@
                             {{ "{:,.2f}".format(
                                 total_payment
                             ) }}
+
+                            MMK
 
                         </strong>
 
@@ -877,7 +1125,7 @@
                     <div class="payment-summary-card">
 
                         <span>
-                            Total Paid
+                            Total Received
                         </span>
 
                         <strong>
@@ -885,6 +1133,8 @@
                             {{ "{:,.2f}".format(
                                 total_received
                             ) }}
+
+                            MMK
 
                         </strong>
 
@@ -903,25 +1153,14 @@
                                 total_pending
                             ) }}
 
+                            MMK
+
                         </strong>
 
                     </div>
 
 
                 </div>
-
-
-                <!-- =================================================
-                     FIXED PAYMENT INFORMATION
-                     ================================================= -->
-
-                {% if payments %}
-
-                {% set original_payment = payments|last %}
-
-                
-
-                {% endif %}
 
 
                 <!-- =================================================
@@ -947,8 +1186,6 @@
                         <div class="form-grid">
 
 
-                            <!-- VOUCHER -->
-
                             <div class="form-group">
 
                                 <label>
@@ -964,8 +1201,6 @@
 
                             </div>
 
-
-                            <!-- PAYMENT DATE -->
 
                             <div class="form-group">
 
@@ -983,12 +1218,10 @@
                             </div>
 
 
-                            <!-- FIXED TOTAL -->
-
                             <div class="form-group">
 
                                 <label>
-                                    Total After Discount
+                                    Fixed Total After Discount
                                 </label>
 
                                 <input
@@ -1000,7 +1233,20 @@
                             </div>
 
 
-                            <!-- AMOUNT PAID -->
+                            <div class="form-group">
+
+                                <label>
+                                    Current Receivable
+                                </label>
+
+                                <input
+                                    type="number"
+                                    value="{{ total_pending }}"
+                                    readonly
+                                >
+
+                            </div>
+
 
                             <div class="form-group">
 
@@ -1021,8 +1267,6 @@
                             </div>
 
 
-                            <!-- PENDING -->
-
                             <div class="form-group">
 
                                 <label>
@@ -1039,19 +1283,16 @@
                             </div>
 
 
-                            <!-- PAYMENT COMMENT -->
-
                             <div class="form-group">
 
-                                <label for="payment_comment">
+                                <label>
                                     Payment Comment
                                 </label>
 
                                 <textarea
-                                    id="payment_comment"
                                     name="payment_comment"
                                     rows="4"
-                                    placeholder="Enter the reason for this payment..."
+                                    placeholder="Enter comment..."
                                 ></textarea>
 
                             </div>
@@ -1078,14 +1319,15 @@
 
 
                 <!-- =================================================
-                     PAYMENT TABLE
+                     PAYMENT HISTORY
                      ================================================= -->
 
-                {% if payments %}
+                {% if payment_rows %}
 
                 <div class="table-container">
 
                     <table class="student-table payment-table">
+
 
                         <thead>
 
@@ -1114,12 +1356,17 @@
                                 <th>
                                     Total After Discount
                                 </th>
+
                                 <th>
-                                    Current Recievable
+                                    Current Receivable
                                 </th>
 
                                 <th>
                                     Amount Paid
+                                </th>
+
+                                <th>
+                                    Cumulative Paid
                                 </th>
 
                                 <th>
@@ -1134,6 +1381,10 @@
                                     Comment
                                 </th>
 
+                                <th>
+                                    Receipt
+                                </th>
+
                             </tr>
 
                         </thead>
@@ -1141,7 +1392,11 @@
 
                         <tbody>
 
-                            {% for payment in payments %}
+
+                            {% for row in payment_rows %}
+
+                            {% set payment = row.payment %}
+
 
                             <tr>
 
@@ -1183,7 +1438,7 @@
                                 </td>
 
 
-                                <!-- ORIGINAL AMOUNT -->
+                                <!-- ORIGINAL -->
 
                                 <td>
 
@@ -1205,36 +1460,54 @@
                                 </td>
 
 
-                                <!-- TOTAL AFTER DISCOUNT -->
+                                <!-- FIXED TOTAL -->
 
                                 <td>
 
                                     <strong>
 
                                         {{ "{:,.2f}".format(
-                                            payment.total_after_discount or 0
+                                            payment.total_after_discount
+                                            or 0
                                         ) }}
 
                                     </strong>
 
                                 </td>
-                                <!--Current Recievable-->
-                                <td><strong>
 
-                            {{ "{:,.2f}".format(
-                                payment.current_receivable or 0
-                            ) }}
 
-                        </strong>
+                                <!-- CURRENT RECEIVABLE -->
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ "{:,.2f}".format(
+                                            row.current_receivable
+                                        ) }}
+
+                                    </strong>
+
                                 </td>
 
 
-                                <!-- PAID -->
+                                <!-- THIS PAYMENT -->
 
                                 <td>
 
                                     {{ "{:,.2f}".format(
-                                        payment.amount_received or 0
+                                        row.amount_paid
+                                    ) }}
+
+                                </td>
+
+
+                                <!-- CUMULATIVE PAID -->
+
+                                <td>
+
+                                    {{ "{:,.2f}".format(
+                                        row.cumulative_paid
                                     ) }}
 
                                 </td>
@@ -1244,9 +1517,13 @@
 
                                 <td>
 
-                                    {{ "{:,.2f}".format(
-                                        payment.pending_amount or 0
-                                    ) }}
+                                    <strong>
+
+                                        {{ "{:,.2f}".format(
+                                            row.pending
+                                        ) }}
+
+                                    </strong>
 
                                 </td>
 
@@ -1255,14 +1532,14 @@
 
                                 <td>
 
-                                    {% if payment.pending_amount == 0
-                                          and payment.amount_received > 0 %}
+                                    {% if row.pending == 0
+                                          and row.cumulative_paid > 0 %}
 
                                         <span class="payment paid">
                                             Paid
                                         </span>
 
-                                    {% elif payment.amount_received > 0 %}
+                                    {% elif row.amount_paid > 0 %}
 
                                         <span class="payment partial">
                                             Partial
@@ -1296,6 +1573,25 @@
                                 </td>
 
 
+                                <!-- RECEIPT -->
+
+                                <td>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'main.official_receipt',
+                                            student_id=student.id,
+                                            payment_id=payment.id
+                                        ) }}"
+                                        class="print-btn"
+                                        target="_blank"
+                                    >
+                                        Print
+                                    </a>
+
+                                </td>
+
+
                             </tr>
 
                             {% endfor %}
@@ -1320,6 +1616,14 @@
                                 </th>
 
                                 <th>
+                                    -
+                                </th>
+
+                                <th>
+                                    -
+                                </th>
+
+                                <th>
 
                                     {{ "{:,.2f}".format(
                                         total_received
@@ -1335,13 +1639,12 @@
 
                                 </th>
 
-                                <th></th>
-
-                                <th></th>
+                                <th colspan="3"></th>
 
                             </tr>
 
                         </tfoot>
+
 
                     </table>
 
@@ -1354,6 +1657,7 @@
                 </p>
 
                 {% endif %}
+
 
             </div>
 
@@ -1413,24 +1717,24 @@
 
                 {% if remarks %}
 
-                <div class="remarks-list">
-
                     {% for remark in remarks %}
 
-                    <div class="remark-card">
+                    <div
+                        style="
+                            border:1px solid #ddd;
+                            padding:15px;
+                            margin-top:15px;
+                            border-radius:6px;
+                        "
+                    >
 
+                        <strong>
+                            {{ remark.written_date }}
+                        </strong>
 
-                        <div>
-
-                            <strong>
-                                {{ remark.written_date }}
-                            </strong>
-
-                            <p>
-                                {{ remark.text }}
-                            </p>
-
-                        </div>
+                        <p>
+                            {{ remark.text }}
+                        </p>
 
 
                         <form
@@ -1453,20 +1757,18 @@
 
                         </form>
 
-
                     </div>
 
                     {% endfor %}
 
-                </div>
-
                 {% else %}
 
-                <p>
-                    No remarks found.
-                </p>
+                    <p>
+                        No remarks found.
+                    </p>
 
                 {% endif %}
+
 
             </div>
 
@@ -1477,10 +1779,6 @@
 
 </div>
 
-
-<!-- =========================================================
-     PAYMENT JAVASCRIPT
-     ========================================================= -->
 
 <script>
 
@@ -1494,103 +1792,43 @@ const paymentPaid =
         "payment_paid"
     );
 
-const paymentReceivable =
-    document.getElementById(
-        "payment_receivable"
-    );
-
 const paymentPending =
     document.getElementById(
         "payment_pending"
     );
 
 
-/*
- * Automatically set today's date.
- */
-
-const today =
-    new Date()
-        .toISOString()
-        .split("T")[0];
+const currentPending =
+    parseFloat(
+        "{{ total_pending }}"
+    ) || 0;
 
 
 if (paymentDate) {
+
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
 
     paymentDate.value = today;
 
 }
 
 
-/*
- * Current outstanding amount
- * before the new payment.
- */
+function calculatePaymentPending()
+{
 
-const currentReceivable =
-    parseFloat(
-        "{{ total_pending }}"
-    ) || 0;
-
-
-/*
- * Calculate the balance after
- * the new payment.
- */
-
-function calculateNewPaymentPending() {
-
-    if (!paymentPaid || !paymentPending) {
-        return;
-    }
-
-    let paid =
+    const paid =
         parseFloat(
             paymentPaid.value
         ) || 0;
 
-
-    /*
-     * Prevent negative payment.
-     */
-
-    if (paid < 0) {
-
-        paid = 0;
-
-        paymentPaid.value = "0";
-
-    }
-
-
-    /*
-     * Prevent overpayment.
-     */
-
-    if (paid > currentReceivable) {
-
-        paid = currentReceivable;
-
-        paymentPaid.value =
-            currentReceivable.toFixed(2);
-
-    }
-
-
     const pending =
         Math.max(
-            currentReceivable - paid,
+            currentPending - paid,
             0
         );
-
-
-    if (paymentReceivable) {
-
-        paymentReceivable.value =
-            currentReceivable.toFixed(2);
-
-    }
-
 
     paymentPending.value =
         pending.toFixed(2);
@@ -1598,14 +1836,17 @@ function calculateNewPaymentPending() {
 }
 
 
-if (paymentPaid) {
+if (
+    paymentPaid
+    && paymentPending
+) {
 
     paymentPaid.addEventListener(
         "input",
-        calculateNewPaymentPending
+        calculatePaymentPending
     );
 
-    calculateNewPaymentPending();
+    calculatePaymentPending();
 
 }
 
@@ -1615,63 +1856,3 @@ if (paymentPaid) {
 </body>
 
 </html>
-
-<!--
-<div class="payment-add-form">
-
-                    <h3>
-                        Payment Information
-                    </h3>
-
-
-                    <div class="form-grid">
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Original Total Amount
-                            </label>
-
-                            <input
-                                type="number"
-                                value="{{ original_payment.total_amount or 0 }}"
-                                readonly
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Discount (%)
-                            </label>
-
-                            <input
-                                type="number"
-                                value="{{ original_payment.discount or 0 }}"
-                                readonly
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Total After Discount
-                            </label>
-
-                            <input
-                                type="number"
-                                value="{{ original_payment.total_after_discount or 0 }}"
-                                readonly
-                            >
-
-                        </div>
-
-
-                    </div>
-
-                </div>-->

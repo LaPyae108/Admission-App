@@ -197,6 +197,12 @@ class StudentPayment(db.Model):
         nullable=False
     )
 
+    current_receivable = db.Column(
+    db.Numeric(12, 2),
+    nullable=False,
+    default=0
+)
+
     voucher_id = db.Column(
         db.String(50),
         nullable=True

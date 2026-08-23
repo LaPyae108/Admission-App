@@ -34,24 +34,47 @@ def decimal_value(value):
 
     try:
         return Decimal(str(value or 0))
-    except (InvalidOperation, ValueError, TypeError):
+    except (
+        InvalidOperation,
+        ValueError,
+        TypeError
+    ):
         return Decimal("0")
 
 
-def calculate_discount(total_amount, discount_percent):
+def money(value):
+    """
+    Return Decimal rounded to 2 decimal places.
+    """
+
+    return decimal_value(value).quantize(
+        Decimal("0.01")
+    )
+
+
+def calculate_discount(
+    total_amount,
+    discount_percent
+):
     """
     Calculate discount amount and final amount.
 
     Example:
+
         total = 5000
-        discount = 20%
+        discount = 20
 
         discount amount = 1000
         final amount = 4000
     """
 
-    total_amount = decimal_value(total_amount)
-    discount_percent = decimal_value(discount_percent)
+    total_amount = decimal_value(
+        total_amount
+    )
+
+    discount_percent = decimal_value(
+        discount_percent
+    )
 
     if discount_percent < 0:
         discount_percent = Decimal("0")
@@ -71,9 +94,131 @@ def calculate_discount(total_amount, discount_percent):
     )
 
     return (
-        discount_amount.quantize(Decimal("0.01")),
-        total_after_discount.quantize(Decimal("0.01"))
+        money(discount_amount),
+        money(total_after_discount)
     )
+
+
+# ============================================================
+# PAYMENT CALCULATION
+# ============================================================
+
+def get_payment_information(
+    student_id,
+    payments=None
+):
+    """
+    Calculate all payment information.
+
+    IMPORTANT:
+
+    total_after_discount is a FIXED amount.
+
+    Example:
+
+        Fixed total = 4000
+
+        Payment 1:
+            current receivable = 4000
+            paid = 2000
+            pending = 2000
+
+        Payment 2:
+            current receivable = 2000
+            paid = 2000
+            pending = 0
+    """
+
+    if payments is None:
+
+        payments = StudentPayment.query.filter_by(
+            student_id=student_id
+        ).order_by(
+            StudentPayment.id.asc()
+        ).all()
+
+    if not payments:
+
+        return {
+            "total_payment": Decimal("0.00"),
+            "total_received": Decimal("0.00"),
+            "total_pending": Decimal("0.00"),
+            "payment_rows": []
+        }
+
+    # --------------------------------------------------------
+    # FIXED TOTAL
+    #
+    # Never sum total_after_discount.
+    # Take the original/fixed total.
+    # --------------------------------------------------------
+
+    fixed_total = money(
+        payments[0].total_after_discount
+    )
+
+    cumulative_paid = Decimal("0.00")
+
+    payment_rows = []
+
+    for payment in payments:
+
+        individual_paid = money(
+            payment.amount_received
+        )
+
+        # Amount that was still receivable BEFORE
+        # this particular payment was made.
+        current_receivable = max(
+            fixed_total - cumulative_paid,
+            Decimal("0.00")
+        )
+
+        # Do not allow the payment to make the
+        # cumulative total exceed the fixed price.
+        effective_paid = min(
+            individual_paid,
+            current_receivable
+        )
+
+        cumulative_paid += effective_paid
+
+        pending_after_payment = max(
+            fixed_total - cumulative_paid,
+            Decimal("0.00")
+        )
+
+        payment_rows.append({
+            "payment": payment,
+            "current_receivable": money(
+                current_receivable
+            ),
+            "amount_paid": money(
+                individual_paid
+            ),
+            "cumulative_paid": money(
+                cumulative_paid
+            ),
+            "pending": money(
+                pending_after_payment
+            )
+        })
+
+    total_received = money(
+        cumulative_paid
+    )
+
+    total_pending = max(
+        fixed_total - total_received,
+        Decimal("0.00")
+    )
+
+    return {
+        "total_payment": money(fixed_total),
+        "total_received": money(total_received),
+        "total_pending": money(total_pending),
+        "payment_rows": payment_rows
+    }
 
 
 # ============================================================
@@ -126,9 +271,15 @@ def dashboard():
 
         query = query.filter(
             db.or_(
-                Student.full_name.ilike(search_pattern),
-                Student.student_id.ilike(search_pattern),
-                Student.nrc.ilike(search_pattern)
+                Student.full_name.ilike(
+                    search_pattern
+                ),
+                Student.student_id.ilike(
+                    search_pattern
+                ),
+                Student.nrc.ilike(
+                    search_pattern
+                )
             )
         )
 
@@ -162,11 +313,12 @@ def dashboard():
     ):
 
         query = query.filter(
-            Student.payment_status == payment_status
+            Student.payment_status
+            == payment_status
         )
 
     # --------------------------------------------------------
-    # STUDENT TYPE FILTER
+    # STUDENT TYPE
     # --------------------------------------------------------
 
     if (
@@ -177,7 +329,8 @@ def dashboard():
         query = query.join(
             StudentType
         ).filter(
-            StudentType.name == selected_type
+            StudentType.name
+            == selected_type
         )
 
     # --------------------------------------------------------
@@ -241,11 +394,13 @@ def add_student():
                 "form.html",
                 student_types=student_types,
                 error=(
-                    f"Student ID '{student_id}' already exists. "
-                    "Please use a different Student ID."
+                    f"Student ID '{student_id}' "
+                    "already exists."
                 ),
                 form_data=request.form,
-                edit_mode=False
+                edit_mode=False,
+                student=None,
+                latest_payment=None
             )
 
         # ----------------------------------------------------
@@ -254,7 +409,9 @@ def add_student():
 
         intake_date = None
 
-        if request.form.get("intake_date"):
+        if request.form.get(
+            "intake_date"
+        ):
 
             intake_date = datetime.strptime(
                 request.form["intake_date"],
@@ -276,7 +433,9 @@ def add_student():
                 student_types=student_types,
                 error="Please select a student type.",
                 form_data=request.form,
-                edit_mode=False
+                edit_mode=False,
+                student=None,
+                latest_payment=None
             )
 
         # ----------------------------------------------------
@@ -336,7 +495,7 @@ def add_student():
             ""
         ).strip()
 
-        total_amount = decimal_value(
+        total_amount = money(
             request.form.get(
                 "total_amount",
                 0
@@ -350,7 +509,7 @@ def add_student():
             )
         )
 
-        amount_paid = decimal_value(
+        amount_paid = money(
             request.form.get(
                 "amount_paid",
                 0
@@ -361,28 +520,47 @@ def add_student():
         # CALCULATE DISCOUNT
         # ----------------------------------------------------
 
-        (
-            discount_amount,
-            total_after_discount
-        ) = calculate_discount(
-            total_amount,
-            discount_percent
+        discount_amount, total_after_discount = (
+            calculate_discount(
+                total_amount,
+                discount_percent
+            )
         )
 
-        # Never allow first payment to exceed total
-        if amount_paid > total_after_discount:
-            amount_paid = total_after_discount
+        # ----------------------------------------------------
+        # DO NOT ALLOW FIRST PAYMENT TO EXCEED TOTAL
+        # ----------------------------------------------------
+
+        amount_paid = min(
+            amount_paid,
+            total_after_discount
+        )
+
+        current_receivable = money(
+        total_after_discount
+        )
+
+        # ========================================================
+        # PENDING AFTER INITIAL PAYMENT
+        # ========================================================
 
         pending_amount = max(
             total_after_discount - amount_paid,
-            Decimal("0")
+            Decimal("0.00")
+        )
+
+        pending_amount = money(
+            pending_amount
         )
 
         # ----------------------------------------------------
         # CREATE INITIAL PAYMENT
         # ----------------------------------------------------
 
-        if total_amount > 0 or amount_paid > 0:
+        if (
+            total_amount > 0
+            or amount_paid > 0
+        ):
 
             if not voucher_id:
 
@@ -392,41 +570,41 @@ def add_student():
                     "form.html",
                     student_types=student_types,
                     error=(
-                        "Voucher ID is required when "
-                        "entering payment information."
+                        "Voucher ID is required "
+                        "when entering payment."
                     ),
                     form_data=request.form,
-                    edit_mode=False
+                    edit_mode=False,
+                    student=None,
+                    latest_payment=None
                 )
 
             payment = StudentPayment(
 
-                student_id=student.id,
+            student_id=student.id,
 
-                voucher_id=voucher_id,
+            voucher_id=voucher_id,
 
-                payment_date=date.today(),
+            payment_date=date.today(),
 
-                # ORIGINAL PRICE
-                total_amount=total_amount,
+            total_amount=total_amount,
 
-                # DISCOUNT %
-                discount=discount_percent,
+            discount=discount_percent,
 
-                # FIXED FINAL PRICE
-                total_after_discount=total_after_discount,
+            total_after_discount=(
+                total_after_discount
+            ),
 
-                # THIS TRANSACTION'S PAYMENT
-                amount_received=amount_paid,
+            amount_received=amount_paid,
 
-                # BALANCE AFTER THIS TRANSACTION
-                pending_amount=pending_amount,
+            current_receivable=current_receivable,
 
-                comment=payment_comment,
+            pending_amount=pending_amount,
 
-                currency="MMK"
-            )
+            comment=payment_comment,
 
+            currency="MMK"
+        )
             db.session.add(payment)
 
             # ------------------------------------------------
@@ -459,7 +637,9 @@ def add_student():
         student_types=student_types,
         error=None,
         form_data={},
-        edit_mode=False
+        edit_mode=False,
+        student=None,
+        latest_payment=None
     )
 
 
@@ -481,7 +661,21 @@ def edit_student(student_id):
         StudentType.name
     ).all()
 
+    # --------------------------------------------------------
+    # LATEST PAYMENT
+    # --------------------------------------------------------
+
+    latest_payment = StudentPayment.query.filter_by(
+        student_id=student.id
+    ).order_by(
+        StudentPayment.id.desc()
+    ).first()
+
     if request.method == "POST":
+
+        # ----------------------------------------------------
+        # DUPLICATE STUDENT ID
+        # ----------------------------------------------------
 
         new_student_id = request.form.get(
             "student_id",
@@ -489,7 +683,8 @@ def edit_student(student_id):
         ).strip()
 
         existing_student = Student.query.filter(
-            Student.student_id == new_student_id,
+            Student.student_id
+            == new_student_id,
             Student.id != student.id
         ).first()
 
@@ -501,7 +696,8 @@ def edit_student(student_id):
                 form_data=request.form,
                 error="Student ID already exists.",
                 edit_mode=True,
-                student=student
+                student=student,
+                latest_payment=latest_payment
             )
 
         # ----------------------------------------------------
@@ -529,7 +725,9 @@ def edit_student(student_id):
         # INTAKE DATE
         # ----------------------------------------------------
 
-        if request.form.get("intake_date"):
+        if request.form.get(
+            "intake_date"
+        ):
 
             student.intake_date = datetime.strptime(
                 request.form["intake_date"],
@@ -560,39 +758,20 @@ def edit_student(student_id):
         # ----------------------------------------------------
         # PAYMENT STATUS
         #
-        # IMPORTANT:
-        # Do NOT create a new payment here.
+        # Payment history is NOT modified.
         # ----------------------------------------------------
 
-        payments = StudentPayment.query.filter_by(
-            student_id=student.id
-        ).order_by(
-            StudentPayment.id.asc()
-        ).all()
-
-        fixed_total = Decimal("0")
-        total_paid = Decimal("0")
-
-        if payments:
-
-            fixed_total = decimal_value(
-                payments[0].total_after_discount
-            )
-
-            total_paid = sum(
-                (
-                    decimal_value(
-                        payment.amount_received
-                    )
-                    for payment in payments
-                ),
-                Decimal("0")
-            )
-
-        total_pending = max(
-            fixed_total - total_paid,
-            Decimal("0")
+        payment_info = get_payment_information(
+            student.id
         )
+
+        total_paid = payment_info[
+            "total_received"
+        ]
+
+        total_pending = payment_info[
+            "total_pending"
+        ]
 
         if total_paid <= 0:
 
@@ -616,14 +795,8 @@ def edit_student(student_id):
         )
 
     # --------------------------------------------------------
-    # EXISTING DATA
+    # EXISTING FORM DATA
     # --------------------------------------------------------
-
-    latest_payment = StudentPayment.query.filter_by(
-        student_id=student.id
-    ).order_by(
-        StudentPayment.id.desc()
-    ).first()
 
     form_data = {
 
@@ -631,12 +804,16 @@ def edit_student(student_id):
 
         "full_name": student.full_name,
 
-        "phone_number": student.phone_number,
+        "phone_number": (
+            student.phone_number or ""
+        ),
 
-        "nrc": student.nrc,
+        "nrc": student.nrc or "",
 
         "intake_date": (
-            student.intake_date.strftime("%Y-%m-%d")
+            student.intake_date.strftime(
+                "%Y-%m-%d"
+            )
             if student.intake_date
             else ""
         ),
@@ -669,19 +846,25 @@ def edit_student(student_id):
         ),
 
         "total_after_discount": (
-            str(latest_payment.total_after_discount)
+            str(
+                latest_payment.total_after_discount
+            )
             if latest_payment
             else ""
         ),
 
         "amount_paid": (
-            str(latest_payment.amount_received)
+            str(
+                latest_payment.amount_received
+            )
             if latest_payment
             else ""
         ),
 
         "pending_amount": (
-            str(latest_payment.pending_amount)
+            str(
+                latest_payment.pending_amount
+            )
             if latest_payment
             else ""
         ),
@@ -699,6 +882,7 @@ def edit_student(student_id):
         form_data=form_data,
         edit_mode=True,
         student=student,
+        latest_payment=latest_payment,
         error=None
     )
 
@@ -727,7 +911,7 @@ def add_payment(student_id):
         ""
     ).strip()
 
-    amount_paid = decimal_value(
+    amount_paid = money(
         request.form.get(
             "amount_paid",
             0
@@ -743,7 +927,10 @@ def add_payment(student_id):
             "%Y-%m-%d"
         ).date()
 
-    if not voucher_id or amount_paid <= 0:
+    if (
+        not voucher_id
+        or amount_paid <= 0
+    ):
 
         return redirect(
             url_for(
@@ -753,7 +940,7 @@ def add_payment(student_id):
         )
 
     # ========================================================
-    # GET ORIGINAL PAYMENT
+    # FIND ORIGINAL PAYMENT
     # ========================================================
 
     original_payment = StudentPayment.query.filter_by(
@@ -772,53 +959,73 @@ def add_payment(student_id):
         )
 
     # ========================================================
-    # FIXED PAYMENT INFORMATION
+    # FIXED TOTAL
     # ========================================================
 
-    fixed_total = decimal_value(
+    fixed_total = money(
         original_payment.total_after_discount
     )
 
     # ========================================================
-    # TOTAL PAID SO FAR
+    # CALCULATE ALL EXISTING PAYMENTS
     # ========================================================
 
-    current_total_paid = db.session.query(
-        db.func.sum(
-            StudentPayment.amount_received
+    all_payments = (
+        StudentPayment.query
+        .filter_by(student_id=student.id)
+        .order_by(
+            StudentPayment.id.asc()
         )
-    ).filter(
-        StudentPayment.student_id == student.id
-    ).scalar() or Decimal("0")
+        .all()
+    )
 
-    current_total_paid = decimal_value(
+    current_total_paid = sum(
+        (
+            decimal_value(
+                p.amount_received
+            )
+            for p in all_payments
+        ),
+        Decimal("0.00")
+    )
+
+    current_total_paid = money(
         current_total_paid
     )
 
     # ========================================================
-    # CURRENT RECEIVABLE
+    # CURRENT RECEIVABLE BEFORE THIS NEW PAYMENT
     #
-    # This is the amount still owed BEFORE the new payment.
+    # THIS VALUE WILL BE SAVED TO THE NEW PAYMENT RECORD.
     # ========================================================
 
     current_receivable = max(
         fixed_total - current_total_paid,
-        Decimal("0")
+        Decimal("0.00")
+    )
+
+    current_receivable = money(
+        current_receivable
     )
 
     # ========================================================
     # DO NOT ALLOW OVERPAYMENT
     # ========================================================
 
-    if amount_paid > current_receivable:
+    amount_paid = min(
+        amount_paid,
+        current_receivable
+    )
 
-        amount_paid = current_receivable
+    amount_paid = money(
+        amount_paid
+    )
 
     # ========================================================
-    # NEW TOTAL PAID
+    # NEW CUMULATIVE TOTAL
     # ========================================================
 
-    new_total_paid = (
+    new_total_paid = money(
         current_total_paid
         + amount_paid
     )
@@ -829,20 +1036,15 @@ def add_payment(student_id):
 
     new_pending = max(
         fixed_total - new_total_paid,
-        Decimal("0")
+        Decimal("0.00")
+    )
+
+    new_pending = money(
+        new_pending
     )
 
     # ========================================================
-    # CREATE PAYMENT TRANSACTION
-    #
-    # Notice:
-    #
-    # total_after_discount stays FIXED.
-    #
-    # amount_received contains ONLY this transaction.
-    #
-    # pending_amount contains the balance AFTER this
-    # transaction.
+    # CREATE NEW PAYMENT
     # ========================================================
 
     payment = StudentPayment(
@@ -853,30 +1055,50 @@ def add_payment(student_id):
 
         payment_date=payment_date,
 
-        # Original price
-        total_amount=original_payment.total_amount,
+        total_amount=(
+            original_payment.total_amount
+        ),
 
-        # Original discount
-        discount=original_payment.discount,
+        discount=(
+            original_payment.discount
+        ),
 
-        # FIXED TOTAL
-        total_after_discount=fixed_total,
+        total_after_discount=(
+            fixed_total
+        ),
 
-        # ONLY THIS PAYMENT
-        amount_received=amount_paid,
+        # IMPORTANT:
+        # This is the amount the student is paying NOW.
+        amount_received=(
+            amount_paid
+        ),
 
-        # BALANCE AFTER THIS PAYMENT
-        pending_amount=new_pending,
+        # IMPORTANT:
+        # This is the receivable BEFORE this payment.
+        current_receivable=(
+            current_receivable
+        ),
 
-        comment=payment_comment,
+        # IMPORTANT:
+        # This is the remaining balance AFTER this payment.
+        pending_amount=(
+            new_pending
+        ),
 
-        currency=original_payment.currency or "MMK"
+        comment=(
+            payment_comment
+        ),
+
+        currency=(
+            original_payment.currency
+            or "MMK"
+        )
     )
 
     db.session.add(payment)
 
     # ========================================================
-    # UPDATE STUDENT PAYMENT STATUS
+    # UPDATE STUDENT STATUS
     # ========================================================
 
     if new_total_paid <= 0:
@@ -900,7 +1122,143 @@ def add_payment(student_id):
         )
     )
 
+#Offiial_receipt
 
+@main.route("/student/<int:student_id>/receipt/<int:payment_id>")
+def official_receipt(student_id, payment_id):
+
+    # ========================================================
+    # STUDENT
+    # ========================================================
+
+    student = Student.query.get_or_404(
+        student_id
+    )
+
+
+    # ========================================================
+    # PAYMENT
+    #
+    # Get the specific payment being printed.
+    # All payment values are already stored in
+    # StudentPayment by add_payment().
+    # ========================================================
+
+    payment = (
+        StudentPayment.query
+        .filter_by(
+            id=payment_id,
+            student_id=student_id
+        )
+        .first_or_404()
+    )
+
+
+    # ========================================================
+    # ALL PAYMENTS
+    #
+    # Keep this available in case the template or
+    # payment history needs it.
+    #
+    # No calculations are performed here.
+    # ========================================================
+
+    payments = (
+        StudentPayment.query
+        .filter_by(
+            student_id=student_id
+        )
+        .order_by(
+            StudentPayment.payment_date.asc(),
+            StudentPayment.id.asc()
+        )
+        .all()
+    )
+
+
+    # ========================================================
+    # STUDENT REMARK
+    #
+    # StudentRemark is connected to Student, NOT Payment.
+    #
+    # Get the most recent remark for this student.
+    # ========================================================
+
+    remark_record = (
+        StudentRemark.query
+        .filter_by(
+            student_id=student_id
+        )
+        .order_by(
+            StudentRemark.written_date.desc(),
+            StudentRemark.id.desc()
+        )
+        .first()
+    )
+
+
+    if remark_record:
+
+        remark = remark_record.text
+
+    else:
+
+        remark = ""
+
+
+    # ========================================================
+    # STUDENT RESULTS
+    # ========================================================
+
+    results = (
+        StudentResult.query
+        .filter_by(
+            student_id=student_id
+        )
+        .all()
+    )
+
+
+    # ========================================================
+    # RENDER RECEIPT
+    #
+    # IMPORTANT:
+    #
+    # We DO NOT calculate:
+    #
+    # course_total
+    # discount
+    # total_after_discount
+    # total_received
+    # total_pending
+    #
+    # The receipt gets the already-calculated values directly
+    # from `payment`.
+    #
+    # In particular:
+    #
+    # payment.pending_amount
+    #
+    # is the balance calculated and saved by add_payment().
+    # ========================================================
+
+    return render_template(
+
+        "official_receipt.html",
+
+        student=student,
+
+        payment=payment,
+
+        payments=payments,
+
+        results=results,
+
+        remark=remark,
+
+        now=datetime.now()
+
+    )
 # ============================================================
 # DELETE STUDENT
 # ============================================================
@@ -939,9 +1297,9 @@ def student_details(student_id):
         student_id
     )
 
-    # ========================================================
-    # COURSE RECORDS
-    # ========================================================
+    # --------------------------------------------------------
+    # COURSES
+    # --------------------------------------------------------
 
     results = StudentResult.query.filter_by(
         student_id=student.id
@@ -949,23 +1307,9 @@ def student_details(student_id):
         StudentResult.start_date.desc()
     ).all()
 
-    # ========================================================
-    # PAYMENT RECORDS
-    #
-    # VERY IMPORTANT:
-    # Oldest payment FIRST.
-    #
-    # This allows us to calculate:
-    #
-    # Payment 1:
-    # current receivable = 4000
-    #
-    # Payment 2:
-    # current receivable = 2000
-    #
-    # Payment 3:
-    # current receivable = 0
-    # ========================================================
+    # --------------------------------------------------------
+    # PAYMENTS
+    # --------------------------------------------------------
 
     payments = StudentPayment.query.filter_by(
         student_id=student.id
@@ -973,9 +1317,18 @@ def student_details(student_id):
         StudentPayment.id.asc()
     ).all()
 
-    # ========================================================
+    # --------------------------------------------------------
+    # PAYMENT INFORMATION
+    # --------------------------------------------------------
+
+    payment_info = get_payment_information(
+        student.id,
+        payments
+    )
+
+    # --------------------------------------------------------
     # REMARKS
-    # ========================================================
+    # --------------------------------------------------------
 
     remarks = StudentRemark.query.filter_by(
         student_id=student.id
@@ -983,117 +1336,9 @@ def student_details(student_id):
         StudentRemark.written_date.desc()
     ).all()
 
-    # ========================================================
-    # PAYMENT CALCULATION
-    # ========================================================
-
-    total_payment = Decimal("0")
-
-    total_received = Decimal("0")
-
-    total_pending = Decimal("0")
-
-    payment_number = 0
-
     # --------------------------------------------------------
-    # GET FIXED TOTAL FROM FIRST PAYMENT
-    # --------------------------------------------------------
-
-    if payments:
-
-        total_payment = decimal_value(
-            payments[0].total_after_discount
-        )
-
-    # --------------------------------------------------------
-    # BUILD PAYMENT HISTORY
-    # --------------------------------------------------------
-
-    running_paid = Decimal("0")
-
-    for payment in payments:
-
-        payment_number += 1
-
-        amount_paid = decimal_value(
-            payment.amount_received
-        )
-
-        # ----------------------------------------------------
-        # CURRENT RECEIVABLE
-        #
-        # Amount owed BEFORE THIS PAYMENT.
-        # ----------------------------------------------------
-
-        current_receivable = max(
-            total_payment - running_paid,
-            Decimal("0")
-        )
-
-        # ----------------------------------------------------
-        # PENDING AFTER THIS PAYMENT
-        # ----------------------------------------------------
-
-        pending_after_payment = max(
-            current_receivable - amount_paid,
-            Decimal("0")
-        )
-
-        # ----------------------------------------------------
-        # STORE DISPLAY VALUES
-        #
-        # These are temporary attributes used by Jinja.
-        # They do NOT modify the database.
-        # ----------------------------------------------------
-
-        payment.payment_number = payment_number
-
-        payment.current_receivable = (
-            current_receivable
-        )
-
-        payment.display_pending = (
-            pending_after_payment
-        )
-
-        # ----------------------------------------------------
-        # UPDATE RUNNING TOTAL
-        # ----------------------------------------------------
-
-        running_paid += amount_paid
-
-        total_received = running_paid
-
-    # --------------------------------------------------------
-    # FINAL OVERALL PENDING
-    # --------------------------------------------------------
-
-    total_pending = max(
-        total_payment - total_received,
-        Decimal("0")
-    )
-
-    # ========================================================
-    # UPDATE PAYMENT STATUS
-    # ========================================================
-
-    if total_received <= 0:
-
-        student.payment_status = "unpaid"
-
-    elif total_pending > 0:
-
-        student.payment_status = "partial"
-
-    else:
-
-        student.payment_status = "paid"
-
-    db.session.commit()
-
-    # ========================================================
     # COURSE EDIT
-    # ========================================================
+    # --------------------------------------------------------
 
     edit_course_id = request.args.get(
         "edit_course",
@@ -1118,15 +1363,25 @@ def student_details(student_id):
 
         payments=payments,
 
+        payment_rows=payment_info[
+            "payment_rows"
+        ],
+
         remarks=remarks,
 
         edit_course=edit_course,
 
-        total_payment=total_payment,
+        total_payment=payment_info[
+            "total_payment"
+        ],
 
-        total_received=total_received,
+        total_received=payment_info[
+            "total_received"
+        ],
 
-        total_pending=total_pending
+        total_pending=payment_info[
+            "total_pending"
+        ]
     )
 
 
@@ -1154,7 +1409,10 @@ def add_course(student_id):
         ""
     ).strip()
 
-    if not course_name or not course_id:
+    if (
+        not course_name
+        or not course_id
+    ):
 
         return redirect(
             url_for(
@@ -1166,14 +1424,18 @@ def add_course(student_id):
     start_date = None
     end_date = None
 
-    if request.form.get("start_date"):
+    if request.form.get(
+        "start_date"
+    ):
 
         start_date = datetime.strptime(
             request.form["start_date"],
             "%Y-%m-%d"
         ).date()
 
-    if request.form.get("end_date"):
+    if request.form.get(
+        "end_date"
+    ):
 
         end_date = datetime.strptime(
             request.form["end_date"],
@@ -1255,7 +1517,9 @@ def edit_course(course_id):
         ""
     ).strip()
 
-    if request.form.get("start_date"):
+    if request.form.get(
+        "start_date"
+    ):
 
         course.start_date = datetime.strptime(
             request.form["start_date"],
@@ -1266,7 +1530,9 @@ def edit_course(course_id):
 
         course.start_date = None
 
-    if request.form.get("end_date"):
+    if request.form.get(
+        "end_date"
+    ):
 
         course.end_date = datetime.strptime(
             request.form["end_date"],
@@ -1284,11 +1550,13 @@ def edit_course(course_id):
 
     course.result = result or None
 
-    if result and not course.published_date:
+    if result:
 
-        course.published_date = date.today()
+        if not course.published_date:
 
-    elif not result:
+            course.published_date = date.today()
+
+    else:
 
         course.published_date = None
 

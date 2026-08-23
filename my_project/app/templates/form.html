@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -12,28 +11,295 @@
     >
 
     <title>
-
         {% if edit_mode %}
             Edit Student
         {% else %}
             Add Student
         {% endif %}
-
     </title>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for(
-            'static',
-            filename='css/styleedit.css'
-        ) }}"
-    >
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #17202a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h2 {
+            margin: 0 0 5px;
+        }
+
+        .logo p {
+            margin: 0;
+            font-size: 13px;
+            color: #bbb;
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ddd;
+            padding: 12px 15px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .topbar {
+            background: white;
+            padding: 25px 35px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            margin: 0 0 5px;
+        }
+
+        .topbar p {
+            margin: 0;
+            color: #777;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0 0 5px;
+        }
+
+        .form-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 25px;
+        }
+
+        .form-section-header {
+            margin-bottom: 25px;
+        }
+
+        .form-section-header h3 {
+            margin: 0 0 5px;
+        }
+
+        .form-section-header p {
+            margin: 0;
+            color: #777;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #555;
+        }
+
+        input[readonly] {
+            background: #f1f1f1;
+        }
+
+        .form-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button,
+        .save-btn,
+        .cancel-btn,
+        .print-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .save-btn {
+            background: #222;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #000;
+        }
+
+        .cancel-btn {
+            background: #ddd;
+            color: #222;
+        }
+
+        .print-btn {
+            background: #555;
+            color: white;
+        }
+
+        .print-btn:hover {
+            background: #333;
+        }
+
+        .error {
+            background: #ffe0e0;
+            border: 1px solid #e00;
+            color: #a00;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .payment-summary {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .payment-summary-card {
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            padding: 18px;
+            background: #fafafa;
+        }
+
+        .payment-summary-card span {
+            display: block;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .payment-summary-card strong {
+            font-size: 22px;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (
+            max-width: 800px
+        ) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .form-grid,
+            .payment-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 
 <body>
-
 
 <div class="layout">
 
@@ -79,7 +345,7 @@
 
 
     <!-- =====================================================
-         MAIN CONTENT
+         MAIN
          ===================================================== -->
 
     <main class="main-content">
@@ -100,30 +366,20 @@
                 </h1>
 
                 <p>
-                    Student information and payment setup
+                    Student information and payment
                 </p>
 
             </div>
 
-
-            <div class="admin-profile">
-
-                <span>
-                    Admin
-                </span>
-
+            <div>
+                Admin
             </div>
 
         </header>
 
 
-
         <section class="content">
 
-
-            <!-- =================================================
-                 PAGE HEADER
-                 ================================================= -->
 
             <div class="page-header">
 
@@ -139,64 +395,68 @@
 
                     </h2>
 
-                    <p>
-                        Enter student information below.
-                    </p>
-
                 </div>
 
 
-                <a
-                    href="{{ url_for('main.dashboard') }}"
-                    class="cancel-btn"
-                >
-                    Back
-                </a>
+                <div>
+
+                    <a
+                        href="{{ url_for('main.dashboard') }}"
+                        class="cancel-btn"
+                    >
+                        Back
+                    </a>
+
+                </div>
 
             </div>
 
 
-
-            <!-- =================================================
-                 ERROR
-                 ================================================= -->
-
             {% if error %}
 
-            <div class="error-message">
-
+            <div class="error">
                 {{ error }}
-
             </div>
 
             {% endif %}
 
 
-
             <!-- =================================================
-                 STUDENT INFORMATION
+                 STUDENT FORM
                  ================================================= -->
 
-            <div class="form-section">
+            <form
+                method="POST"
+                action="{% if edit_mode %}
+                            {{ url_for(
+                                'main.edit_student',
+                                student_id=student.id
+                            ) }}
+                        {% else %}
+                            {{ url_for(
+                                'main.add_student'
+                            ) }}
+                        {% endif %}"
+            >
 
-                <div class="form-section-header">
 
-                    <h3>
-                        Student Information
-                    </h3>
+                <!-- =================================================
+                     STUDENT INFORMATION
+                     ================================================= -->
 
-                </div>
+                <div class="form-section">
 
+                    <div class="form-section-header">
 
-                <form
-                    method="POST"
-                >
+                        <h3>
+                            Student Information
+                        </h3>
+
+                    </div>
 
 
                     <div class="form-grid">
 
-
-                        <!-- STUDENT ID -->
 
                         <div class="form-group">
 
@@ -217,8 +477,6 @@
                         </div>
 
 
-                        <!-- FULL NAME -->
-
                         <div class="form-group">
 
                             <label>
@@ -238,8 +496,6 @@
                         </div>
 
 
-                        <!-- PHONE -->
-
                         <div class="form-group">
 
                             <label>
@@ -257,8 +513,6 @@
 
                         </div>
 
-
-                        <!-- NRC -->
 
                         <div class="form-group">
 
@@ -278,8 +532,6 @@
                         </div>
 
 
-                        <!-- STUDENT TYPE -->
-
                         <div class="form-group">
 
                             <label>
@@ -292,17 +544,21 @@
                             >
 
                                 <option value="">
-                                    Select student type
+                                    Select Student Type
                                 </option>
-
 
                                 {% for student_type in student_types %}
 
                                 <option
                                     value="{{ student_type.id }}"
-                                    {% if form_data.get(
-                                        'student_type_id'
-                                    )|string == student_type.id|string %}
+                                    {% if
+                                        form_data.get(
+                                            'student_type_id',
+                                            ''
+                                        )|string
+                                        ==
+                                        student_type.id|string
+                                    %}
                                         selected
                                     {% endif %}
                                 >
@@ -317,8 +573,6 @@
 
                         </div>
 
-
-                        <!-- UNIFORM -->
 
                         <div class="form-group">
 
@@ -338,12 +592,10 @@
                         </div>
 
 
-                        <!-- INTAKE DATE -->
-
                         <div class="form-group">
 
                             <label>
-                                Admission Date
+                                Intake Date
                             </label>
 
                             <input
@@ -360,11 +612,15 @@
 
                     </div>
 
+                </div>
 
 
-                    <!-- =================================================
-                         PAYMENT INFORMATION
-                         ================================================= -->
+                <!-- =================================================
+                     PAYMENT INFORMATION
+                     ================================================= -->
+
+                <div class="form-section">
+
 
                     <div class="form-section-header">
 
@@ -373,10 +629,29 @@
                         </h3>
 
                         <p>
-                            Enter the original payment amount and discount.
+                            Enter the original course fee,
+                            discount and first payment.
                         </p>
 
                     </div>
+
+
+                    {% if edit_mode and latest_payment %}
+
+                    <div class="info-box">
+
+                        <strong>
+                            Payment total is fixed.
+                        </strong>
+
+                        Additional payments must be
+                        entered from the Student Details
+                        page. Editing this student will not
+                        create another payment.
+
+                    </div>
+
+                    {% endif %}
 
 
                     <div class="form-grid">
@@ -397,13 +672,15 @@
                                     'voucher_id',
                                     ''
                                 ) }}"
-                                placeholder="Voucher ID"
+                                {% if edit_mode %}
+                                    readonly
+                                {% endif %}
                             >
 
                         </div>
 
 
-                        <!-- ORIGINAL AMOUNT -->
+                        <!-- ORIGINAL TOTAL -->
 
                         <div class="form-group">
 
@@ -415,13 +692,15 @@
                                 type="number"
                                 id="total_amount"
                                 name="total_amount"
-                                min="0"
-                                step="0.01"
                                 value="{{ form_data.get(
                                     'total_amount',
                                     ''
                                 ) }}"
-                                placeholder="5000"
+                                min="0"
+                                step="0.01"
+                                {% if edit_mode %}
+                                    readonly
+                                {% endif %}
                             >
 
                         </div>
@@ -439,14 +718,16 @@
                                 type="number"
                                 id="discount"
                                 name="discount"
-                                min="0"
-                                max="100"
-                                step="0.01"
                                 value="{{ form_data.get(
                                     'discount',
                                     '0'
                                 ) }}"
-                                placeholder="20"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                {% if edit_mode %}
+                                    readonly
+                                {% endif %}
                             >
 
                         </div>
@@ -463,7 +744,6 @@
                             <input
                                 type="number"
                                 id="discount_amount"
-                                value="0"
                                 readonly
                             >
 
@@ -497,20 +777,22 @@
                         <div class="form-group">
 
                             <label>
-                                Initial Amount Paid
+                                Amount Paid
                             </label>
 
                             <input
                                 type="number"
                                 id="amount_paid"
                                 name="amount_paid"
-                                min="0"
-                                step="0.01"
                                 value="{{ form_data.get(
                                     'amount_paid',
                                     '0'
                                 ) }}"
-                                placeholder="2000"
+                                min="0"
+                                step="0.01"
+                                {% if edit_mode %}
+                                    readonly
+                                {% endif %}
                             >
 
                         </div>
@@ -521,13 +803,16 @@
                         <div class="form-group">
 
                             <label>
-                                Pending After Payment
+                                Pending
                             </label>
 
                             <input
                                 type="number"
                                 id="pending_amount"
-                                value="0"
+                                value="{{ form_data.get(
+                                    'pending_amount',
+                                    ''
+                                ) }}"
                                 readonly
                             >
 
@@ -545,7 +830,9 @@
                             <textarea
                                 name="payment_comment"
                                 rows="4"
-                                placeholder="Enter payment comment..."
+                                {% if edit_mode %}
+                                    readonly
+                                {% endif %}
                             >{{ form_data.get(
                                 'payment_comment',
                                 ''
@@ -557,25 +844,49 @@
                     </div>
 
 
-
                     <!-- =================================================
-                         ACTIONS
+                         PAYMENT ACTIONS
                          ================================================= -->
 
                     <div class="form-actions">
+
+
+                        {% if not edit_mode %}
 
                         <button
                             type="submit"
                             class="save-btn"
                         >
-
-                            {% if edit_mode %}
-                                Save Changes
-                            {% else %}
-                                Add Student
-                            {% endif %}
-
+                            Add Student
                         </button>
+
+                        {% else %}
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+                            Save Student
+                        </button>
+
+
+                        {% if latest_payment %}
+
+                        <a
+                            href="{{ url_for(
+                                'main.official_receipt',
+                                student_id=student.id,
+                                payment_id=latest_payment.id
+                            ) }}"
+                            class="print-btn"
+                            target="_blank"
+                        >
+                            Print Receipt
+                        </a>
+
+                        {% endif %}
+
+                        {% endif %}
 
 
                         <a
@@ -587,12 +898,13 @@
                             Cancel
                         </a>
 
+
                     </div>
 
+                </div>
 
-                </form>
 
-            </div>
+            </form>
 
 
         </section>
@@ -601,11 +913,6 @@
 
 </div>
 
-
-
-<!-- =========================================================
-     PAYMENT CALCULATION
-     ========================================================= -->
 
 <script>
 
@@ -640,35 +947,23 @@ const pendingAmount =
     );
 
 
-function calculatePayment() {
+function calculatePayment()
+{
 
     const total =
         parseFloat(
             totalAmount.value
         ) || 0;
 
-
-    let discountPercent =
+    const discountPercent =
         parseFloat(
             discount.value
         ) || 0;
 
-
-    /*
-     * Keep discount between 0 and 100.
-     */
-
-    if (discountPercent < 0) {
-
-        discountPercent = 0;
-
-    }
-
-    if (discountPercent > 100) {
-
-        discountPercent = 100;
-
-    }
+    const paid =
+        parseFloat(
+            amountPaid.value
+        ) || 0;
 
 
     const discountValue =
@@ -677,60 +972,25 @@ function calculatePayment() {
         / 100;
 
 
-    const finalAmount =
-        total
-        - discountValue;
+    const finalTotal =
+        Math.max(
+            total - discountValue,
+            0
+        );
+
+
+    const pending =
+        Math.max(
+            finalTotal - paid,
+            0
+        );
 
 
     discountAmount.value =
         discountValue.toFixed(2);
 
-
     totalAfterDiscount.value =
-        finalAmount.toFixed(2);
-
-
-    /*
-     * Calculate pending.
-     */
-
-    let paid =
-        parseFloat(
-            amountPaid.value
-        ) || 0;
-
-
-    if (paid < 0) {
-
-        paid = 0;
-
-        amountPaid.value =
-            "0";
-
-    }
-
-
-    /*
-     * Do not allow payment
-     * greater than final amount.
-     */
-
-    if (paid > finalAmount) {
-
-        paid = finalAmount;
-
-        amountPaid.value =
-            finalAmount.toFixed(2);
-
-    }
-
-
-    const pending =
-        Math.max(
-            finalAmount - paid,
-            0
-        );
-
+        finalTotal.toFixed(2);
 
     pendingAmount.value =
         pending.toFixed(2);
@@ -767,10 +1027,6 @@ if (amountPaid) {
 
 }
 
-
-/*
- * Calculate when page loads.
- */
 
 calculatePayment();
 

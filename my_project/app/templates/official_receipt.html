@@ -12,7 +12,7 @@
 >
 
 <title>
-    Official Receive
+    Official Receipt
 </title>
 
 
@@ -58,16 +58,26 @@ body {
 }
 
 
+/* ============================================================
+   HEADER
+   ============================================================ */
+
 .header {
-
+    position: relative;
     text-align: center;
-
-    border-bottom:
-        1.5px solid #222;
-
+    border-bottom: 1.5px solid #222;
     padding-bottom: 7px;
+    min-height: 75px;
 }
 
+.header-logo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+}
 
 .header h1 {
 
@@ -91,6 +101,10 @@ body {
     font-weight: 700;
 }
 
+
+/* ============================================================
+   RECEIPT TOP
+   ============================================================ */
 
 .top {
 
@@ -121,6 +135,10 @@ body {
     margin-top: 4px;
 }
 
+
+/* ============================================================
+   INVOICE
+   ============================================================ */
 
 .invoice {
 
@@ -163,6 +181,10 @@ body {
         1px solid #222;
 }
 
+
+/* ============================================================
+   STUDENT INFORMATION
+   ============================================================ */
 
 .section {
 
@@ -219,6 +241,10 @@ body {
         1px solid #222;
 }
 
+
+/* ============================================================
+   ITEMS
+   ============================================================ */
 
 .items {
 
@@ -294,6 +320,10 @@ body {
 }
 
 
+/* ============================================================
+   PAYMENT SUMMARY
+   ============================================================ */
+
 .bottom {
 
     display: flex;
@@ -365,6 +395,18 @@ body {
 }
 
 
+.balance-row {
+
+    font-weight: 800;
+
+    background: #eee;
+}
+
+
+/* ============================================================
+   NOTES / REMARK
+   ============================================================ */
+
 .notes {
 
     margin-top: -2px;
@@ -426,8 +468,14 @@ body {
     margin-top: 15px;
 
     font-size: 16px;
+
+    line-height: 1.5;
 }
 
+
+/* ============================================================
+   SIGNATURES
+   ============================================================ */
 
 .signatures {
 
@@ -464,6 +512,10 @@ body {
 }
 
 
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
 .footer {
 
     text-align: center;
@@ -475,6 +527,10 @@ body {
     line-height: 1.55;
 }
 
+
+/* ============================================================
+   PRINT DATE
+   ============================================================ */
 
 .print-date {
 
@@ -488,6 +544,10 @@ body {
     font-size: 13px;
 }
 
+
+/* ============================================================
+   PRINT
+   ============================================================ */
 
 @media print {
 
@@ -522,6 +582,13 @@ body {
      ======================================================== -->
 
 <header class="header">
+    <header class="header">
+
+    <img
+        src="{{ url_for('static', filename='image/star-logo.png') }}"
+        alt="Star International College Logo"
+        class="header-logo"
+    >
 
     <h1>
         STAR INTERNATIONAL COLLEGE
@@ -531,7 +598,6 @@ body {
         Hospitality &amp; Business Management
     </h2>
 
-</header>
 
 
 <!-- ========================================================
@@ -540,12 +606,18 @@ body {
 
 <div class="top">
 
+
     <div class="receive">
+
         OFFICIAL RECEIPT
+
     </div>
 
 
     <div class="invoice">
+
+
+        <!-- INVOICE -->
 
         <div>
 
@@ -554,11 +626,13 @@ body {
             </b>
 
             <span>
-                {{ payment.voucher_id }}
+                {{ payment.voucher_id or "-" }}
             </span>
 
         </div>
 
+
+        <!-- DATE -->
 
         <div>
 
@@ -567,12 +641,26 @@ body {
             </b>
 
             <span>
-                {{ payment.payment_date }}
+
+                {% if payment.payment_date %}
+
+                    {{ payment.payment_date.strftime(
+                        "%d/%m/%Y"
+                    ) }}
+
+                {% else %}
+
+                    -
+
+                {% endif %}
+
             </span>
 
         </div>
 
+
     </div>
+
 
 </div>
 
@@ -585,9 +673,13 @@ body {
 
 
     <div class="section-title">
+
         STUDENT INFORMATION
+
     </div>
 
+
+    <!-- NAME -->
 
     <div class="student-row">
 
@@ -596,11 +688,13 @@ body {
         </b>
 
         <span>
-            {{ student.full_name }}
+            {{ student.full_name or "-" }}
         </span>
 
     </div>
 
+
+    <!-- STUDENT ID -->
 
     <div class="student-row">
 
@@ -609,7 +703,7 @@ body {
         </b>
 
         <span>
-            {{ student.student_id }}
+            {{ student.student_id or "-" }}
         </span>
 
     </div>
@@ -619,100 +713,83 @@ body {
 
 
 <!-- ========================================================
-     COURSE
+     ITEM / PAYMENT
      ======================================================== -->
 
 <div class="items">
 
 
+    <!-- TABLE HEADER -->
+
     <div class="items-head">
 
-        <div>
-            No.
-        </div>
 
         <div>
-            Item name
+
+            No.
+
         </div>
+
+
+        <div>
+
+            Item name
+
+        </div>
+
 
         <div style="text-align:right">
+
             Amount
+
         </div>
+
 
     </div>
 
-
-    {% if results %}
-
-        {% for result in results %}
-
         <div class="item">
+
+
+            <!-- NUMBER -->
 
             <div class="num">
 
-                {{ loop.index }}
-
             </div>
 
+
+            <!-- ITEM NAME -->
 
             <div class="name">
 
-                {{ result.course_name }}
 
-                {% if result.course_id %}
+                {{ payment.comment or "Course Payment" }}
 
-                    <br>
 
-                    Course ID:
-                    {{ result.course_id }}
-
-                {% endif %}
 
             </div>
 
 
+            <!-- AMOUNT -->
+
             <div class="amount">
+
 
                 {{ "{:,.2f}".format(
                     payment.total_amount or 0
                 ) }}
 
-                {{ payment.currency }}
+
+                {{ payment.currency or "MMK" }}
+
 
             </div>
+
 
         </div>
 
-        {% endfor %}
+        <!-- NO RESULTS -->
 
-    {% else %}
-
-        <div class="item">
-
-            <div class="num">
-                1
-            </div>
-
-
-            <div class="name">
-                Course Payment
-            </div>
-
-
-            <div class="amount">
-
-                {{ "{:,.2f}".format(
-                    payment.total_amount or 0
-                ) }}
-
-                {{ payment.currency }}
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
+        
 
 </div>
 
@@ -727,13 +804,19 @@ body {
     <div class="totals">
 
 
-        <!-- COURSE TOTAL -->
+        <!-- ==================================================
+             COURSE TOTAL
+             ================================================== -->
 
         <div class="total-row">
 
+
             <div>
+
                 Course Total
+
             </div>
+
 
             <div>
 
@@ -741,41 +824,53 @@ body {
                     payment.total_amount or 0
                 ) }}
 
-                {{ payment.currency }}
+                {{ payment.currency or "MMK" }}
 
             </div>
+
 
         </div>
 
 
-        <!-- DISCOUNT -->
+        <!-- ==================================================
+             DISCOUNT
+             ================================================== -->
 
         <div class="total-row">
 
+
             <div>
+
                 Discount
+
             </div>
+
 
             <div>
 
                 {{ "{:,.2f}".format(
                     payment.discount or 0
-                ) }}
-
-                {{ payment.currency }}
+                ) }}%
 
             </div>
+
 
         </div>
 
 
-        <!-- TOTAL AFTER DISCOUNT -->
+        <!-- ==================================================
+             TOTAL AFTER DISCOUNT
+             ================================================== -->
 
         <div class="total-row">
 
+
             <div>
+
                 Total After Discount
+
             </div>
+
 
             <div>
 
@@ -783,20 +878,50 @@ body {
                     payment.total_after_discount or 0
                 ) }}
 
-                {{ payment.currency }}
+                {{ payment.currency or "MMK" }}
 
             </div>
+
 
         </div>
 
 
-        <!-- THIS INSTALLMENT -->
+        <!-- ==================================================
+             THIS PAYMENT
+             ================================================== -->
+        <div class="total-row balance-row">
+
+
+            <div>
+
+                Current_Receivable
+
+            </div>
+
+
+            <div>
+
+                                        {{ "{:,.2f}".format(
+                                            payment.current_receivable 
+                                        ) }}
+
+                {{ payment.currency or "MMK" }}
+
+            </div>
+
+
+        </div>
+
 
         <div class="total-row installment-row">
 
+
             <div>
+
                 This Payment
+
             </div>
+
 
             <div>
 
@@ -804,56 +929,50 @@ body {
                     payment.amount_received or 0
                 ) }}
 
-                {{ payment.currency }}
+                {{ payment.currency or "MMK" }}
 
             </div>
+
 
         </div>
+                
 
+        <!-- ==================================================
+             BALANCE
 
-        <!-- TOTAL RECEIVED -->
+             IMPORTANT:
+             This does NOT calculate anything.
 
-        <div class="total-row">
+             It directly displays the value saved by
+             add_payment() in payment.pending_amount.
+             ================================================== -->
+
+        <div class="total-row balance-row">
+
 
             <div>
-                Total Received
+
+                Pending-Balance
+
             </div>
+
 
             <div>
 
                 {{ "{:,.2f}".format(
-                    total_received or 0
+                    payment.pending_amount or 0
                 ) }}
 
-                {{ payment.currency }}
+                {{ payment.currency or "MMK" }}
 
             </div>
 
-        </div>
-
-
-        <!-- REMAINING BALANCE -->
-
-        <div class="total-row">
-
-            <div>
-                Balance
-            </div>
-
-            <div>
-
-                {{ "{:,.2f}".format(
-                    total_pending or 0
-                ) }}
-
-                {{ payment.currency }}
-
-            </div>
 
         </div>
 
 
     </div>
+
 
 </div>
 
@@ -865,37 +984,61 @@ body {
 <div class="notes">
 
 
+    <!-- NO REFUND / NO TRANSFER -->
+
     <div class="no-refund">
 
 
         <div class="nr-top">
 
-            <div>
-                No Refund
-            </div>
 
             <div>
-                No Transfer
+
+                No Refund
+
             </div>
+
+
+            <div>
+
+                No Transfer
+
+            </div>
+
 
         </div>
 
 
         <div class="thanks">
+
             Thank You
+
         </div>
 
 
     </div>
 
 
+    <!-- =====================================================
+         STUDENT REMARK
+
+         IMPORTANT:
+         This is StudentRemark.text, NOT payment.comment.
+         ===================================================== -->
+
     <div class="remark">
 
-        Remark
+
+        <strong>
+            Remark
+        </strong>
+
 
         &nbsp;&nbsp;
 
-        {{ payment.comment or "" }}
+
+        {{ remark or "" }}
+
 
     </div>
 
@@ -912,22 +1055,32 @@ body {
 
     <div class="sig">
 
+
         <div>
+
             Paid By
+
         </div>
 
+
         <div class="line"></div>
+
 
     </div>
 
 
     <div class="sig">
 
+
         <div>
+
             Received By
+
         </div>
 
+
         <div class="line"></div>
+
 
     </div>
 
@@ -941,21 +1094,31 @@ body {
 
 <footer class="footer">
 
-    <div>
-        Address. 252A, Uwisara Road,
-        Kamayut Township, Yangon
-    </div>
 
     <div>
+
+        Address. 252A, Uwisara Road,
+        Kamayut Township, Yangon
+
+    </div>
+
+
+    <div>
+
         Phone : 09 - 797004988,
         09 - 797004989,
         09 - 771199604
+
     </div>
 
+
     <div>
+
         Email: info@staruniversity.edu.mm,
         Website.www.staruniversitymyanmar.com
+
     </div>
+
 
 </footer>
 
@@ -966,25 +1129,57 @@ body {
 
 <div class="print-date">
 
+
     <span>
 
+
         Print Date :
+
 
         {{ now.strftime(
             "%d/%m/%Y %I:%M:%S %p"
         ) if now else "" }}
 
+
     </span>
 
 
     <span>
+
         Page 1 of 1
+
     </span>
 
+
 </div>
 
 
 </div>
+
+
+<!-- ========================================================
+     AUTOMATIC PRINT
+     ======================================================== -->
+
+<script>
+
+window.addEventListener(
+    "load",
+    function () {
+
+        setTimeout(
+            function () {
+
+                window.print();
+
+            },
+            500
+        );
+
+    }
+);
+
+</script>
 
 
 </body>
