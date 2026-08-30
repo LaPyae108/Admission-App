@@ -1,0 +1,497 @@
+* {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        /* =====================================================
+           LAYOUT
+           ===================================================== */
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: #17202a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h2 {
+            margin: 0 0 5px;
+        }
+
+        .logo p {
+            margin: 0;
+            font-size: 13px;
+            color: #bbb;
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ddd;
+            padding: 12px 15px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Remove number input spinner arrows */
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+        /* =====================================================
+           TOPBAR
+           ===================================================== */
+
+        .topbar {
+            background: white;
+            padding: 25px 35px;
+            border-bottom: 1px solid #ddd;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            margin: 0 0 5px;
+            font-size: 25px;
+        }
+
+        .topbar p {
+            margin: 0;
+            color: #777;
+        }
+
+        /* =====================================================
+           CONTENT
+           ===================================================== */
+
+        .content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0 0 5px;
+        }
+
+        /* =====================================================
+           FORM SECTION
+           ===================================================== */
+
+        .form-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 25px;
+        }
+
+        .form-section-header {
+            margin-bottom: 25px;
+        }
+
+        .form-section-header h3 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+
+        .form-section-header p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 12px;
+
+            border: 1px solid #ccc;
+            border-radius: 5px;
+
+            font-size: 15px;
+            font-family: inherit;
+
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #555;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+
+        input[readonly] {
+            background: #f1f1f1;
+            color: #555;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        /* =====================================================
+           PAYMENT SECTION
+           ===================================================== */
+
+        .payment-block {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 18px;
+            background: #fafafa;
+        }
+
+        .payment-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .payment-block-title {
+            font-size: 16px;
+            font-weight: 700;
+
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+
+            border-bottom: 1px solid #ddd;
+        }
+
+        .payment-block-description {
+            margin-top: -10px;
+            margin-bottom: 18px;
+
+            color: #777;
+            font-size: 13px;
+        }
+
+        .payment-block small {
+            color: #777;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* =====================================================
+           DISCOUNT
+           ===================================================== */
+
+        .discount-fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .discount-field {
+            display: none;
+        }
+
+        .discount-field.visible {
+            display: flex;
+        }
+
+        .calculation-note {
+            margin-top: 15px;
+
+            padding: 12px;
+
+            background: #f1f1f1;
+            border-radius: 6px;
+
+            color: #555;
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           PAYMENT SUMMARY
+           ===================================================== */
+
+        .payment-summary {
+            margin-top: 20px;
+            padding: 20px;
+
+            border: 1px solid #ddd;
+            border-radius: 8px;
+
+            background: white;
+        }
+
+        .payment-summary-title {
+            font-size: 16px;
+            font-weight: 700;
+
+            margin-bottom: 15px;
+        }
+
+        .payment-calculation-summary {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .calculation-item {
+            border: 1px solid #ddd;
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 14px;
+        }
+
+        .calculation-item span {
+            display: block;
+
+            color: #777;
+            font-size: 12px;
+
+            margin-bottom: 7px;
+        }
+
+        .calculation-item strong {
+            display: block;
+            font-size: 17px;
+        }
+
+        .calculation-item.final {
+            background: #f1f1f1;
+            border-color: #bbb;
+        }
+
+        .calculation-item.final strong {
+            font-size: 19px;
+        }
+
+        .calculation-item.pending {
+            background: #fff8e1;
+        }
+
+        /* =====================================================
+           INFO / ERROR
+           ===================================================== */
+
+        .error {
+            background: #ffe0e0;
+            border: 1px solid #e00;
+            color: #a00;
+
+            padding: 12px;
+            border-radius: 5px;
+
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+
+            padding: 15px;
+            border-radius: 6px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.5;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* =====================================================
+           BUTTONS
+           ===================================================== */
+
+        .form-actions {
+            margin-top: 25px;
+
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            flex-wrap: wrap;
+        }
+
+        button,
+        .save-btn,
+        .cancel-btn,
+        .print-btn {
+            border: none;
+
+            padding: 11px 18px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            display: inline-block;
+
+            font-size: 14px;
+        }
+
+        .save-btn {
+            background: #222;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #000;
+        }
+
+        .cancel-btn {
+            background: #ddd;
+            color: #222;
+        }
+
+        .cancel-btn:hover {
+            background: #ccc;
+        }
+
+        .print-btn {
+            background: #555;
+            color: white;
+        }
+
+        .print-btn:hover {
+            background: #333;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .payment-calculation-summary {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .form-grid,
+            .discount-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-calculation-summary {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .topbar {
+                padding: 20px;
+            }
+
+            .topbar h1 {
+                font-size: 21px;
+            }
+
+            .form-section {
+                padding: 18px;
+            }
+
+            .payment-block {
+                padding: 15px;
+            }
+
+            .payment-calculation-summary {
+                grid-template-columns: 1fr;
+            }
+        }

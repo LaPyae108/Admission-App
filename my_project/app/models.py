@@ -1,4 +1,5 @@
 from app import db
+
 from datetime import datetime
 
 
@@ -78,9 +79,7 @@ class Student(db.Model):
 
     student_type_id = db.Column(
         db.Integer,
-        db.ForeignKey(
-            "student_types.id"
-        ),
+        db.ForeignKey("student_types.id"),
         nullable=False
     )
 
@@ -96,6 +95,12 @@ class Student(db.Model):
 
     uniform_size = db.Column(
         db.String(20)
+    )
+
+    currency = db.Column(
+        db.String(10),
+        nullable=False,
+        default="MMK"
     )
 
     # ========================================================
@@ -131,6 +136,7 @@ class StudentResult(db.Model):
 
     id = db.Column(
         db.Integer,
+        unique=True,
         primary_key=True
     )
 
@@ -167,10 +173,10 @@ class StudentResult(db.Model):
     )
 
     collected = db.Column(
-    db.Boolean,
-    nullable=False,
-    default=False
-)
+        db.Boolean,
+        nullable=False,
+        default=False
+    )
 
     student = db.relationship(
         "Student",
@@ -197,44 +203,74 @@ class StudentPayment(db.Model):
         nullable=False
     )
 
-    current_receivable = db.Column(
-    db.Numeric(12, 2),
-    nullable=False,
-    default=0
-)
+    # --------------------------------------------------------
+    # PAYMENT INFORMATION
+    # --------------------------------------------------------
 
-    voucher_id = db.Column(
-        db.String(50),
-        nullable=True
+    invoice_id = db.Column(
+        db.String(30),
+        unique=True,
+        nullable=False
     )
 
     payment_date = db.Column(
         db.Date
     )
 
+    # --------------------------------------------------------
+    # ORIGINAL COURSE PRICE
+    # --------------------------------------------------------
+
     total_amount = db.Column(
         db.Numeric(12, 2),
+        nullable=False,
         default=0
     )
 
-    amount_received = db.Column(
-        db.Numeric(12, 2),
-        default=0
+    # --------------------------------------------------------
+    # DISCOUNT SYSTEM
+    #
+    # discount_type:
+    #     "percentage"
+    #     "promotion"
+    #
+    # discount:
+    #     percentage value
+    #
+    # promotion_amount:
+    #     fixed cash promotion
+    #
+    # discount_amount:
+    #     actual cash amount deducted
+    # --------------------------------------------------------
+
+    discount_type = db.Column(
+        db.String(20),
+        nullable=False,
+        default="percentage"
     )
 
-    pending_amount = db.Column(
-        db.Numeric(12, 2),
-        default=0
-    )
-    comment = db.Column(
-    db.Text,
-    nullable=True
-                )
     discount = db.Column(
-    db.Numeric(12, 2),
-    nullable=False,
-    default=0
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
     )
+
+    promotion_amount = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    discount_amount = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    # --------------------------------------------------------
+    # FINAL COURSE PRICE
+    # --------------------------------------------------------
 
     total_after_discount = db.Column(
         db.Numeric(12, 2),
@@ -242,13 +278,73 @@ class StudentPayment(db.Model):
         default=0
     )
 
-    currency = db.Column(
+    # --------------------------------------------------------
+    # PAYMENT
+    # --------------------------------------------------------
+
+    amount_received = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    current_receivable = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    pending_amount = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    # --------------------------------------------------------
+    # PAYMENT METHOD
+    # --------------------------------------------------------
+
+    account = db.Column(
+        db.String(50),
+        nullable=True
+    )
+
+    # --------------------------------------------------------
+    # PAYMENT CURRENCY / EXCHANGE
+    # --------------------------------------------------------
+
+    payment_currency = db.Column(
         db.String(10),
         nullable=False,
         default="MMK"
     )
 
-    
+    exchange_enabled = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False
+    )
+
+    exchange_rate = db.Column(
+        db.Numeric(12, 4),
+        nullable=True
+    )
+
+    # Actual amount paid by customer in their payment currency
+    amount_paid = db.Column(
+        db.Numeric(12, 2),
+        nullable=False,
+        default=0
+    )
+
+    # --------------------------------------------------------
+    # OTHER
+    # --------------------------------------------------------
+
+    comment = db.Column(
+        db.Text,
+        nullable=True
+    )
 
     student = db.relationship(
         "Student",

@@ -1,0 +1,1306 @@
+/* =========================================================
+GLOBAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+  }
+
+body {
+margin: 0;
+padding: 0;
+
+background: #f3f4f6;
+
+color: #1f2937;
+
+font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+font-size: 14px;
+
+
+}
+
+.page {
+width: 100%;
+max-width: 1400px;
+
+
+margin: 30px auto;
+padding: 0 30px 40px;
+
+
+}
+
+/* =========================================================
+REPORT HEADER
+========================================================= */
+
+.report-header {
+background: #ffffff;
+
+
+border-bottom: 4px solid #1f2937;
+
+padding: 28px 30px;
+
+text-align: center;
+
+}
+
+.company-info h1 {
+margin: 0 0 10px;
+
+font-size: 27px;
+
+font-weight: 700;
+
+letter-spacing: 0.3px;
+
+color: #111827;
+
+
+}
+
+.company-info p {
+margin: 5px 0;
+
+
+color: #4b5563;
+
+font-size: 14px;
+
+
+}
+
+.company-info .contact {
+font-weight: 600;
+
+
+color: #374151;
+
+
+}
+
+.company-info .contact span {
+margin: 0 8px;
+
+
+color: #9ca3af;
+
+
+}
+
+/* =========================================================
+REPORT INFORMATION
+========================================================= */
+
+.report-information {
+display: flex;
+
+
+justify-content: space-between;
+
+align-items: stretch;
+
+gap: 30px;
+
+margin-top: 20px;
+
+padding: 22px 25px;
+
+background: #ffffff;
+
+border: 1px solid #e5e7eb;
+
+border-radius: 8px;
+
+
+}
+
+.report-title {
+flex: 1;
+}
+
+.report-label {
+display: block;
+
+
+margin-bottom: 7px;
+
+font-size: 11px;
+
+font-weight: 700;
+
+letter-spacing: 1.5px;
+
+color: #6b7280;
+
+
+}
+
+.report-title h2 {
+margin: 0;
+
+
+font-size: 21px;
+
+color: #111827;
+
+
+}
+
+.report-meta {
+display: flex;
+
+
+gap: 30px;
+
+align-items: center;
+
+
+}
+
+.meta-item {
+display: flex;
+
+
+flex-direction: column;
+
+gap: 5px;
+
+min-width: 120px;
+
+
+}
+
+.meta-label {
+font-size: 11px;
+
+text-transform: uppercase;
+
+letter-spacing: 0.8px;
+
+color: #6b7280;
+
+
+}
+
+.meta-item strong {
+font-size: 14px;
+
+
+color: #111827;
+
+}
+
+/* =========================================================
+MAIN SECTION
+========================================================= */
+
+.main-section {
+margin-top: 25px;
+}
+
+/* =========================================================
+ACCOUNT SECTION
+========================================================= */
+
+.account-section {
+margin-bottom: 28px;
+
+background: #ffffff;
+
+border: 1px solid #e5e7eb;
+
+border-radius: 8px;
+
+overflow: hidden;
+
+
+}
+
+/* =========================================================
+ACCOUNT HEADER
+========================================================= */
+
+.account-header {
+display: flex;
+
+
+justify-content: space-between;
+
+align-items: center;
+
+padding: 18px 22px;
+
+background: #f9fafb;
+
+border-bottom: 1px solid #e5e7eb;
+
+
+}
+
+.account-label {
+display: block;
+
+
+margin-bottom: 5px;
+
+font-size: 10px;
+
+font-weight: 700;
+
+letter-spacing: 1.4px;
+
+color: #6b7280;
+
+
+}
+
+.account-header h3 {
+margin: 0;
+
+
+font-size: 18px;
+
+font-weight: 700;
+
+color: #111827;
+
+
+}
+
+.transaction-count {
+padding: 6px 12px;
+
+
+border: 1px solid #d1d5db;
+
+border-radius: 20px;
+
+background: #ffffff;
+
+color: #6b7280;
+
+font-size: 12px;
+
+font-weight: 600;
+
+
+}
+
+/* =========================================================
+TABLE
+========================================================= */
+
+.table-container {
+width: 100%;
+
+
+overflow-x: auto;
+
+
+}
+
+.payment-table {
+width: 100%;
+
+
+border-collapse: collapse;
+
+table-layout: auto;
+
+
+}
+
+.payment-table thead {
+background: #f3f4f6;
+}
+
+.payment-table th {
+padding: 13px 14px;
+
+
+border-bottom: 2px solid #d1d5db;
+
+color: #374151;
+
+font-size: 11px;
+
+font-weight: 700;
+
+text-transform: uppercase;
+
+letter-spacing: 0.5px;
+
+text-align: left;
+
+white-space: nowrap;
+
+
+}
+
+.payment-table td {
+padding: 13px 14px;
+
+
+border-bottom: 1px solid #e5e7eb;
+
+color: #374151;
+
+vertical-align: middle;
+
+
+}
+
+.payment-table tbody tr {
+transition: background 0.15s ease;
+}
+
+.payment-table tbody tr:hover {
+background: #f9fafb;
+}
+
+.payment-table tbody tr:last-child td {
+border-bottom: none;
+}
+
+/* =========================================================
+TABLE COLUMNS
+========================================================= */
+
+.number-column {
+width: 55px;
+
+text-align: center !important;
+
+color: #6b7280 !important;
+
+
+}
+
+.student-name-column {
+min-width: 220px;
+}
+
+.student-name {
+font-weight: 500;
+
+color: #111827 !important;
+
+}
+
+.student-id {
+color: #374151;
+
+
+white-space: nowrap;
+
+
+}
+
+.invoice-id {
+font-family:
+"Courier New",
+monospace;
+
+
+font-size: 13px;
+
+color: #374151;
+
+
+}
+
+.amount-column {
+text-align: right !important;
+
+
+white-space: nowrap;
+
+
+}
+
+.amount {
+font-weight: 700;
+
+
+color: #111827 !important;
+
+
+}
+
+.currency {
+margin-left: 4px;
+
+
+font-size: 11px;
+
+font-weight: 600;
+
+color: #6b7280;
+
+
+}
+
+/* =========================================================
+ACCOUNT TOTAL
+========================================================= */
+
+.payment-table tfoot {
+background: #f9fafb;
+}
+
+.payment-table tfoot td {
+padding: 15px 14px;
+
+
+border-top: 2px solid #d1d5db;
+
+border-bottom: none;
+
+
+}
+
+.total-label {
+text-align: right !important;
+
+
+font-size: 13px;
+
+font-weight: 700;
+
+color: #374151 !important;
+
+text-transform: uppercase;
+
+
+}
+
+.total-amount {
+font-size: 15px;
+
+
+font-weight: 800;
+
+color: #111827 !important;
+
+
+}
+
+/* =========================================================
+NO RECORDS
+========================================================= */
+
+.no-records {
+padding: 70px 20px;
+
+
+background: #ffffff;
+
+border: 1px solid #e5e7eb;
+
+border-radius: 8px;
+
+text-align: center;
+
+
+}
+
+.no-records-icon {
+margin-bottom: 10px;
+
+
+font-size: 30px;
+
+color: #9ca3af;
+
+
+}
+
+.no-records h3 {
+margin: 0 0 6px;
+
+
+font-size: 18px;
+
+color: #374151;
+
+
+}
+
+.no-records p {
+margin: 0;
+
+
+color: #6b7280;
+
+
+}
+
+/* =========================================================
+GRAND TOTAL
+========================================================= */
+
+.grand-total-section {
+margin-top: 10px;
+
+
+margin-bottom: 30px;
+
+
+}
+
+.grand-total {
+display: flex;
+
+
+justify-content: space-between;
+
+align-items: center;
+
+padding: 22px 25px;
+
+background: #111827;
+
+border-radius: 8px;
+
+color: #ffffff;
+
+
+}
+
+.grand-total-label {
+display: flex;
+
+
+flex-direction: column;
+
+gap: 5px;
+
+
+}
+
+.grand-total-label span {
+font-size: 10px;
+
+
+font-weight: 700;
+
+letter-spacing: 1.5px;
+
+color: #9ca3af;
+
+
+}
+
+.grand-total-label strong {
+font-size: 20px;
+
+
+color: #ffffff;
+
+
+}
+
+.grand-total-amount {
+font-size: 25px;
+
+
+font-weight: 800;
+
+color: #ffffff;
+
+text-align: right;
+
+
+}
+
+.grand-total-amount span {
+margin-left: 5px;
+
+
+font-size: 13px;
+
+font-weight: 600;
+
+color: #d1d5db;
+
+
+}
+
+/* =========================================================
+FOOTER
+========================================================= */
+
+.report-footer {
+display: flex;
+
+
+justify-content: space-between;
+
+gap: 20px;
+
+padding: 15px 5px;
+
+border-top: 1px solid #d1d5db;
+
+color: #6b7280;
+
+font-size: 11px;
+
+}
+
+/* =========================================================
+PRINT BUTTON
+========================================================= */
+
+.print-container {
+position: fixed;
+
+
+right: 25px;
+
+bottom: 25px;
+
+z-index: 1000;
+
+
+}
+
+.print-container button {
+padding: 12px 20px;
+
+
+border: none;
+
+border-radius: 7px;
+
+background: #111827;
+
+color: #ffffff;
+
+font-size: 13px;
+
+font-weight: 700;
+
+cursor: pointer;
+
+box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.18);
+
+transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+
+}
+
+.print-container button:hover {
+transform: translateY(-1px);
+
+
+box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.22);
+
+
+}
+
+.print-container button span {
+margin-right: 6px;
+}
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+
+.page {
+    padding: 0 15px 30px;
+}
+
+
+.report-information {
+    flex-direction: column;
+}
+
+
+.report-meta {
+    flex-wrap: wrap;
+
+    gap: 20px;
+}
+
+
+.meta-item {
+    min-width: 100px;
+}
+
+
+}
+
+@media (max-width: 600px) {
+
+
+body {
+    background: #ffffff;
+}
+
+
+.page {
+    margin: 0;
+
+    padding: 0 10px 25px;
+}
+
+
+.report-header {
+    padding: 20px 10px;
+}
+
+
+.company-info h1 {
+    font-size: 20px;
+}
+
+
+.company-info p {
+    font-size: 12px;
+}
+
+
+.report-information {
+    padding: 18px;
+
+    margin-top: 10px;
+}
+
+
+.report-title h2 {
+    font-size: 18px;
+}
+
+
+.account-header {
+    padding: 15px;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    flex-direction: column;
+}
+
+
+.payment-table {
+    min-width: 850px;
+}
+
+
+.grand-total {
+    padding: 18px;
+
+    align-items: flex-end;
+}
+
+
+.grand-total-amount {
+    font-size: 20px;
+}
+
+
+.report-footer {
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.print-container {
+    right: 15px;
+
+    bottom: 15px;
+}
+
+}
+
+/* =========================================================
+PORTRAIT / VERTICAL PRINT
+========================================================= */
+
+@media print {
+
+@page {
+    size: A4 portrait;
+    margin: 10mm;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background: #ffffff;
+
+    color: #000000;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 9px;
+}
+
+.page {
+    width: 100%;
+    max-width: none;
+
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ---------------------------------------------------------
+   HIDE PRINT BUTTON
+   --------------------------------------------------------- */
+
+.print-container {
+    display: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   HEADER
+   --------------------------------------------------------- */
+
+.report-header {
+    padding: 10px 0;
+
+    border-bottom: 2px solid #000;
+
+    text-align: center;
+
+    background: #ffffff;
+}
+
+.company-info h1 {
+    margin: 0 0 5px;
+
+    font-size: 16px;
+}
+
+.company-info p {
+    margin: 3px 0;
+
+    font-size: 8px;
+}
+
+.company-info .contact {
+    font-size: 8px;
+}
+
+
+/* ---------------------------------------------------------
+   REPORT INFORMATION
+   --------------------------------------------------------- */
+
+.report-information {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 8px;
+
+    padding: 8px;
+
+    border: 1px solid #999;
+
+    border-radius: 0;
+
+    background: #ffffff;
+}
+
+.report-label {
+    font-size: 8px;
+}
+
+.report-title h2 {
+    font-size: 13px;
+}
+
+.report-meta {
+    display: flex;
+
+    gap: 15px;
+}
+
+.meta-item {
+    min-width: auto;
+
+    gap: 2px;
+}
+
+.meta-label {
+    font-size: 7px;
+}
+
+.meta-item strong {
+    font-size: 8px;
+}
+
+
+/* ---------------------------------------------------------
+   MAIN
+   --------------------------------------------------------- */
+
+.main-section {
+    margin-top: 10px;
+}
+
+
+/* ---------------------------------------------------------
+   ACCOUNT SECTION
+   --------------------------------------------------------- */
+
+.account-section {
+    margin-bottom: 12px;
+
+    border: 1px solid #777;
+
+    border-radius: 0;
+
+    overflow: visible;
+
+    break-inside: avoid;
+
+    page-break-inside: avoid;
+}
+
+
+.account-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 7px 8px;
+
+    background: #eeeeee;
+
+    border-bottom: 1px solid #777;
+}
+
+.account-label {
+    margin-bottom: 2px;
+
+    font-size: 7px;
+}
+
+.account-header h3 {
+    margin: 0;
+
+    font-size: 11px;
+}
+
+.transaction-count {
+    padding: 3px 7px;
+
+    border: 1px solid #999;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    font-size: 7px;
+}
+
+
+/* ---------------------------------------------------------
+   VERTICAL TABLE
+   --------------------------------------------------------- */
+
+.table-container {
+    width: 100%;
+
+    overflow: visible;
+}
+
+.payment-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+
+/* TABLE HEADER */
+
+.payment-table th {
+    padding: 5px 4px;
+
+    border: 1px solid #888;
+
+    background: #f2f2f2;
+
+    color: #000000;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    text-transform: uppercase;
+
+    white-space: normal;
+}
+
+
+/* TABLE BODY */
+
+.payment-table td {
+    padding: 5px 4px;
+
+    border: 1px solid #aaa;
+
+    color: #000000;
+
+    font-size: 8px;
+
+    vertical-align: middle;
+
+    word-wrap: break-word;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ---------------------------------------------------------
+   COLUMN WIDTHS
+   --------------------------------------------------------- */
+
+.number-column {
+    width: 6%;
+
+    text-align: center !important;
+}
+
+.payment-table th:nth-child(2),
+.payment-table td:nth-child(2) {
+    width: 14%;
+}
+
+.payment-table th:nth-child(3),
+.payment-table td:nth-child(3) {
+    width: 14%;
+}
+
+.payment-table th:nth-child(4),
+.payment-table td:nth-child(4) {
+    width: 27%;
+}
+
+.payment-table th:nth-child(5),
+.payment-table td:nth-child(5) {
+    width: 17%;
+}
+
+.payment-table th:nth-child(6),
+.payment-table td:nth-child(6) {
+    width: 22%;
+}
+
+
+/* ---------------------------------------------------------
+   TABLE CONTENT
+   --------------------------------------------------------- */
+
+.student-name {
+    font-weight: 500;
+
+    white-space: normal;
+}
+
+.student-id {
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+.invoice-id {
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+.amount-column {
+    text-align: right !important;
+
+    white-space: nowrap;
+}
+
+.amount {
+    font-size: 8px;
+
+    font-weight: 700;
+}
+
+.currency {
+    font-size: 7px;
+
+    margin-left: 2px;
+}
+
+
+/* ---------------------------------------------------------
+   ACCOUNT TOTAL
+   --------------------------------------------------------- */
+
+.payment-table tfoot {
+    background: #eeeeee;
+}
+
+.payment-table tfoot td {
+    padding: 6px 4px;
+
+    border: 1px solid #888;
+
+    font-size: 8px;
+}
+
+.total-label {
+    text-align: right !important;
+
+    font-weight: 700;
+}
+
+.total-amount {
+    font-size: 9px;
+
+    font-weight: 800;
+}
+
+
+/* ---------------------------------------------------------
+   GRAND TOTAL
+   --------------------------------------------------------- */
+
+.grand-total-section {
+    margin-top: 10px;
+
+    margin-bottom: 10px;
+
+    break-inside: avoid;
+}
+
+.grand-total {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 9px 10px;
+
+    border: 2px solid #000;
+
+    border-radius: 0;
+
+    background: #ffffff;
+
+    color: #000000;
+}
+
+.grand-total-label {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.grand-total-label span {
+    font-size: 7px;
+
+    color: #333333;
+}
+
+.grand-total-label strong {
+    font-size: 12px;
+
+    color: #000000;
+}
+
+.grand-total-amount {
+    font-size: 13px;
+
+    font-weight: 800;
+
+    color: #000000;
+}
+
+.grand-total-amount span {
+    font-size: 8px;
+
+    color: #000000;
+}
+
+
+/* ---------------------------------------------------------
+   FOOTER
+   --------------------------------------------------------- */
+
+.report-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 8px;
+
+    padding-top: 6px;
+
+    border-top: 1px solid #999;
+
+    color: #333333;
+
+    font-size: 7px;
+}
+
+
+/* ---------------------------------------------------------
+   NO RECORDS
+   --------------------------------------------------------- */
+
+.no-records {
+    padding: 30px;
+
+    border: 1px solid #999;
+
+    border-radius: 0;
+
+    text-align: center;
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE HOVER EFFECTS
+   --------------------------------------------------------- */
+
+.payment-table tbody tr:hover {
+    background: transparent;
+}
+
+}

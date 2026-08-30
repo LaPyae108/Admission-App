@@ -1,0 +1,455 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #eee;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111;
+}
+
+
+/* =====================================================
+   A5 PAGE
+   ===================================================== */
+
+.page {
+    width: 148mm;
+    height: 210mm;
+
+    margin: 15px auto;
+
+    background: #fff;
+
+    padding: 7mm 7mm 5mm;
+
+    box-shadow: 0 0 10px #aaa;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.header {
+    position: relative;
+
+    min-height: 57px;
+
+    text-align: center;
+
+    border-bottom: 1.2px solid #222;
+
+    padding-bottom: 7px;
+}
+
+.header-logo {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 50px;
+    height: 50px;
+
+    object-fit: contain;
+}
+
+.header h1 {
+    margin: 0 0 5px;
+
+    font-family: Georgia, serif;
+
+    font-size: 22px;
+
+    font-weight: 800;
+}
+
+.header h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   RECEIPT HEADER
+   ===================================================== */
+
+.top {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-top: 7px;
+}
+
+.receive {
+    flex: 1;
+
+    margin-top: 5px;
+
+    text-align: center;
+
+    font-family: Georgia, serif;
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   INVOICE
+   ===================================================== */
+
+.invoice {
+    width: 55mm;
+
+    border: 1px solid #222;
+}
+
+.invoice div {
+    display: grid;
+
+    grid-template-columns: 24mm 1fr;
+
+    border-bottom: 1px solid #222;
+}
+
+.invoice div:last-child {
+    border-bottom: 0;
+}
+
+.invoice b,
+.invoice span {
+    padding: 5px 6px;
+
+    font-size: 11px;
+}
+
+.invoice b {
+    border-right: 1px solid #222;
+}
+
+
+/* =====================================================
+   STUDENT INFORMATION
+   ===================================================== */
+
+.section {
+    margin-top: 7px;
+
+    border: 1px solid #222;
+}
+
+.section-title {
+    padding: 6px;
+
+    border-bottom: 1px solid #222;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+.student-row {
+    display: grid;
+
+    grid-template-columns: 31mm 1fr;
+
+    border-bottom: 1px solid #222;
+}
+
+.student-row:last-child {
+    border-bottom: 0;
+}
+
+.student-row b,
+.student-row span {
+    padding: 6px;
+
+    font-size: 13px;
+}
+
+.student-row b {
+    border-right: 1px solid #222;
+}
+
+
+/* =====================================================
+   ITEMS
+   ===================================================== */
+
+.items {
+    margin-top: 9px;
+
+    border: 1px solid #222;
+}
+
+.items-head,
+.item {
+    display: grid;
+
+    grid-template-columns: 11mm 1fr 31mm;
+}
+
+.items-head {
+    background: #eee;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+.items-head > div,
+.item > div {
+    padding: 6px;
+
+    border-right: 1px solid #222;
+}
+
+.items-head > div:last-child,
+.item > div:last-child {
+    border-right: 0;
+}
+
+.item {
+    min-height: 19mm;
+}
+
+.item .num {
+    text-align: center;
+
+    font-size: 13px;
+}
+
+.item .name {
+    font-size: 13px;
+
+    line-height: 1.35;
+}
+
+.item .amount {
+    text-align: right;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   PAYMENT SUMMARY
+   ===================================================== */
+
+.bottom {
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 0;
+}
+
+.totals {
+    width: 75.5mm;
+
+    border: 1px solid #222;
+
+    border-top: 0;
+}
+
+.total-row {
+    display: grid;
+
+    grid-template-columns: 44mm 1fr;
+
+    border-bottom: 1px solid #222;
+}
+
+.total-row:last-child {
+    border-bottom: 0;
+}
+
+.total-row div {
+    padding: 6px;
+
+    font-size: 14px;
+}
+
+.total-row div:first-child {
+    text-align: right;
+
+    border-right: 1px solid #222;
+}
+
+.total-row div:last-child {
+    text-align: right;
+}
+
+.installment-row {
+    background: #f5f5f5;
+
+    font-weight: 800;
+}
+
+.balance-row {
+    background: #eee;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   NOTES
+   ===================================================== */
+
+.notes {
+    margin-top: 4px;
+}
+
+.no-refund {
+    width: 53mm;
+
+    border: 1px solid #222;
+}
+
+.nr-top {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+}
+
+.nr-top div {
+    padding: 6px;
+
+    text-align: center;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    border-right: 1px solid #222;
+}
+
+.nr-top div:last-child {
+    border-right: 0;
+}
+
+.thanks {
+    padding: 6px;
+
+    border-top: 1px solid #222;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+.remark {
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    line-height: 1.35;
+}
+
+
+/* =====================================================
+   SIGNATURES
+   ===================================================== */
+
+.signatures {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 8mm;
+
+    padding: 0 7mm;
+}
+
+.sig {
+    width: 36mm;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.line {
+    height: 17px;
+
+    margin-bottom: 3px;
+
+    border-bottom: 1px dotted #222;
+}
+
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    margin-top: 4mm;
+
+    text-align: center;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   PRINT
+   ===================================================== */
+
+@media print {
+
+    @page {
+        size: A5 portrait;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 148mm;
+        height: 210mm;
+
+        margin: 0;
+        padding: 0;
+
+        background: #fff;
+    }
+
+    .page {
+        width: 148mm;
+        height: 210mm;
+
+        margin: 0;
+
+        padding: 7mm 7mm 5mm;
+
+        box-shadow: none;
+
+        overflow: hidden;
+    }
+
+}

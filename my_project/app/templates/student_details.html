@@ -1,0 +1,3328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/stylestudent.css') }}"
+    >
+
+    <title>
+        {{ student.full_name }} - Student Details
+    </title>
+
+</head>
+
+
+{% macro account_options(selected) %}
+
+    <option value="" {% if not selected %}selected{% endif %}>
+        Select Account
+    </option>
+
+    {% for account_name in [
+        "AYA-Pay",
+        "Cash",
+        "KBZ-Bank",
+        "CB-Bank",
+        "Yoma-Bank",
+        "K-Pay",
+        "Wave-Pay",
+        "AYA-Bank"
+    ] %}
+
+        <option
+            value="{{ account_name }}"
+            {% if selected == account_name %}selected{% endif %}
+        >
+            {{ account_name }}
+        </option>
+
+    {% endfor %}
+
+{% endmacro %}
+
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link active"
+            >
+                Students
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+
+        <!-- =====================================================
+             TOP BAR
+             ===================================================== -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Student Details
+                </h1>
+
+                <p>
+                    View and manage student records
+                </p>
+
+            </div>
+
+            <div>
+                Admin
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        {{ student.full_name }}
+                    </h2>
+
+                    <p>
+                        Student ID:
+
+                        <strong>
+                            {{ student.student_id }}
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="cancel-btn"
+                >
+                    Back
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 MESSAGES
+                 ================================================= -->
+
+            {% if request.args.get("success") %}
+
+                <div class="success-message">
+                    Information updated successfully.
+                </div>
+
+            {% endif %}
+
+
+            {% if request.args.get("error") %}
+
+                <div class="error-message">
+                    {{ request.args.get("error") }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 STUDENT INFORMATION
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Student Information
+                    </h3>
+
+                    <p>
+                        Student's personal and admission information.
+                    </p>
+
+                </div>
+
+
+                {% if request.args.get("edit_student") %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'main.student_details',
+                            student_id=student.id
+                        ) }}"
+                    >
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Full Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="full_name"
+                                    value="{{ student.full_name or '' }}"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Student ID
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="student_id"
+                                    value="{{ student.student_id or '' }}"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Phone Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="phone_number"
+                                    value="{{ student.phone_number or '' }}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    NRC
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="nrc"
+                                    value="{{ student.nrc or '' }}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Student Type
+                                </label>
+
+                                <select
+                                    name="student_type_id"
+                                    required
+                                >
+
+                                    {% for student_type in student_types %}
+
+                                        <option
+                                            value="{{ student_type.id }}"
+                                            {% if student.student_type_id == student_type.id %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ student_type.name }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Uniform Size
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="uniform_size"
+                                    value="{{ student.uniform_size or '' }}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Admission Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="intake_date"
+                                    value="{% if student.intake_date %}{{ student.intake_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Payment Status
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value="{{ student.payment_status or '-' }}"
+                                    readonly
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="save-btn"
+                            >
+                                Save
+                            </button>
+
+                            <a
+                                href="{{ url_for(
+                                    'main.student_details',
+                                    student_id=student.id
+                                ) }}"
+                                class="cancel-btn"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+
+                {% else %}
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.full_name or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Student ID
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.student_id or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.phone_number or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                NRC
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.nrc or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Student Type
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.student_type.name if student.student_type else '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Uniform Size
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.uniform_size or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Admission Date
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{% if student.intake_date %}{{ student.intake_date.strftime('%d %b %Y') }}{% else %}-{% endif %}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Payment Status
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.payment_status or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <a
+                            href="{{ url_for(
+                                'main.student_details',
+                                student_id=student.id,
+                                edit_student=1
+                            ) }}"
+                            class="action-btn"
+                        >
+                            Edit
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 COURSE RECORDS
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Course Records
+                    </h3>
+
+                    <p>
+                        Courses and academic results.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     ADD COURSE
+                     ================================================= -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'main.add_course',
+                        student_id=student.id
+                    ) }}"
+                >
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Course Name
+                            </label>
+
+                            <input
+                                type="text"
+                                name="course_name"
+                                placeholder="Course name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Course ID
+                            </label>
+
+                            <input
+                                type="text"
+                                name="course_id"
+                                placeholder="Course ID"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Start Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="start_date"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                End Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="end_date"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Result
+                            </label>
+
+                            <input
+                                type="text"
+                                name="result"
+                                placeholder="Result"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Collected
+                            </label>
+
+                            <select name="collected">
+
+                                <option value="no">
+                                    No
+                                </option>
+
+                                <option value="yes">
+                                    Yes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+                            Add Course
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <!-- =================================================
+                     COURSE TABLE
+                     ================================================= -->
+
+                {% if results %}
+
+                    <div class="table-container">
+
+                        <table class="student-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Course Name
+                                    </th>
+
+                                    <th>
+                                        Course ID
+                                    </th>
+
+                                    <th>
+                                        Start Date
+                                    </th>
+
+                                    <th>
+                                        End Date
+                                    </th>
+
+                                    <th>
+                                        Result
+                                    </th>
+
+                                    <th>
+                                        Collected
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for result in results %}
+
+                                    <tr
+                                        id="course-row-{{ result.id }}"
+                                        class="course-row"
+                                    >
+
+                                        <td>
+
+                                            <span class="inline-view">
+                                                {{ result.course_name }}
+                                            </span>
+
+                                            <input
+                                                class="inline-edit"
+                                                type="text"
+                                                name="course_name"
+                                                value="{{ result.course_name }}"
+                                                form="edit-course-{{ result.id }}"
+                                                required
+                                            >
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="inline-view">
+                                                {{ result.course_id }}
+                                            </span>
+
+                                            <input
+                                                class="inline-edit"
+                                                type="text"
+                                                name="course_id"
+                                                value="{{ result.course_id }}"
+                                                form="edit-course-{{ result.id }}"
+                                                required
+                                            >
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if result.start_date %}
+                                                    {{ result.start_date.strftime("%d %b %Y") }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            </span>
+
+                                            <input
+                                                class="inline-edit"
+                                                type="date"
+                                                name="start_date"
+                                                value="{% if result.start_date %}{{ result.start_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                form="edit-course-{{ result.id }}"
+                                            >
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if result.end_date %}
+                                                    {{ result.end_date.strftime("%d %b %Y") }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            </span>
+
+                                            <input
+                                                class="inline-edit"
+                                                type="date"
+                                                name="end_date"
+                                                value="{% if result.end_date %}{{ result.end_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                form="edit-course-{{ result.id }}"
+                                            >
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="inline-view">
+                                                {{ result.result or '-' }}
+                                            </span>
+
+                                            <input
+                                                class="inline-edit"
+                                                type="text"
+                                                name="result"
+                                                value="{{ result.result or '' }}"
+                                                form="edit-course-{{ result.id }}"
+                                            >
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if result.collected %}
+
+                                                    <span class="collected yes">
+                                                        Yes
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="collected no">
+                                                        No
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </span>
+
+                                            <select
+                                                class="inline-edit"
+                                                name="collected"
+                                                form="edit-course-{{ result.id }}"
+                                            >
+
+                                                <option
+                                                    value="no"
+                                                    {% if not result.collected %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    No
+                                                </option>
+
+                                                <option
+                                                    value="yes"
+                                                    {% if result.collected %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    Yes
+                                                </option>
+
+                                            </select>
+
+                                        </td>
+
+
+                                        <td class="course-actions">
+
+                                            <div class="inline-view">
+
+                                                <button
+                                                    type="button"
+                                                    class="action-btn"
+                                                    onclick="enableCourseEdit({{ result.id }})"
+                                                >
+                                                    Edit
+                                                </button>
+
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'main.delete_course',
+                                                        course_id=result.id
+                                                    ) }}"
+                                                    style="display:inline;"
+                                                    onsubmit="return confirm('Delete this course?');"
+                                                >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn"
+                                                    >
+                                                        Delete
+                                                    </button>
+
+                                                </form>
+
+                                            </div>
+
+
+                                            <div class="inline-edit">
+
+                                                <form
+                                                    id="edit-course-{{ result.id }}"
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'main.edit_course',
+                                                        course_id=result.id
+                                                    ) }}"
+                                                >
+                                                </form>
+
+
+                                                <button
+                                                    type="submit"
+                                                    form="edit-course-{{ result.id }}"
+                                                    class="save-btn"
+                                                >
+                                                    Save
+                                                </button>
+
+
+                                                <button
+                                                    type="button"
+                                                    class="cancel-btn"
+                                                    onclick="cancelCourseEdit({{ result.id }})"
+                                                >
+                                                    Cancel
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <p>
+                        No course records found.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 PAYMENT RECORDS
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Payment Records
+                    </h3>
+
+                    <p>
+                        Complete payment history for this student.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAYMENT SUMMARY
+                     ================================================= -->
+
+                <div class="payment-summary">
+
+
+                    <div class="payment-summary-card">
+
+                        <span>
+                            Total After Discount
+                        </span>
+
+                        <strong>
+                            {{ "{:,.2f}".format(total_payment) }}
+                            {{ student.currency or "MMK" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="payment-summary-card">
+
+                        <span>
+                            Total Received
+                        </span>
+
+                        <strong>
+                            {{ "{:,.2f}".format(total_received) }}
+                            {{ student.currency or "MMK" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="payment-summary-card">
+
+                        <span>
+                            Total Pending
+                        </span>
+
+                        <strong>
+                            {{ "{:,.2f}".format(total_pending) }}
+                            {{ student.currency or "MMK" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     DISCOUNT SUMMARY
+                     ================================================= -->
+
+                {% if payments %}
+
+                    {% set original_payment = payments[0] %}
+
+                    <div class="discount-summary">
+
+
+                        <div class="discount-card">
+
+                            <span>
+                                Original Course Total
+                            </span>
+
+                            <strong>
+
+                                {{ "{:,.2f}".format(
+                                    original_payment.total_amount or 0
+                                ) }}
+
+                                {{ student.currency or "MMK" }}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="discount-card">
+
+                            <span>
+                                Discount Type
+                            </span>
+
+                            <strong>
+
+                                {% if original_payment.discount_type == "promotion" %}
+
+                                    Cash Promotion
+
+                                {% elif original_payment.discount_type == "percentage" %}
+
+                                    Percentage Discount
+
+                                {% else %}
+
+                                    None
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="discount-card">
+
+                            <span>
+                                Discount
+                            </span>
+
+                            <strong>
+
+                                {% if original_payment.discount_type == "promotion" %}
+
+                                    {{ "{:,.2f}".format(
+                                        original_payment.promotion_amount or 0
+                                    ) }}
+
+                                    {{ student.currency or "MMK" }}
+
+                                {% elif original_payment.discount_type == "percentage" %}
+
+                                    {{ "{:,.2f}".format(
+                                        original_payment.discount or 0
+                                    ) }}
+                                    %
+
+                                {% else %}
+
+                                    0
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- =================================================
+                     ADD PAYMENT
+                     ================================================= -->
+
+                <div class="payment-add-form">
+
+                    <h3>
+                        Add Payment Record
+                    </h3>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'main.add_payment',
+                            student_id=student.id
+                        ) }}"
+                    >
+
+                        <div class="form-grid">
+
+
+                            <!-- PAYMENT DATE -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Payment Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="payment_date"
+                                    name="payment_date"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- TOTAL AFTER DISCOUNT -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Total After Discount
+                                </label>
+
+                                <div class="amount-with-currency">
+
+                                    <input
+                                        type="number"
+                                        value="{{ total_payment }}"
+                                        readonly
+                                    >
+
+                                    <span class="currency">
+                                        {{ student.currency or "MMK" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CURRENT RECEIVABLE -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Current Receivable
+                                </label>
+
+                                <div class="amount-with-currency">
+
+                                    <input
+                                        type="number"
+                                        value="{{ total_pending }}"
+                                        readonly
+                                    >
+
+                                    <span class="currency">
+                                        {{ student.currency or "MMK" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PAYMENT ACCOUNT -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Payment Account
+                                </label>
+
+                                <select
+                                    name="account"
+                                    id="payment_account"
+                                    required
+                                >
+
+                                    {{ account_options(None) }}
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- USE EXCHANGE RATE -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Use Exchange Rate?
+                                </label>
+
+                                <select
+                                    name="use_exchange_rate"
+                                    id="use_exchange_rate"
+                                    required
+                                >
+
+                                    <option value="no">
+                                        No
+                                    </option>
+
+                                    <option value="yes">
+                                        Yes
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- NORMAL AMOUNT PAID -->
+
+                            <div
+                                class="form-group"
+                                id="normal-payment-group"
+                            >
+
+                                <label>
+                                    Amount Paid
+                                </label>
+
+                                <div class="amount-with-currency">
+
+                                    <input
+                                        type="number"
+                                        id="payment_paid"
+                                        name="amount_paid"
+                                        min="0"
+                                        step="0.01"
+                                        max="{{ total_pending }}"
+                                        placeholder="Enter payment amount"
+                                        required
+                                    >
+
+                                    <span class="currency">
+                                        {{ student.currency or "MMK" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- EXCHANGE RATE -->
+
+                            <div
+                                class="form-group"
+                                id="exchange-rate-group"
+                                style="display:none;"
+                            >
+
+                                <label>
+                                    Exchange Rate
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="exchange_rate"
+                                    id="exchange_rate"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="Example: 3500"
+                                >
+
+                                <small>
+                                    Example: 1 USD = 3,500 MMK
+                                </small>
+
+                            </div>
+
+
+                            <!-- MMK AMOUNT PAID -->
+
+                            <div
+                                class="form-group"
+                                id="mmk-payment-group"
+                                style="display:none;"
+                            >
+
+                                <label>
+                                    MMK Amount Paid
+                                </label>
+
+                                <div class="amount-with-currency">
+
+                                    <input
+                                        type="number"
+                                        id="mmk_amount_paid"
+                                        name="mmk_amount_paid"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="Enter MMK amount"
+                                    >
+
+                                    <span class="currency">
+                                        MMK
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CONVERTED USD -->
+
+                            <div
+                                class="form-group"
+                                id="converted-amount-group"
+                                style="display:none;"
+                            >
+
+                                <label>
+                                    Converted Amount
+                                </label>
+
+                                <div class="amount-with-currency">
+
+                                    <input
+                                        type="number"
+                                        id="converted_amount"
+                                        name="converted_amount"
+                                        readonly
+                                    >
+
+                                    <span class="currency">
+                                        USD
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PENDING AFTER PAYMENT -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Pending After Payment
+                                </label>
+
+                                <div class="amount-with-currency">
+
+                                    <input
+                                        type="number"
+                                        id="payment_pending"
+                                        value="{{ total_pending }}"
+                                        readonly
+                                    >
+
+                                    <span class="currency">
+                                        {{ student.currency or "MMK" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PAYMENT COMMENT -->
+
+                            <div class="form-group">
+
+                                <label>
+                                    Payment Comment
+                                </label>
+
+                                <textarea
+                                    name="payment_comment"
+                                    rows="4"
+                                    placeholder="Enter comment..."
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="save-btn"
+                            >
+                                Add Payment Record
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAYMENT HISTORY
+                     ================================================= -->
+
+                {% if payment_rows %}
+
+                    <div class="table-container">
+
+                        <table class="student-table payment-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>#</th>
+                                    <th>Voucher ID</th>
+                                    <th>Payment Date</th>
+                                    <th>Original Amount</th>
+                                    <th>Discount Type</th>
+                                    <th>Discount</th>
+                                    <th>Discount Amount</th>
+                                    <th>Total After Discount</th>
+                                    <th>Current Receivable</th>
+                                    <th>Amount Paid</th>
+                                    <th>Pending</th>
+                                    <th>Status</th>
+                                    <th>Comment</th>
+                                    <th>Payment-Account</th>
+                                    <th>Receipt</th>
+                                    <th>Edit</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% for row in payment_rows %}
+
+                                    {% set payment = row.payment %}
+
+
+                                    <tr
+                                        id="payment-row-{{ payment.id }}"
+                                        class="payment-row"
+                                    >
+
+
+                                        <!-- NUMBER -->
+
+                                        <td>
+                                            {{ loop.index }}
+                                        </td>
+
+
+                                        <!-- VOUCHER ID -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                <strong>
+                                                    {{ payment.invoice_id or '-' }}
+                                                </strong>
+
+                                            </span>
+
+                                            <input
+                                                class="inline-edit"
+                                                type="text"
+                                                name="invoice_id"
+                                                value="{{ payment.invoice_id or '' }}"
+                                                form="edit-payment-{{ payment.id }}"
+                                                required
+                                            >
+
+                                        </td>
+
+
+                                        <!-- PAYMENT DATE -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if payment.payment_date %}
+
+                                                    {{ payment.payment_date.strftime(
+                                                        "%d %b %Y"
+                                                    ) }}
+
+                                                {% else %}
+
+                                                    -
+
+                                                {% endif %}
+
+                                            </span>
+
+
+                                            <input
+                                                class="inline-edit"
+                                                type="date"
+                                                name="payment_date"
+                                                value="{% if payment.payment_date %}{{ payment.payment_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                form="edit-payment-{{ payment.id }}"
+                                            >
+
+                                        </td>
+
+
+                                        <!-- ORIGINAL AMOUNT -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {{ "{:,.2f}".format(
+                                                    payment.total_amount or 0
+                                                ) }}
+
+                                                {{ student.currency or "MMK" }}
+
+                                            </span>
+
+
+                                            <input
+                                                class="inline-edit payment-total-amount"
+                                                type="number"
+                                                name="total_amount"
+                                                value="{{ payment.total_amount or 0 }}"
+                                                min="0"
+                                                step="0.01"
+                                                data-payment-id="{{ payment.id }}"
+                                                form="edit-payment-{{ payment.id }}"
+                                                required
+                                            >
+
+                                        </td>
+
+
+                                        <!-- DISCOUNT TYPE -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if payment.discount_type == "promotion" %}
+
+                                                    <span class="discount-badge">
+                                                        Cash Promotion
+                                                    </span>
+
+                                                {% elif payment.discount_type == "percentage" %}
+
+                                                    <span class="discount-badge">
+                                                        Percentage
+                                                    </span>
+
+                                                {% else %}
+
+                                                    -
+
+                                                {% endif %}
+
+                                            </span>
+
+
+                                            <select
+                                                class="inline-edit payment-discount-type"
+                                                name="discount_type"
+                                                data-payment-id="{{ payment.id }}"
+                                                form="edit-payment-{{ payment.id }}"
+                                            >
+
+                                                <option
+                                                    value="none"
+                                                    {% if payment.discount_type == "none" or not payment.discount_type %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    None
+                                                </option>
+
+                                                <option
+                                                    value="percentage"
+                                                    {% if payment.discount_type == "percentage" %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    Percentage
+                                                </option>
+
+                                                <option
+                                                    value="promotion"
+                                                    {% if payment.discount_type == "promotion" %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    Cash Promotion
+                                                </option>
+
+                                            </select>
+
+                                        </td>
+
+
+                                        <!-- DISCOUNT -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if payment.discount_type == "promotion" %}
+
+                                                    {{ "{:,.2f}".format(
+                                                        payment.promotion_amount or 0
+                                                    ) }}
+
+                                                    {{ student.currency or "MMK" }}
+
+                                                {% elif payment.discount_type == "percentage" %}
+
+                                                    {{ "{:,.2f}".format(
+                                                        payment.discount or 0
+                                                    ) }}%
+
+                                                {% else %}
+
+                                                    -
+
+                                                {% endif %}
+
+                                            </span>
+
+
+                                            <input
+                                                class="inline-edit payment-discount"
+                                                type="number"
+                                                name="discount"
+                                                value="{% if payment.discount_type == 'promotion' %}{{ payment.promotion_amount or 0 }}{% else %}{{ payment.discount or 0 }}{% endif %}"
+                                                min="0"
+                                                step="0.01"
+                                                data-payment-id="{{ payment.id }}"
+                                                form="edit-payment-{{ payment.id }}"
+                                            >
+
+                                        </td>
+
+
+                                        <!-- DISCOUNT AMOUNT -->
+
+                                        <td>
+
+                                            <span
+                                                id="discount-amount-{{ payment.id }}"
+                                            >
+
+                                                {{ "{:,.2f}".format(
+                                                    payment.discount_amount or 0
+                                                ) }}{{ student.currency or "MMK" }}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- TOTAL AFTER DISCOUNT -->
+
+                                        <td>
+
+                                            <strong
+                                                id="total-after-discount-{{ payment.id }}"
+                                            >
+
+                                                {{ "{:,.2f}".format(
+                                                    payment.total_after_discount or 0
+                                                ) }}{{ student.currency or "MMK" }}
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        <!-- CURRENT RECEIVABLE -->
+
+                                        <td>
+
+                                            <strong
+                                                id="receivable-{{ payment.id }}"
+                                            >
+
+                                                {{ "{:,.2f}".format(
+                                                    row.current_receivable
+                                                ) }}{{ student.currency or "MMK" }}
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        <!-- AMOUNT PAID -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {{ "{:,.2f}".format(
+                                                    row.amount_paid or 0
+                                                ) }}{{ row.payment_currency or student.currency or "MMK" }}
+
+                                            </span>
+
+
+                                            <input
+                                                class="inline-edit payment-amount-paid"
+                                                type="number"
+                                                name="amount_paid"
+                                                value="{{ row.amount_paid or 0 }}"
+                                                min="0"
+                                                step="0.01"
+                                                data-payment-id="{{ payment.id }}"
+                                                data-payment-currency="{{ row.payment_currency or student.currency or 'MMK' }}"
+                                                data-course-currency="{{ row.course_currency or student.currency or 'MMK' }}"
+                                                data-exchange-enabled="{{ 'yes' if payment.exchange_enabled else 'no' }}"
+                                                data-exchange-rate="{{ payment.exchange_rate or '' }}"
+                                                data-cumulative-paid-before="{{ row.cumulative_paid_before_this_row or 0 }}"
+                                                form="edit-payment-{{ payment.id }}"
+                                                required
+                                            >
+
+                                            <span class="inline-edit currency">
+                                                {{ row.payment_currency or student.currency or "MMK" }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- PENDING -->
+
+                                        <td>
+
+                                            <strong
+                                                id="pending-{{ payment.id }}"
+                                            >
+
+                                                {{ "{:,.2f}".format(
+                                                    row.pending
+                                                ) }}
+
+                                                {{ student.currency or "MMK" }}
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        <!-- STATUS -->
+
+                                        <td>
+
+                                            <span
+                                                id="status-{{ payment.id }}"
+                                                class="payment
+                                                {% if row.pending == 0 and row.cumulative_paid > 0 %}
+                                                    paid
+                                                {% elif row.amount_paid > 0 %}
+                                                    partial
+                                                {% else %}
+                                                    unpaid
+                                                {% endif %}"
+                                            >
+
+                                                {% if row.pending == 0 and row.cumulative_paid > 0 %}
+
+                                                    Paid
+
+                                                {% elif row.amount_paid > 0 %}
+
+                                                    Partial
+
+                                                {% else %}
+
+                                                    Unpaid
+
+                                                {% endif %}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- COMMENT -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {% if payment.comment %}
+
+                                                    {{ payment.comment }}
+
+                                                {% else %}
+
+                                                    -
+
+                                                {% endif %}
+
+                                            </span>
+
+
+                                            <textarea
+                                                class="inline-edit"
+                                                name="payment_comment"
+                                                rows="3"
+                                                style="min-width:180px;"
+                                                form="edit-payment-{{ payment.id }}"
+                                            >{{ payment.comment or '' }}</textarea>
+
+                                        </td>
+
+
+                                        <!-- PAYMENT ACCOUNT -->
+
+                                        <td>
+
+                                            <span class="inline-view">
+
+                                                {{ payment.account or '-' }}
+
+                                            </span>
+
+
+                                            <select
+                                                class="inline-edit"
+                                                name="account"
+                                                form="edit-payment-{{ payment.id }}"
+                                            >
+
+                                                {{ account_options(payment.account) }}
+
+                                            </select>
+
+                                        </td>
+
+
+                                        <!-- RECEIPT -->
+
+                                        <td>
+
+                                            <a
+                                                href="{{ url_for(
+                                                    'main.official_receipt',
+                                                    student_id=student.id,
+                                                    payment_id=payment.id
+                                                ) }}"
+                                                class="print-btn"
+                                                target="_blank"
+                                            >
+                                                Print
+                                            </a>
+
+                                        </td>
+
+
+                                        <!-- ACTION -->
+
+                                        <td class="payment-actions">
+
+
+                                            <div class="inline-view">
+
+                                                <button
+                                                    type="button"
+                                                    class="action-btn"
+                                                    onclick="enablePaymentEdit({{ payment.id }})"
+                                                >
+                                                    Edit
+                                                </button>
+
+                                            </div>
+
+
+                                            <div class="inline-edit">
+
+
+                                                <form
+                                                    id="edit-payment-{{ payment.id }}"
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'main.edit_payment',
+                                                        payment_id=payment.id
+                                                    ) }}"
+                                                >
+                                                </form>
+
+
+                                                <button
+                                                    type="submit"
+                                                    form="edit-payment-{{ payment.id }}"
+                                                    class="save-btn"
+                                                >
+                                                    Save
+                                                </button>
+
+
+                                                <button
+                                                    type="button"
+                                                    class="cancel-btn"
+                                                    onclick="cancelPaymentEdit({{ payment.id }})"
+                                                >
+                                                    Cancel
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+
+                            <!-- PAYMENT TOTAL -->
+
+                            <tfoot>
+
+                                <tr>
+
+                                    <th colspan="7">
+                                        Total
+                                    </th>
+
+                                    <th>
+
+                                        {{ "{:,.2f}".format(
+                                            total_payment
+                                        ) }}
+
+                                        {{ student.currency or "MMK" }}
+
+                                    </th>
+
+                                    <th>
+
+                                        {{ "{:,.2f}".format(
+                                            total_payment
+                                        ) }}
+
+                                        {{ student.currency or "MMK" }}
+
+                                    </th>
+
+                                    <th>
+
+                                        {{ "{:,.2f}".format(
+                                            total_received
+                                        ) }}
+
+                                        {{ student.currency or "MMK" }}
+
+                                    </th>
+
+                                    <th>
+
+                                        {{ "{:,.2f}".format(
+                                            total_pending
+                                        ) }}
+
+                                        {{ student.currency or "MMK" }}
+
+                                    </th>
+
+                                    <th></th>
+                                    <th></th>
+                                    <th colspan="3"></th>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <p>
+                        No payment records found.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 REMARKS
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Remarks
+                    </h3>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'main.add_remark',
+                        student_id=student.id
+                    ) }}"
+                >
+
+                    <div class="form-group">
+
+                        <label>
+                            New Remark
+                        </label>
+
+                        <textarea
+                            name="text"
+                            rows="4"
+                            placeholder="Enter remark..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+                            Add Remark
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                {% if remarks %}
+
+                    {% for remark in remarks %}
+
+                        <div
+                            style="
+                                border:1px solid #ddd;
+                                padding:15px;
+                                margin-top:15px;
+                                border-radius:6px;
+                            "
+                        >
+
+                            <strong>
+                                {{ remark.written_date }}
+                            </strong>
+
+                            <p>
+                                {{ remark.text }}
+                            </p>
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'main.delete_remark',
+                                    remark_id=remark.id
+                                ) }}"
+                                onsubmit="return confirm('Delete this remark?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="action-btn"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <p>
+                        No remarks found.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- =============================================================
+     JAVASCRIPT
+     ============================================================= -->
+
+<script>
+
+
+    /* =========================================================
+       COURSE INLINE EDIT
+       ========================================================= */
+
+    function enableCourseEdit(courseId) {
+
+        const row =
+            document.getElementById(
+                "course-row-" + courseId
+            );
+
+        if (!row) {
+            return;
+        }
+
+        row.classList.add("inline-editing");
+
+    }
+
+
+    function cancelCourseEdit(courseId) {
+
+        const row =
+            document.getElementById(
+                "course-row-" + courseId
+            );
+
+        if (!row) {
+            return;
+        }
+
+        row.classList.remove("inline-editing");
+
+    }
+
+
+
+    /* =========================================================
+       PAYMENT INLINE EDIT
+       ========================================================= */
+
+    function enablePaymentEdit(paymentId) {
+
+        const row =
+            document.getElementById(
+                "payment-row-" + paymentId
+            );
+
+        if (!row) {
+            return;
+        }
+
+        row.classList.add("inline-editing");
+
+        calculatePaymentRow(paymentId);
+
+    }
+
+
+    function cancelPaymentEdit(paymentId) {
+
+        const row =
+            document.getElementById(
+                "payment-row-" + paymentId
+            );
+
+        if (!row) {
+            return;
+        }
+
+        row.classList.remove("inline-editing");
+
+    }
+
+
+
+    /* =========================================================
+       PAYMENT CALCULATION
+       ========================================================= */
+
+    /* =========================================================
+       CONVERT AMOUNT PAID TO COURSE CURRENCY
+       ========================================================= */
+
+    function convertAmountToCourseCurrency(
+        amount,
+        paymentCurrency,
+        courseCurrency,
+        exchangeEnabled,
+        exchangeRate
+    ) {
+
+        /*
+         * Same currency: no conversion needed, mirrors the
+         * backend's convert_payment_to_course_currency().
+         */
+
+        if (paymentCurrency === courseCurrency) {
+
+            return amount;
+
+        }
+
+
+        if (
+            !exchangeEnabled ||
+            !(exchangeRate > 0)
+        ) {
+
+            return 0;
+
+        }
+
+
+        if (
+            paymentCurrency === "MMK" &&
+            courseCurrency === "USD"
+        ) {
+
+            return amount / exchangeRate;
+
+        }
+
+
+        if (
+            paymentCurrency === "USD" &&
+            courseCurrency === "MMK"
+        ) {
+
+            return amount * exchangeRate;
+
+        }
+
+
+        return 0;
+
+    }
+
+
+
+    function calculatePaymentRow(paymentId) {
+
+        const row =
+            document.getElementById(
+                "payment-row-" + paymentId
+            );
+
+        if (!row) {
+            return;
+        }
+
+
+        const totalInput =
+            row.querySelector(
+                ".payment-total-amount"
+            );
+
+
+        const discountType =
+            row.querySelector(
+                ".payment-discount-type"
+            );
+
+
+        const discountInput =
+            row.querySelector(
+                ".payment-discount"
+            );
+
+
+        const amountPaidInput =
+            row.querySelector(
+                ".payment-amount-paid"
+            );
+
+
+        if (
+            !totalInput ||
+            !discountType ||
+            !discountInput ||
+            !amountPaidInput
+        ) {
+            return;
+        }
+
+
+        const total =
+            Math.max(
+                parseFloat(
+                    totalInput.value
+                ) || 0,
+                0
+            );
+
+
+        const type =
+            discountType.value;
+
+
+        let discount =
+            Math.max(
+                parseFloat(
+                    discountInput.value
+                ) || 0,
+                0
+            );
+
+
+        let discountAmount = 0;
+
+
+        if (type === "percentage") {
+
+            discount =
+                Math.min(
+                    discount,
+                    100
+                );
+
+            discountAmount =
+                total * discount / 100;
+
+        }
+
+        else if (type === "promotion") {
+
+            discount =
+                Math.min(
+                    discount,
+                    total
+                );
+
+            discountAmount =
+                discount;
+
+        }
+
+        else {
+
+            discountAmount = 0;
+
+        }
+
+
+        const totalAfterDiscount =
+            Math.max(
+                total - discountAmount,
+                0
+            );
+
+
+        let amountPaid =
+            Math.max(
+                parseFloat(
+                    amountPaidInput.value
+                ) || 0,
+                0
+            );
+
+
+        /*
+         * amountPaid is in this payment's OWN currency (e.g.
+         * MMK), but totalAfterDiscount is always in the
+         * student's course currency (e.g. USD). Comparing them
+         * directly - as this preview used to - would clamp a
+         * large MMK figure down to a small USD total and show
+         * a misleadingly small "Pending" for a course that
+         * isn't actually paid off. Convert first, same as the
+         * backend does when the form is actually submitted.
+         */
+
+        const paymentCurrency =
+            amountPaidInput.dataset.paymentCurrency ||
+            "MMK";
+
+        const courseCurrency =
+            amountPaidInput.dataset.courseCurrency ||
+            paymentCurrency;
+
+        const exchangeEnabled =
+            amountPaidInput.dataset.exchangeEnabled ===
+            "yes";
+
+        const exchangeRate =
+            parseFloat(
+                amountPaidInput.dataset.exchangeRate
+            ) || 0;
+
+        const amountPaidCourseCurrency =
+            convertAmountToCourseCurrency(
+                amountPaid,
+                paymentCurrency,
+                courseCurrency,
+                exchangeEnabled,
+                exchangeRate
+            );
+
+
+        /*
+         * totalAfterDiscount is the WHOLE course's total, the
+         * same for every payment row. For a second (or later)
+         * payment, prior payments already reduced what's owed -
+         * comparing amountPaid directly against the full course
+         * total (as this preview used to) ignores that and shows
+         * a wildly wrong "Receivable"/"Pending" until Save,
+         * where the backend correctly accounts for payment
+         * history. cumulativePaidBefore is exactly what earlier
+         * payments already contributed, computed server-side.
+         */
+
+        const cumulativePaidBefore =
+            parseFloat(
+                amountPaidInput.dataset.cumulativePaidBefore
+            ) || 0;
+
+        const receivableBeforeThisPayment =
+            Math.max(
+                totalAfterDiscount - cumulativePaidBefore,
+                0
+            );
+
+
+        const cappedAmountPaid =
+            Math.min(
+                amountPaidCourseCurrency,
+                receivableBeforeThisPayment
+            );
+
+
+        const receivable =
+            Math.max(
+                receivableBeforeThisPayment - cappedAmountPaid,
+                0
+            );
+
+
+        const discountAmountElement =
+            document.getElementById(
+                "discount-amount-" + paymentId
+            );
+
+
+        const totalAfterDiscountElement =
+            document.getElementById(
+                "total-after-discount-" + paymentId
+            );
+
+
+        const receivableElement =
+            document.getElementById(
+                "receivable-" + paymentId
+            );
+
+
+        const pendingElement =
+            document.getElementById(
+                "pending-" + paymentId
+            );
+
+
+        const statusElement =
+            document.getElementById(
+                "status-" + paymentId
+            );
+
+
+        const formattedAmount =
+            value =>
+                value.toLocaleString(
+                    "en-US",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+
+        if (discountAmountElement) {
+
+            discountAmountElement.textContent =
+                formattedAmount(
+                    discountAmount
+                );
+
+        }
+
+
+        if (totalAfterDiscountElement) {
+
+            totalAfterDiscountElement.textContent =
+                formattedAmount(
+                    totalAfterDiscount
+                );
+
+        }
+
+
+        if (receivableElement) {
+
+            receivableElement.textContent =
+                formattedAmount(
+                    receivableBeforeThisPayment
+                );
+
+        }
+
+
+        if (pendingElement) {
+
+            pendingElement.textContent =
+                formattedAmount(
+                    receivable
+                );
+
+        }
+
+
+        if (statusElement) {
+
+            statusElement.classList.remove(
+                "paid",
+                "partial",
+                "unpaid"
+            );
+
+
+            if (
+                receivable === 0 &&
+                cappedAmountPaid > 0
+            ) {
+
+                statusElement.classList.add(
+                    "paid"
+                );
+
+                statusElement.textContent =
+                    "Paid";
+
+            }
+
+            else if (
+                cappedAmountPaid > 0
+            ) {
+
+                statusElement.classList.add(
+                    "partial"
+                );
+
+                statusElement.textContent =
+                    "Partial";
+
+            }
+
+            else {
+
+                statusElement.classList.add(
+                    "unpaid"
+                );
+
+                statusElement.textContent =
+                    "Unpaid";
+
+            }
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       PAYMENT INPUT LISTENERS
+       ========================================================= */
+
+    document.addEventListener(
+        "input",
+        function(event) {
+
+            const element =
+                event.target;
+
+
+            if (
+                element.classList.contains(
+                    "payment-total-amount"
+                ) ||
+                element.classList.contains(
+                    "payment-discount"
+                ) ||
+                element.classList.contains(
+                    "payment-amount-paid"
+                )
+            ) {
+
+                const paymentId =
+                    element.dataset.paymentId;
+
+
+                if (paymentId) {
+
+                    calculatePaymentRow(
+                        paymentId
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+
+
+    /* =========================================================
+       ROUND AMOUNT PAID TO 2 DECIMALS ON BLUR
+       ========================================================= */
+
+    document.addEventListener(
+        "focusout",
+        function(event) {
+
+            const element =
+                event.target;
+
+            if (
+                !element.classList.contains(
+                    "payment-amount-paid"
+                )
+            ) {
+                return;
+            }
+
+            if (element.value === "") {
+                return;
+            }
+
+            const rounded =
+                Math.max(
+                    parseFloat(
+                        element.value
+                    ) || 0,
+                    0
+                );
+
+            element.value =
+                rounded.toFixed(2);
+
+        }
+    );
+
+
+
+    /* =========================================================
+       DISCOUNT TYPE LISTENER
+       ========================================================= */
+
+    document.addEventListener(
+        "change",
+        function(event) {
+
+            const element =
+                event.target;
+
+
+            if (
+                element.classList.contains(
+                    "payment-discount-type"
+                )
+            ) {
+
+                const paymentId =
+                    element.dataset.paymentId;
+
+
+                if (paymentId) {
+
+                    const row =
+                        document.getElementById(
+                            "payment-row-" + paymentId
+                        );
+
+
+                    const discountInput =
+                        row.querySelector(
+                            ".payment-discount"
+                        );
+
+
+                    if (
+                        element.value === "none"
+                    ) {
+
+                        discountInput.value = 0;
+
+                    }
+
+
+                    calculatePaymentRow(
+                        paymentId
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+
+
+    /* =========================================================
+       ADD PAYMENT FORM
+       ========================================================= */
+
+    const paymentDate =
+        document.getElementById(
+            "payment_date"
+        );
+
+
+    const paymentPaid =
+        document.getElementById(
+            "payment_paid"
+        );
+
+
+    const paymentPending =
+        document.getElementById(
+            "payment_pending"
+        );
+
+
+    const normalPaymentGroup =
+        document.getElementById(
+            "normal-payment-group"
+        );
+
+
+    const exchangeRateSelect =
+        document.getElementById(
+            "use_exchange_rate"
+        );
+
+
+    const exchangeRateGroup =
+        document.getElementById(
+            "exchange-rate-group"
+        );
+
+
+    const exchangeRateInput =
+        document.getElementById(
+            "exchange_rate"
+        );
+
+
+    const mmkPaymentGroup =
+        document.getElementById(
+            "mmk-payment-group"
+        );
+
+
+    const mmkAmountInput =
+        document.getElementById(
+            "mmk_amount_paid"
+        );
+
+
+    const convertedAmountGroup =
+        document.getElementById(
+            "converted-amount-group"
+        );
+
+
+    const convertedAmountInput =
+        document.getElementById(
+            "converted_amount"
+        );
+
+
+    const currentPending =
+        parseFloat(
+            "{{ total_pending }}"
+        ) || 0;
+
+
+
+    /* =========================================================
+       SET TODAY'S DATE
+       ========================================================= */
+
+    if (paymentDate) {
+
+        const today =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
+
+        paymentDate.value =
+            today;
+
+    }
+
+
+
+    /* =========================================================
+       NORMAL PAYMENT CALCULATION
+       ========================================================= */
+
+    function calculateNewPayment() {
+
+        if (
+            !paymentPaid ||
+            !paymentPending
+        ) {
+            return;
+        }
+
+
+        const paid =
+            parseFloat(
+                paymentPaid.value
+            ) || 0;
+
+
+        const safePaid =
+            Math.min(
+                Math.max(
+                    paid,
+                    0
+                ),
+                currentPending
+            );
+
+
+        const pending =
+            Math.max(
+                currentPending -
+                safePaid,
+                0
+            );
+
+
+        paymentPending.value =
+            pending.toFixed(2);
+
+    }
+
+
+
+    /* =========================================================
+       EXCHANGE RATE FIELD DISPLAY
+       ========================================================= */
+
+    function updateExchangeRateFields() {
+
+        if (!exchangeRateSelect) {
+            return;
+        }
+
+
+        if (
+            exchangeRateSelect.value === "yes"
+        ) {
+
+            /*
+             * Hide the normal Amount Paid field.
+             */
+
+            if (normalPaymentGroup) {
+
+                normalPaymentGroup.style.display =
+                    "none";
+
+            }
+
+
+            /*
+             * Show exchange rate fields.
+             */
+
+            if (exchangeRateGroup) {
+
+                exchangeRateGroup.style.display =
+                    "block";
+
+            }
+
+
+            if (mmkPaymentGroup) {
+
+                mmkPaymentGroup.style.display =
+                    "block";
+
+            }
+
+
+            if (convertedAmountGroup) {
+
+                convertedAmountGroup.style.display =
+                    "block";
+
+            }
+
+
+            if (exchangeRateInput) {
+
+                exchangeRateInput.required =
+                    true;
+
+            }
+
+
+            if (mmkAmountInput) {
+
+                mmkAmountInput.required =
+                    true;
+
+            }
+
+            /*
+             * Amount Paid is populated by
+             * the converted USD amount.
+             */
+
+            if (paymentPaid) {
+
+                paymentPaid.required =
+                    false;
+
+            }
+
+
+            calculateExchangeAmount();
+
+        }
+
+        else {
+
+            /*
+             * Show normal Amount Paid.
+             */
+
+            if (normalPaymentGroup) {
+
+                normalPaymentGroup.style.display =
+                    "block";
+
+            }
+
+
+            /*
+             * Hide exchange fields.
+             */
+
+            if (exchangeRateGroup) {
+
+                exchangeRateGroup.style.display =
+                    "none";
+
+            }
+
+
+            if (mmkPaymentGroup) {
+
+                mmkPaymentGroup.style.display =
+                    "none";
+
+            }
+
+
+            if (convertedAmountGroup) {
+
+                convertedAmountGroup.style.display =
+                    "none";
+
+            }
+
+
+            if (exchangeRateInput) {
+
+                exchangeRateInput.required =
+                    false;
+
+                exchangeRateInput.value =
+                    "";
+
+            }
+
+
+            if (mmkAmountInput) {
+
+                mmkAmountInput.required =
+                    false;
+
+                mmkAmountInput.value =
+                    "";
+
+            }
+
+
+            if (convertedAmountInput) {
+
+                convertedAmountInput.value =
+                    "";
+
+            }
+
+
+            if (paymentPaid) {
+
+                paymentPaid.required =
+                    true;
+
+            }
+
+
+            calculateNewPayment();
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       MMK → USD CONVERSION
+       ========================================================= */
+
+    function calculateExchangeAmount() {
+
+        if (
+            !exchangeRateInput ||
+            !mmkAmountInput ||
+            !convertedAmountInput
+        ) {
+            return;
+        }
+
+
+        const exchangeRate =
+            parseFloat(
+                exchangeRateInput.value
+            ) || 0;
+
+
+        const mmkAmount =
+            parseFloat(
+                mmkAmountInput.value
+            ) || 0;
+
+
+        if (
+            exchangeRate <= 0 ||
+            mmkAmount <= 0
+        ) {
+
+            convertedAmountInput.value =
+                "";
+
+
+            if (paymentPaid) {
+
+                paymentPaid.value =
+                    "";
+
+            }
+
+
+            if (paymentPending) {
+
+                paymentPending.value =
+                    currentPending.toFixed(2);
+
+            }
+
+
+            return;
+
+        }
+
+
+        /*
+         * Example:
+         *
+         * MMK Amount = 350,000
+         * Exchange Rate = 3,500
+         *
+         * USD = 350,000 / 3,500
+         *     = 100 USD
+         */
+
+        const usdAmount =
+            mmkAmount /
+            exchangeRate;
+
+
+        convertedAmountInput.value =
+            usdAmount.toFixed(2);
+
+
+        /*
+         * Put converted USD amount into
+         * the actual amount_paid field.
+         */
+
+        if (paymentPaid) {
+
+            paymentPaid.value =
+                usdAmount.toFixed(2);
+
+        }
+
+
+        /*
+         * Calculate remaining balance.
+         */
+
+        if (paymentPending) {
+
+            const pending =
+                Math.max(
+                    currentPending -
+                    usdAmount,
+                    0
+                );
+
+
+            paymentPending.value =
+                pending.toFixed(2);
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       EXCHANGE RATE EVENTS
+       ========================================================= */
+
+    if (exchangeRateSelect) {
+
+        exchangeRateSelect.addEventListener(
+            "change",
+            updateExchangeRateFields
+        );
+
+    }
+
+
+    if (exchangeRateInput) {
+
+        exchangeRateInput.addEventListener(
+            "input",
+            calculateExchangeAmount
+        );
+
+    }
+
+
+    if (mmkAmountInput) {
+
+        mmkAmountInput.addEventListener(
+            "input",
+            calculateExchangeAmount
+        );
+
+    }
+
+
+
+    /* =========================================================
+       NORMAL PAYMENT EVENT
+       ========================================================= */
+
+    if (
+        paymentPaid &&
+        paymentPending
+    ) {
+
+        paymentPaid.addEventListener(
+            "input",
+            function() {
+
+                /*
+                 * Only use this calculation when
+                 * exchange rate mode is OFF.
+                 */
+
+                if (
+                    !exchangeRateSelect ||
+                    exchangeRateSelect.value !== "yes"
+                ) {
+
+                    calculateNewPayment();
+
+                }
+
+            }
+        );
+
+        /*
+         * Round to at most 2 decimal places once the user is
+         * done editing - not on every keystroke, since that
+         * fights typing (see add_student.html for the same
+         * pattern and why).
+         */
+
+        paymentPaid.addEventListener(
+            "blur",
+            function() {
+
+                if (paymentPaid.value !== "") {
+
+                    const rounded =
+                        Math.max(
+                            parseFloat(
+                                paymentPaid.value
+                            ) || 0,
+                            0
+                        );
+
+                    paymentPaid.value =
+                        rounded.toFixed(2);
+
+                }
+
+            }
+        );
+
+    }
+
+
+
+    /* =========================================================
+       INITIAL STATE
+       ========================================================= */
+
+    updateExchangeRateFields();
+
+
+</script>
+
+
+</body>
+</html>

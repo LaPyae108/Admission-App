@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>End of the Day Account</title>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/end_of_day.css') }}"
+>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- =========================================================
+     REPORT HEADER
+     ========================================================= -->
+
+<header class="report-header">
+
+    <div class="company-info">
+
+        <h1>
+            Star International College Education Service
+        </h1>
+
+        <p>
+            Head Office:
+            No.267, Pyay Road, Sanchaung Township, Yangon
+        </p>
+
+        <p class="contact">
+            09-797004988
+            <span>|</span>
+            09-797004989
+            <span>|</span>
+            01-7523200
+        </p>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     REPORT INFORMATION
+     ========================================================= -->
+
+<section class="report-information">
+
+    <div class="report-title">
+
+        <span class="report-label">
+            DAILY SALES REPORT
+        </span>
+
+        <h2>
+            Sales Cash Payment (All)
+        </h2>
+
+    </div>
+
+
+    <div class="report-meta">
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                Date
+            </span>
+
+            <strong>
+                {{ report_date.strftime("%d/%m/%Y")
+                   if report_date else "-" }}
+            </strong>
+
+        </div>
+
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                Branch
+            </span>
+
+            <strong>
+                Head Office
+            </strong>
+
+        </div>
+
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                User
+            </span>
+
+            <strong>
+                ALL
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     MAIN PAYMENT SECTION
+     ========================================================= -->
+
+<main class="main-section">
+
+
+    {% if account_groups %}
+
+
+        <!-- =================================================
+             PAYMENT ACCOUNT GROUPS
+             ================================================= -->
+
+        {% for account, rows in account_groups.items() %}
+
+
+            <section class="account-section">
+
+
+                <!-- =============================================
+                     ACCOUNT HEADER
+                     ============================================= -->
+
+                <div class="account-header">
+
+                    <div>
+
+                        <span class="account-label">
+                            PAYMENT ACCOUNT
+                        </span>
+
+                        <h3>
+                            {{ account or "Unknown Account" }}
+                        </h3>
+
+                    </div>
+
+                    <div class="transaction-count">
+
+                        {{ rows|length }}
+                        transaction{% if rows|length != 1 %}s{% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     PAYMENT TABLE
+                     ============================================= -->
+
+                <div class="table-container">
+
+                    <table class="payment-table">
+
+
+                        <!-- TABLE HEADER -->
+
+                        <thead>
+
+                            <tr>
+
+                                <th class="number-column">
+                                    No.
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Student ID
+                                </th>
+
+                                <th class="student-name-column">
+                                    Student Name
+                                </th>
+
+                                <th>
+                                    Invoice ID
+                                </th>
+
+                                <th class="amount-column">
+                                    Received Amount
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- TABLE BODY -->
+
+                        <tbody>
+
+
+                            {% for row in rows %}
+
+                                {% set payment = row.payment %}
+
+                                {% set student = row.student %}
+
+                                {% set amount = row.amount_paid or 0 %}
+
+
+                                <tr>
+
+
+                                    <!-- NUMBER -->
+
+                                    <td class="number-column">
+
+                                        {{ loop.index }}
+
+                                    </td>
+
+
+                                    <!-- DATE -->
+
+                                    <td>
+
+                                        {% if payment.payment_date %}
+
+                                            {{ payment.payment_date.strftime(
+                                                "%d/%m/%Y"
+                                            ) }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- STUDENT ID -->
+
+                                    <td>
+
+                                        <strong class="student-id">
+
+                                            {{ student.student_id or "-" }}
+
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- STUDENT NAME -->
+
+                                    <td class="student-name">
+
+                                        {{ student.full_name or "-" }}
+
+                                    </td>
+
+
+                                    <!-- INVOICE -->
+
+                                    <td>
+
+                                        <span class="invoice-id">
+
+                                            {{ payment.invoice_id or "-" }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- RECEIVED AMOUNT -->
+
+                                    <td class="amount-column amount">
+
+                                        {{ "{:,.2f}".format(amount) }}
+
+                                        <span class="currency">
+
+                                            {{ row.currency }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                </tr>
+
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+
+                        <!-- ACCOUNT TOTAL -->
+                        <!--
+                            An account can receive more than one
+                            currency in a day, so this renders one
+                            total line per currency rather than
+                            adding unlike currencies together.
+                        -->
+
+                        <tfoot>
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="total-label"
+                                >
+
+                                    Account Total
+
+                                </td>
+
+
+                                <td class="amount-column total-amount">
+
+                                    {% for currency, total in
+                                        account_totals.get(account, {}).items() %}
+
+                                        <div class="total-line">
+
+                                            {{ "{:,.2f}".format(total) }}
+
+                                            <span class="currency">
+                                                {{ currency }}
+                                            </span>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </td>
+
+                            </tr>
+
+                        </tfoot>
+
+
+                    </table>
+
+                </div>
+
+
+            </section>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <!-- =================================================
+             NO RECORDS
+             ================================================= -->
+
+        <section class="no-records">
+
+            <div class="no-records-icon">
+                —
+            </div>
+
+            <h3>
+                No Payment Records
+            </h3>
+
+            <p>
+                No payment records were found for this date.
+            </p>
+
+        </section>
+
+
+    {% endif %}
+
+
+</main>
+
+
+<!-- =========================================================
+     GRAND TOTAL
+     ========================================================= -->
+<!--
+    grand_totals is a dict of currency -> total across every
+    account for the day, so this renders one line per currency
+    actually received rather than assuming everything is MMK.
+-->
+
+{% if account_groups %}
+
+    <section class="grand-total-section">
+
+        <div class="grand-total">
+
+            <div class="grand-total-label">
+
+                <span>
+                    DAILY TOTAL
+                </span>
+
+                <strong>
+                    Grand Total
+                </strong>
+
+            </div>
+
+
+            <div class="grand-total-amount">
+
+                {% for currency, total in grand_totals.items() %}
+
+                    <div class="total-line">
+
+                        {{ "{:,.2f}".format(total) }}
+
+                        <span>
+                            {{ currency }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+<!-- =========================================================
+     REPORT FOOTER
+     ========================================================= -->
+
+<footer class="report-footer">
+
+    <div>
+        Star International College Education Service
+    </div>
+
+    <div>
+        End of Day Account Report
+    </div>
+
+</footer>
+
+
+</div>
+
+<!-- =============================================================
+     PRINT BUTTON
+     ============================================================= -->
+
+<div class="print-container">
+
+<button
+    type="button"
+    onclick="window.print()"
+>
+    <span>🖨</span>
+    Print Report
+</button>
+
+
+</div>
+
+</body>
+
+</html>

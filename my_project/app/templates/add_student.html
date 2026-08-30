@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles_for_add_student.css') }}"
+    >
+
+    {% set page_verb = "Edit Student" if edit_mode else "Add Student" %}
+    {% set page_heading = "Edit Student" if edit_mode else "New Student" %}
+
+    <title>
+        {{ page_verb }}
+    </title>
+
+</head>
+
+{% macro currency_options(selected) %}
+
+    <option
+        value="USD"
+        {% if (selected or "USD") == "USD" %}selected{% endif %}
+    >
+        USD
+    </option>
+
+    <option
+        value="MMK"
+        {% if selected == "MMK" %}selected{% endif %}
+    >
+        MMK
+    </option>
+
+{% endmacro %}
+
+
+{% macro account_options(selected) %}
+
+    {% for account_name in [
+        "AYA-Pay",
+        "Cash",
+        "CB-Bank",
+        "KBZ-Bank",
+        "Yoma-Bank",
+        "K-Pay",
+        "Wave-Pay",
+        "AYA-Bank"
+    ] %}
+
+        <option
+            value="{{ account_name }}"
+            {% if selected == account_name %}selected{% endif %}
+        >
+            {{ account_name }}
+        </option>
+
+    {% endfor %}
+
+{% endmacro %}
+
+
+<body>
+
+<div class="layout">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>School Admin</h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link active"
+            >
+                Students
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    {{ page_verb }}
+                </h1>
+
+                <p>
+                    Student information and payment
+                </p>
+
+            </div>
+
+            <div>
+                Admin
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        {{ page_heading }}
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="cancel-btn"
+                >
+                    Back
+                </a>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 FORM
+                 ================================================= -->
+
+            <form
+                method="POST"
+                action="{% if edit_mode %}{{ url_for('main.edit_student', student_id=student.id) }}{% else %}{{ url_for('main.add_student') }}{% endif %}"
+            >
+
+                <!-- =================================================
+                     STUDENT INFORMATION
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Student Information
+                        </h3>
+
+                        <p>
+                            Enter the student's basic information.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <!-- STUDENT ID -->
+
+                        <div class="form-group">
+
+                            <label for="student_id">
+                                Student ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="student_id"
+                                name="student_id"
+                                value="{{ form_data.get('student_id', '') }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- FULL NAME -->
+
+                        <div class="form-group">
+
+                            <label for="full_name">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
+                                value="{{ form_data.get('full_name', '') }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="form-group">
+
+                            <label for="phone_number">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="text"
+                                id="phone_number"
+                                name="phone_number"
+                                value="{{ form_data.get('phone_number', '') }}"
+                            >
+
+                        </div>
+
+
+                        <!-- NRC -->
+
+                        <div class="form-group">
+
+                            <label for="nrc">
+                                NRC
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nrc"
+                                name="nrc"
+                                value="{{ form_data.get('nrc', '') }}"
+                            >
+
+                        </div>
+
+
+                        <!-- STUDENT TYPE -->
+
+                        <div class="form-group">
+
+                            <label for="student_type_id">
+                                Student Type
+                            </label>
+
+                            <select
+                                id="student_type_id"
+                                name="student_type_id"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Student Type
+                                </option>
+
+                                {% for student_type in student_types %}
+
+                                <option
+                                    value="{{ student_type.id }}"
+                                    {% if form_data.get('student_type_id', '')|string == student_type.id|string %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ student_type.name }}
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- UNIFORM -->
+
+                        <div class="form-group">
+
+                            <label for="uniform_size">
+                                Uniform Size
+                            </label>
+
+                            <input
+                                type="text"
+                                id="uniform_size"
+                                name="uniform_size"
+                                value="{{ form_data.get('uniform_size', '') }}"
+                            >
+
+                        </div>
+
+
+                        <!-- INTAKE DATE -->
+
+                        <div class="form-group">
+
+                            <label for="intake_date">
+                                Intake Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="intake_date"
+                                name="intake_date"
+                                value="{{ form_data.get('intake_date', '') }}"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAYMENT INFORMATION
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Payment Information
+                        </h3>
+
+                        <p>
+                            Set the course fee, apply a promotion
+                            or percentage discount, and record
+                            the initial payment.
+                        </p>
+
+                    </div>
+
+
+                    {% if edit_mode and latest_payment %}
+
+                    <div class="info-box">
+
+                        <strong>
+                            Payment information is locked.
+                        </strong>
+
+                        The existing payment cannot be changed
+                        from this page. Additional payments should
+                        be recorded from the Student Details page.
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         CURRENCY SETTINGS
+                         ================================================= -->
+
+                    <div class="payment-block">
+
+                        <div class="payment-block-title">
+                            Currency
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <!-- COURSE FEE CURRENCY -->
+
+                            <div class="form-group">
+
+                                <label for="course_currency">
+                                    Course Fee Currency
+                                </label>
+
+                                <select
+                                    id="course_currency"
+                                    name="currency"
+                                    required
+                                >
+
+                                    {{ currency_options(form_data.get('currency')) }}
+
+                                </select>
+
+                                <small>
+                                    Currency in which the course fee is set.
+                                </small>
+
+                            </div>
+
+
+                            <!-- PAYMENT CURRENCY -->
+
+                            <div class="form-group">
+
+                                <label for="payment_currency">
+                                    Payment Currency
+                                </label>
+
+                                <select
+                                    id="payment_currency"
+                                    name="payment_currency"
+                                    required
+                                >
+
+                                    {{ currency_options(form_data.get('payment_currency')) }}
+
+                                </select>
+
+                                <small>
+                                    Currency the student is using to pay.
+                                </small>
+
+                            </div>
+
+
+                            <!-- EXCHANGE RATE -->
+
+                            <div
+                                class="form-group"
+                                id="exchange_rate_field"
+                            >
+
+                                <label for="exchange_rate">
+                                    Exchange Rate
+                                </label>
+
+                                <div class="exchange-rate-input">
+
+                                    <span class="exchange-prefix">
+                                        1 USD =
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        id="exchange_rate"
+                                        name="exchange_rate"
+                                        value="{{ form_data.get('exchange_rate', '') }}"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="Enter MMK rate"
+                                    >
+
+                                    <span class="exchange-suffix">
+                                        MMK
+                                    </span>
+
+                                </div>
+
+                                <small id="exchange_rate_help">
+                                    Required when course fee and payment
+                                    currencies are different.
+                                </small>
+
+                            </div>
+
+
+                            <!-- INVOICE ID -->
+
+                            <div class="form-group">
+
+                                <label for="invoice_id">
+                                    Invoice ID
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="invoice_id"
+                                    name="invoice_id"
+                                    value="{{ form_data.get('invoice_id', 'Will be generated automatically') }}"
+                                    readonly
+                                >
+
+                                <small>
+                                    Invoice ID is generated automatically
+                                    by the system.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         COURSE FEE
+                         ================================================= -->
+
+                    <div class="payment-block">
+
+                        <div class="payment-block-title">
+                            1. Course Fee
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="total_amount">
+                                    Original Course Fee
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="total_amount"
+                                    name="total_amount"
+                                    value="{{ form_data.get('total_amount', '') }}"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    {% if edit_mode %}
+                                        readonly
+                                    {% endif %}
+                                >
+
+                                <small id="course_fee_help">
+                                    Enter the full course fee before discount.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         DISCOUNT
+                         ================================================= -->
+
+                    <div class="payment-block">
+
+                        <div class="payment-block-title">
+                            2. Promotion / Discount
+                        </div>
+
+
+                        <div class="payment-block-description">
+                            Choose either a fixed cash promotion
+                            or a percentage discount.
+                        </div>
+
+
+                        <div class="discount-fields">
+
+                            <!-- DISCOUNT TYPE -->
+
+                            <div class="form-group">
+
+                                <label for="discount_type">
+                                    Discount Type
+                                </label>
+
+                                <select
+                                    id="discount_type"
+                                    name="discount_type"
+                                    {% if edit_mode %}
+                                        disabled
+                                    {% endif %}
+                                >
+
+                                    <option
+                                        value="none"
+                                        {% if form_data.get('discount_type', 'none') == 'none' %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        No Discount
+                                    </option>
+
+                                    <option
+                                        value="promotion"
+                                        {% if form_data.get('discount_type', 'none') == 'promotion' %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Cash Promotion
+                                    </option>
+
+                                    <option
+                                        value="percentage"
+                                        {% if form_data.get('discount_type', 'none') == 'percentage' %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Percentage Discount
+                                    </option>
+
+                                </select>
+
+
+                                {% if edit_mode %}
+
+                                <input
+                                    type="hidden"
+                                    name="discount_type"
+                                    value="{{ form_data.get('discount_type', 'none') }}"
+                                >
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- CASH PROMOTION -->
+
+                            <div
+                                class="form-group discount-field"
+                                id="promotion_field"
+                            >
+
+                                <label for="promotion_amount">
+                                    Promotion Amount
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="promotion_amount"
+                                    name="promotion_amount"
+                                    value="{{ form_data.get('promotion_amount', '0') }}"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    {% if edit_mode %}
+                                        readonly
+                                    {% endif %}
+                                >
+
+                                <small>
+                                    Fixed amount deducted from the course fee.
+                                </small>
+
+                            </div>
+
+
+                            <!-- PERCENTAGE -->
+
+                            <div
+                                class="form-group discount-field"
+                                id="percentage_field"
+                            >
+
+                                <label for="discount">
+                                    Discount Percentage
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="discount"
+                                    name="discount"
+                                    value="{{ form_data.get('discount', '0') }}"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    placeholder="e.g. 10"
+                                    {% if edit_mode %}
+                                        readonly
+                                    {% endif %}
+                                >
+
+                                <small>
+                                    Percentage deducted from the original
+                                    course fee.
+                                </small>
+
+                            </div>
+
+
+                            <!-- DISCOUNT AMOUNT -->
+
+                            <div class="form-group">
+
+                                <label for="discount_amount">
+                                    Discount Amount
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="discount_amount"
+                                    name="discount_amount"
+                                    value="{{ form_data.get('discount_amount', '0') }}"
+                                    readonly
+                                >
+
+                                <small>
+                                    Automatically calculated.
+                                </small>
+
+                            </div>
+
+
+                            <!-- TOTAL AFTER DISCOUNT -->
+
+                            <div class="form-group">
+
+                                <label for="total_after_discount">
+                                    Total After Discount
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="total_after_discount"
+                                    name="total_after_discount"
+                                    value="{{ form_data.get('total_after_discount', '') }}"
+                                    readonly
+                                >
+
+                                <small>
+                                    Final course fee after discount.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="calculation-note">
+
+                            <strong>
+                                Calculation:
+                            </strong>
+
+                            Original Fee − Discount =
+                            Total After Discount
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PAYMENT
+                         ================================================= -->
+
+                    <div class="payment-block">
+
+                        <div class="payment-block-title">
+                            3. Initial Payment
+                        </div>
+
+
+                        <div class="payment-block-description">
+
+                            Enter the amount the student is paying now.
+                            If the payment currency is different from
+                            the course currency, the amount will be
+                            converted using the exchange rate.
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <!-- AMOUNT PAID -->
+
+                            <div class="form-group">
+
+                                <label for="amount_paid">
+                                    Amount Paid
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="amount_paid"
+                                    name="amount_paid"
+                                    value="{{ form_data.get('amount_paid', '0') }}"
+                                    min="0"
+                                    step="0.01"
+                                    inputmode="decimal"
+                                    aria-describedby="amount_paid_help"
+                                    {% if edit_mode %}
+                                        readonly
+                                    {% endif %}
+                                >
+
+                                <small id="amount_paid_help">
+                                    Amount received from the student.
+                                </small>
+
+                            </div>
+
+
+                            <!-- CONVERTED PAYMENT -->
+
+                            <div class="form-group">
+
+                                <label for="converted_amount">
+                                    Payment Value in Course Currency
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="converted_amount"
+                                    name="converted_amount"
+                                    value="{{ form_data.get('converted_amount', '0') }}"
+                                    readonly
+                                >
+
+                                <small id="converted_amount_help">
+                                    Converted payment amount.
+                                </small>
+
+                            </div>
+
+
+                            <!-- PENDING -->
+
+                            <div class="form-group">
+
+                                <label for="pending_amount">
+                                    Pending Amount
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="pending_amount"
+                                    name="pending_amount"
+                                    value="{{ form_data.get('pending_amount', '') }}"
+                                    readonly
+                                >
+
+                                <small>
+                                    Remaining balance in course fee currency.
+                                </small>
+
+                            </div>
+
+
+                            <!-- COMMENT -->
+
+                            <div class="form-group full-width">
+
+                                <label for="payment_comment">
+                                    Payment Comment
+                                </label>
+
+                                <textarea
+                                    id="payment_comment"
+                                    name="payment_comment"
+                                    rows="3"
+                                    placeholder="Enter payment comment..."
+                                    {% if edit_mode %}
+                                        readonly
+                                    {% endif %}
+                                >{{ form_data.get('payment_comment', '') }}</textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PAYMENT SUMMARY
+                         ================================================= -->
+
+                    <div class="payment-summary">
+
+                        <div class="payment-summary-title">
+                            Payment Summary
+                        </div>
+
+
+                        <div class="payment-calculation-summary">
+
+                            <!-- ORIGINAL -->
+
+                            <div class="calculation-item">
+
+                                <span>
+                                    Original Fee
+                                </span>
+
+                                <strong id="summary_original">
+                                    0.00 USD
+                                </strong>
+
+                            </div>
+
+
+                            <!-- DISCOUNT -->
+
+                            <div class="calculation-item">
+
+                                <span>
+                                    Discount
+                                </span>
+
+                                <strong id="summary_discount">
+                                    0.00 USD
+                                </strong>
+
+                            </div>
+
+
+                            <!-- FINAL -->
+
+                            <div class="calculation-item final">
+
+                                <span>
+                                    Total After Discount
+                                </span>
+
+                                <strong id="summary_final">
+                                    0.00 USD
+                                </strong>
+
+                            </div>
+
+
+                            <!-- ACCOUNT -->
+
+                            <div class="calculation-item final">
+
+                                <label for="account">
+                                    Account
+                                </label>
+
+                                <select
+                                    id="account"
+                                    name="account"
+                                >
+
+                                    {{ account_options(form_data.get('account')) }}
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- PAID -->
+
+                            <div class="calculation-item">
+
+                                <span>
+                                    Paid
+                                </span>
+
+                                <strong id="summary_paid">
+                                    0.00 USD
+                                </strong>
+
+                            </div>
+
+
+                            <!-- PENDING -->
+
+                            <div class="calculation-item pending">
+
+                                <span>
+                                    Pending
+                                </span>
+
+                                <strong id="summary_pending">
+                                    0.00 USD
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ACTIONS
+                     ================================================= -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="save-btn"
+                    >
+
+                        {% if edit_mode %}
+                            Save Student
+                        {% else %}
+                            Add Student
+                        {% endif %}
+
+                    </button>
+
+
+                    {% if edit_mode and latest_payment %}
+
+                    <a
+                        href="{{ url_for('main.official_receipt', student_id=student.id, payment_id=latest_payment.id) }}"
+                        class="print-btn"
+                        target="_blank"
+                    >
+                        Print Receipt
+                    </a>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{{ url_for('main.dashboard') }}"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const totalAmount =
+    document.getElementById("total_amount");
+
+const discountType =
+    document.getElementById("discount_type");
+
+const discount =
+    document.getElementById("discount");
+
+const promotionAmount =
+    document.getElementById("promotion_amount");
+
+const promotionField =
+    document.getElementById("promotion_field");
+
+const percentageField =
+    document.getElementById("percentage_field");
+
+const discountAmount =
+    document.getElementById("discount_amount");
+
+const totalAfterDiscount =
+    document.getElementById("total_after_discount");
+
+const amountPaid =
+    document.getElementById("amount_paid");
+
+const convertedAmount =
+    document.getElementById("converted_amount");
+
+const pendingAmount =
+    document.getElementById("pending_amount");
+
+
+/* =========================================================
+   CURRENCY ELEMENTS
+   ========================================================= */
+
+const courseCurrency =
+    document.getElementById("course_currency");
+
+const paymentCurrency =
+    document.getElementById("payment_currency");
+
+const exchangeRateField =
+    document.getElementById("exchange_rate_field");
+
+const exchangeRateInput =
+    document.getElementById("exchange_rate");
+
+const amountPaidHelp =
+    document.getElementById("amount_paid_help");
+
+const convertedAmountHelp =
+    document.getElementById("converted_amount_help");
+
+const courseFeeHelp =
+    document.getElementById("course_fee_help");
+
+
+/* =========================================================
+   SUMMARY ELEMENTS
+   ========================================================= */
+
+const summaryOriginal =
+    document.getElementById("summary_original");
+
+const summaryDiscount =
+    document.getElementById("summary_discount");
+
+const summaryFinal =
+    document.getElementById("summary_final");
+
+const summaryPaid =
+    document.getElementById("summary_paid");
+
+const summaryPending =
+    document.getElementById("summary_pending");
+
+
+/* =========================================================
+   GET COURSE CURRENCY
+   ========================================================= */
+
+function getCourseCurrency() {
+
+    return courseCurrency
+        ? courseCurrency.value
+        : "USD";
+
+}
+
+
+/* =========================================================
+   GET PAYMENT CURRENCY
+   ========================================================= */
+
+function getPaymentCurrency() {
+
+    return paymentCurrency
+        ? paymentCurrency.value
+        : "USD";
+
+}
+
+
+/* =========================================================
+   FORMAT MONEY
+   ========================================================= */
+
+function formatMoney(value, currency) {
+
+    return Number(value || 0).toLocaleString(
+        "en-US",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    ) + " " + currency;
+
+}
+
+
+/* =========================================================
+   UPDATE CURRENCY TEXT
+   ========================================================= */
+
+function updateCurrencyText() {
+
+    const courseCurrencyValue =
+        getCourseCurrency();
+
+    const paymentCurrencyValue =
+        getPaymentCurrency();
+
+
+    if (courseFeeHelp) {
+
+        courseFeeHelp.textContent =
+            "Enter the full course fee in " +
+            courseCurrencyValue +
+            " before discount.";
+
+    }
+
+
+    if (amountPaidHelp) {
+
+        amountPaidHelp.textContent =
+            "Enter the amount received from the student in " +
+            paymentCurrencyValue +
+            ".";
+
+    }
+
+
+    if (convertedAmountHelp) {
+
+        if (
+            courseCurrencyValue ===
+            paymentCurrencyValue
+        ) {
+
+            convertedAmountHelp.textContent =
+                "Payment is already in the course currency.";
+
+        } else {
+
+            convertedAmountHelp.textContent =
+                "Payment converted to " +
+                courseCurrencyValue +
+                ".";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   SHOW / HIDE EXCHANGE RATE
+   ========================================================= */
+
+function updateExchangeRateField() {
+
+    if (
+        !courseCurrency ||
+        !paymentCurrency ||
+        !exchangeRateField
+    ) {
+        return;
+    }
+
+
+    const course =
+        courseCurrency.value;
+
+    const payment =
+        paymentCurrency.value;
+
+
+    /*
+     * No conversion is required when
+     * both currencies are the same.
+     */
+
+    if (course === payment) {
+
+        exchangeRateField.style.display =
+            "none";
+
+        if (exchangeRateInput) {
+
+            exchangeRateInput.required =
+                false;
+
+        }
+
+    }
+
+    /*
+     * Conversion is required when
+     * currencies are different.
+     */
+
+    else {
+
+        exchangeRateField.style.display =
+            "flex";
+
+        if (exchangeRateInput) {
+
+            exchangeRateInput.required =
+                true;
+
+        }
+
+    }
+
+
+    updateCurrencyText();
+
+    calculatePayment();
+
+}
+
+
+/* =========================================================
+   SHOW / HIDE DISCOUNT FIELDS
+   ========================================================= */
+
+function updateDiscountFields() {
+
+    const type =
+        discountType
+            ? discountType.value
+            : "none";
+
+
+    if (promotionField) {
+
+        promotionField.classList.remove(
+            "visible"
+        );
+
+    }
+
+
+    if (percentageField) {
+
+        percentageField.classList.remove(
+            "visible"
+        );
+
+    }
+
+
+    if (type === "promotion") {
+
+        promotionField.classList.add(
+            "visible"
+        );
+
+    }
+
+    else if (type === "percentage") {
+
+        percentageField.classList.add(
+            "visible"
+        );
+
+    }
+
+
+    calculatePayment();
+
+}
+
+
+/* =========================================================
+   CONVERT PAYMENT TO COURSE CURRENCY
+   ========================================================= */
+
+function convertPaymentToCourseCurrency(
+    payment,
+    course,
+    paymentCurrencyValue,
+    rate
+) {
+
+    /*
+     * Same currency:
+     *
+     * USD -> USD
+     * MMK -> MMK
+     */
+
+    if (
+        course ===
+        paymentCurrencyValue
+    ) {
+
+        return payment;
+
+    }
+
+
+    /*
+     * Course = USD
+     * Payment = MMK
+     *
+     * Example:
+     *
+     * 450000 MMK / 4500
+     * = 100 USD
+     */
+
+    if (
+        course === "USD" &&
+        paymentCurrencyValue === "MMK"
+    ) {
+
+        if (rate <= 0) {
+            return 0;
+        }
+
+        return payment / rate;
+
+    }
+
+
+    /*
+     * Course = MMK
+     * Payment = USD
+     *
+     * Example:
+     *
+     * 100 USD * 4500
+     * = 450000 MMK
+     */
+
+    if (
+        course === "MMK" &&
+        paymentCurrencyValue === "USD"
+    ) {
+
+        if (rate <= 0) {
+            return 0;
+        }
+
+        return payment * rate;
+
+    }
+
+
+    return payment;
+
+}
+
+
+/* =========================================================
+   CALCULATE PAYMENT
+   ========================================================= */
+
+function calculatePayment(commitAmountPaid) {
+
+    if (!totalAmount) {
+        return;
+    }
+
+
+    /*
+     * COURSE FEE
+     *
+     * This value is ALWAYS in the
+     * selected course currency.
+     */
+
+    const total =
+        Math.max(
+            parseFloat(
+                totalAmount.value
+            ) || 0,
+            0
+        );
+
+
+    /*
+     * DISCOUNT
+     *
+     * Discount is calculated FIRST,
+     * before currency conversion.
+     */
+
+    let discountValue = 0;
+
+
+    if (
+        discountType &&
+        discountType.value === "none"
+    ) {
+
+        discountValue = 0;
+
+    }
+
+
+    else if (
+        discountType &&
+        discountType.value === "promotion"
+    ) {
+
+        const promotion =
+            Math.max(
+                parseFloat(
+                    promotionAmount.value
+                ) || 0,
+                0
+            );
+
+
+        discountValue =
+            Math.min(
+                promotion,
+                total
+            );
+
+    }
+
+
+    else if (
+        discountType &&
+        discountType.value === "percentage"
+    ) {
+
+        const percentage =
+            Math.min(
+                Math.max(
+                    parseFloat(
+                        discount.value
+                    ) || 0,
+                    0
+                ),
+                100
+            );
+
+
+        discountValue =
+            total *
+            percentage /
+            100;
+
+    }
+
+
+    /*
+     * FINAL COURSE FEE
+     *
+     * Discount is already applied.
+     */
+
+    const finalTotal =
+        Math.max(
+            total -
+            discountValue,
+            0
+        );
+
+
+    /*
+     * AMOUNT PAID
+     *
+     * This is the amount entered
+     * by the user in PAYMENT CURRENCY.
+     */
+
+    let paidInput =
+        Math.max(
+            parseFloat(
+                amountPaid.value
+            ) || 0,
+            0
+        );
+
+
+    /*
+     * Do not allow the entered payment
+     * to exceed the equivalent final fee.
+     *
+     * First determine the maximum amount
+     * that can be entered in the payment
+     * currency.
+     */
+
+    const course =
+        getCourseCurrency();
+
+    const payment =
+        getPaymentCurrency();
+
+    const rate =
+        Math.max(
+            parseFloat(
+                exchangeRateInput
+                    ? exchangeRateInput.value
+                    : 0
+            ) || 0,
+            0
+        );
+
+
+    let maxPaymentInPaymentCurrency;
+
+
+    if (course === payment) {
+
+        maxPaymentInPaymentCurrency =
+            finalTotal;
+
+    }
+
+    else if (
+        course === "USD" &&
+        payment === "MMK"
+    ) {
+
+        /*
+         * Final fee USD -> maximum MMK
+         */
+
+        maxPaymentInPaymentCurrency =
+            rate > 0
+                ? finalTotal * rate
+                : 0;
+
+    }
+
+    else if (
+        course === "MMK" &&
+        payment === "USD"
+    ) {
+
+        /*
+         * Final fee MMK -> maximum USD
+         */
+
+        maxPaymentInPaymentCurrency =
+            rate > 0
+                ? finalTotal / rate
+                : 0;
+
+    }
+
+    else {
+
+        maxPaymentInPaymentCurrency =
+            finalTotal;
+
+    }
+
+
+    /*
+     * Limit payment to the remaining fee.
+     */
+
+    if (
+        maxPaymentInPaymentCurrency > 0
+    ) {
+
+        paidInput =
+            Math.min(
+                paidInput,
+                maxPaymentInPaymentCurrency
+            );
+
+    }
+
+
+    /*
+     * Synchronize payment input.
+     *
+     * Only rewrite what the user is looking at once they're
+     * done editing (on blur). Reformatting on every keystroke
+     * fights typing - the cursor jumps and a clamp can trigger
+     * mid-number, making the field feel broken.
+     */
+
+    if (
+        commitAmountPaid &&
+        amountPaid.value !== ""
+    ) {
+
+        amountPaid.value =
+            paidInput.toFixed(2);
+
+    }
+
+
+    /*
+     * CONVERT PAYMENT
+     *
+     * This happens AFTER discount.
+     */
+
+    const paidInCourseCurrency =
+        convertPaymentToCourseCurrency(
+            paidInput,
+            course,
+            payment,
+            rate
+        );
+
+
+    /*
+     * PENDING
+     *
+     * Both finalTotal and paidInCourseCurrency
+     * are now in the SAME currency.
+     */
+
+    const pending =
+        Math.max(
+            finalTotal -
+            paidInCourseCurrency,
+            0
+        );
+
+
+    /*
+     * UPDATE FORM VALUES
+     */
+
+    discountAmount.value =
+        discountValue.toFixed(2);
+
+
+    totalAfterDiscount.value =
+        finalTotal.toFixed(2);
+
+
+    convertedAmount.value =
+        paidInCourseCurrency.toFixed(2);
+
+
+    pendingAmount.value =
+        pending.toFixed(2);
+
+
+    /*
+     * UPDATE SUMMARY
+     */
+
+    summaryOriginal.textContent =
+        formatMoney(
+            total,
+            course
+        );
+
+
+    summaryDiscount.textContent =
+        formatMoney(
+            discountValue,
+            course
+        );
+
+
+    summaryFinal.textContent =
+        formatMoney(
+            finalTotal,
+            course
+        );
+
+
+    /*
+     * Show the actual payment received
+     * in the payment currency.
+     */
+
+    summaryPaid.textContent =
+        formatMoney(
+            paidInput,
+            payment
+        );
+
+
+    /*
+     * Pending is ALWAYS displayed
+     * in the course fee currency.
+     */
+
+    summaryPending.textContent =
+        formatMoney(
+            pending,
+            course
+        );
+
+}
+
+
+/* =========================================================
+   EVENT LISTENERS
+   ========================================================= */
+
+
+/* Course Currency */
+
+if (courseCurrency) {
+
+    courseCurrency.addEventListener(
+        "change",
+        function () {
+
+            updateExchangeRateField();
+
+            calculatePayment();
+
+        }
+    );
+
+}
+
+
+/* Payment Currency */
+
+if (paymentCurrency) {
+
+    paymentCurrency.addEventListener(
+        "change",
+        function () {
+
+            updateExchangeRateField();
+
+            calculatePayment();
+
+        }
+    );
+
+}
+
+
+/* Course Fee */
+
+if (totalAmount) {
+
+    totalAmount.addEventListener(
+        "input",
+        function () {
+
+            calculatePayment();
+
+        }
+    );
+
+}
+
+
+/* Discount Type */
+
+if (discountType) {
+
+    discountType.addEventListener(
+        "change",
+        updateDiscountFields
+    );
+
+}
+
+
+/* Percentage */
+
+if (discount) {
+
+    discount.addEventListener(
+        "input",
+        function () {
+
+            calculatePayment();
+
+        }
+    );
+
+}
+
+
+/* Promotion */
+
+if (promotionAmount) {
+
+    promotionAmount.addEventListener(
+        "input",
+        function () {
+
+            calculatePayment();
+
+        }
+    );
+
+}
+
+
+/* Amount Paid */
+
+if (amountPaid) {
+
+    /*
+     * While typing: recalculate the summary/converted amount
+     * from whatever is currently in the field, but don't touch
+     * the field itself - overwriting it mid-keystroke is what
+     * made this input hard to use.
+     */
+
+    amountPaid.addEventListener(
+        "input",
+        function () {
+
+            calculatePayment();
+
+        }
+    );
+
+    /*
+     * Once the user leaves the field: clamp it to the maximum
+     * allowed payment and format it to two decimal places.
+     */
+
+    amountPaid.addEventListener(
+        "blur",
+        function () {
+
+            calculatePayment(true);
+
+        }
+    );
+
+}
+
+
+/* Exchange Rate */
+
+if (exchangeRateInput) {
+
+    exchangeRateInput.addEventListener(
+        "input",
+        function () {
+
+            calculatePayment();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PREVENT MOUSE WHEEL FROM CHANGING NUMBER INPUTS
+   ========================================================= */
+
+document
+    .querySelectorAll(
+        'input[type="number"]'
+    )
+    .forEach(
+        function(input) {
+
+            input.addEventListener(
+                "wheel",
+                function(event) {
+
+                    event.preventDefault();
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+updateExchangeRateField();
+
+updateDiscountFields();
+
+updateCurrencyText();
+
+calculatePayment(true);
+
+</script>
+
+</body>
+
+</html>
