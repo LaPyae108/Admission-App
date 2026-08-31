@@ -1,5 +1,5 @@
 name: Database Backup
- 
+
 # ============================================================
 # Nightly Postgres backup for the Neon database, independent
 # of Neon's own point-in-time recovery.
@@ -34,34 +34,42 @@ name: Database Backup
 #   BACKUP_S3_ENDPOINT_URL   (only needed for non-AWS providers,
 #                             e.g. Backblaze B2 or Cloudflare R2)
 # ============================================================
- 
+
 on:
   schedule:
     # 20:30 UTC = ~03:00 Myanmar Time (UTC+6:30). Adjust to
     # whatever's genuinely low-traffic for your users.
     - cron: "30 20 * * *"
- 
+
   # Adds a "Run workflow" button under the Actions tab, so you
   # can trigger a backup on demand - e.g. right before a risky
   # migration, or just to test that this works at all.
   workflow_dispatch:
- 
+
 jobs:
   backup:
     runs-on: ubuntu-latest
- 
+
+    # Job-level env, available to every step below - including
+    # step-level "if:" conditions, which can read the "env"
+    # context but cannot read "secrets" directly. This is what
+    # lets the optional S3 step below check whether that secret
+    # was actually set.
+    env:
+      BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+
     steps:
- 
+
       - name: Install PostgreSQL client tools
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
- 
+
       - name: Create a timestamped filename
         id: filename
         run: |
           echo "name=backup-$(date -u +'%Y-%m-%dT%H-%M-%SZ').sql.gz" >> "$GITHUB_OUTPUT"
- 
+
       - name: Dump the database
         env:
           DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
@@ -74,29 +82,28 @@ jobs:
             --no-owner \
             --no-privileges \
             | gzip > "${{ steps.filename.outputs.name }}"
- 
+
       - name: Upload backup as a workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.filename.outputs.name }}
           path: ${{ steps.filename.outputs.name }}
           retention-days: 30
- 
+
       - name: Upload backup to S3-compatible storage (optional)
-        if: ${{ secrets.BACKUP_S3_BUCKET != '' }}
+        if: ${{ env.BACKUP_S3_BUCKET != '' }}
         continue-on-error: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
           BACKUP_S3_ENDPOINT_URL: ${{ secrets.BACKUP_S3_ENDPOINT_URL }}
         run: |
           ENDPOINT_ARG=""
- 
+
           if [ -n "$BACKUP_S3_ENDPOINT_URL" ]; then
             ENDPOINT_ARG="--endpoint-url $BACKUP_S3_ENDPOINT_URL"
           fi
- 
+
           aws s3 cp $ENDPOINT_ARG \
             "${{ steps.filename.outputs.name }}" \
             "s3://$BACKUP_S3_BUCKET/${{ steps.filename.outputs.name }}"
