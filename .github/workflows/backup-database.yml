@@ -1,0 +1,102 @@
+name: Database Backup
+ 
+# ============================================================
+# Nightly Postgres backup for the Neon database, independent
+# of Neon's own point-in-time recovery.
+#
+# Why this exists: Neon's retention window depends on your
+# plan (as little as 6 hours on Free), and even a generous
+# window doesn't protect against something happening to the
+# Neon project/account itself. This gives you a separate copy,
+# on separate infrastructure.
+#
+# WHAT THIS ALWAYS DOES:
+#   Dumps the database and uploads it as a private GitHub
+#   Actions artifact. Works immediately once DATABASE_URL_DIRECT
+#   is set - no extra signups needed.
+#
+# WHAT THIS OPTIONALLY DOES:
+#   Also copies the same dump to an S3-compatible bucket
+#   (AWS S3, Backblaze B2, Cloudflare R2, etc.) if you've set
+#   the BACKUP_S3_BUCKET secret. Skipped automatically if not.
+#   Worth adding eventually: GitHub artifacts still live inside
+#   your GitHub account, so this is your true "separate place."
+#
+# REQUIRED REPO SECRET:
+#   DATABASE_URL_DIRECT
+#     Your Neon connection string WITHOUT "-pooler" in the
+#     hostname. Settings -> Secrets and variables -> Actions.
+#
+# OPTIONAL REPO SECRETS (for off-GitHub storage):
+#   AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY
+#   BACKUP_S3_BUCKET
+#   BACKUP_S3_ENDPOINT_URL   (only needed for non-AWS providers,
+#                             e.g. Backblaze B2 or Cloudflare R2)
+# ============================================================
+ 
+on:
+  schedule:
+    # 20:30 UTC = ~03:00 Myanmar Time (UTC+6:30). Adjust to
+    # whatever's genuinely low-traffic for your users.
+    - cron: "30 20 * * *"
+ 
+  # Adds a "Run workflow" button under the Actions tab, so you
+  # can trigger a backup on demand - e.g. right before a risky
+  # migration, or just to test that this works at all.
+  workflow_dispatch:
+ 
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+ 
+    steps:
+ 
+      - name: Install PostgreSQL client tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+ 
+      - name: Create a timestamped filename
+        id: filename
+        run: |
+          echo "name=backup-$(date -u +'%Y-%m-%dT%H-%M-%SZ').sql.gz" >> "$GITHUB_OUTPUT"
+ 
+      - name: Dump the database
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+        run: |
+          # --no-owner / --no-privileges: skip role-ownership info
+          # tied to Neon's specific roles, so this dump restores
+          # cleanly into a plain Postgres instance elsewhere too,
+          # not just back into the exact same Neon project.
+          pg_dump "$DATABASE_URL_DIRECT" \
+            --no-owner \
+            --no-privileges \
+            | gzip > "${{ steps.filename.outputs.name }}"
+ 
+      - name: Upload backup as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.filename.outputs.name }}
+          path: ${{ steps.filename.outputs.name }}
+          retention-days: 30
+ 
+      - name: Upload backup to S3-compatible storage (optional)
+        if: ${{ secrets.BACKUP_S3_BUCKET != '' }}
+        continue-on-error: true
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          BACKUP_S3_ENDPOINT_URL: ${{ secrets.BACKUP_S3_ENDPOINT_URL }}
+        run: |
+          ENDPOINT_ARG=""
+ 
+          if [ -n "$BACKUP_S3_ENDPOINT_URL" ]; then
+            ENDPOINT_ARG="--endpoint-url $BACKUP_S3_ENDPOINT_URL"
+          fi
+ 
+          aws s3 cp $ENDPOINT_ARG \
+            "${{ steps.filename.outputs.name }}" \
+            "s3://$BACKUP_S3_BUCKET/${{ steps.filename.outputs.name }}"
