@@ -18,6 +18,15 @@
             min-height: 100vh;
         }
 
+        /* Visible keyboard focus everywhere - previously only
+           form inputs had any focus styling at all, leaving
+           every button, link, and nav item invisible to
+           keyboard/screen-reader users when tabbed to. */
+        :focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+
 
         /* =========================================================
            SIDEBAR
@@ -62,6 +71,11 @@
         .nav-link.active {
             background: #2c3e50;
             color: white;
+        }
+
+        .nav-link:focus-visible {
+            outline-color: white;
+            outline-offset: -2px;
         }
 
 
@@ -290,6 +304,22 @@
             margin-top: 20px;
         }
 
+        /* Thin scrollbar + visible edge, so a table that scrolls
+           sideways on smaller screens actually looks scrollable
+           instead of just appearing cut off. */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
         .student-table {
             width: 100%;
             border-collapse: collapse;
@@ -489,13 +519,40 @@
 
 
         /* =========================================================
-           RESPONSIVE
+           RESPONSIVE - TABLET
            ========================================================= */
 
         @media (max-width: 900px) {
 
+            /* Previously the sidebar was just hidden here with
+               nothing replacing it - meaning there was no way
+               to navigate away from this page on a tablet/phone
+               except the browser back button. Now it collapses
+               into a horizontal scrollable nav bar instead,
+               matching dashboard.html's mobile behavior. */
+
+            .layout {
+                flex-direction: column;
+            }
+
             .sidebar {
-                display: none;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+                text-align: left;
+            }
+
+            .navigation {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 5px;
+            }
+
+            .nav-link {
+                white-space: nowrap;
             }
 
             .form-grid,
@@ -512,6 +569,59 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE - PHONE
+           ========================================================= */
+
+        @media (max-width: 480px) {
+
+            .topbar {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .form-section {
+                padding: 15px;
+            }
+
+            /* Larger tap targets on touch screens - the desktop
+               sizing (9px 14px) is comfortable for a mouse but
+               tight for a finger, especially with several action
+               buttons sitting close together in a table row. */
+            button,
+            .save-btn,
+            .cancel-btn,
+            .action-btn,
+            .print-btn {
+                padding: 12px 16px;
+            }
+
+            /* The grouped "1 USD = [ ___ ] MMK" exchange rate
+               input gets cramped on very narrow screens - drop
+               the prefix/suffix padding a bit to leave more
+               room for the actual number field. */
+            .exchange-prefix,
+            .exchange-suffix {
+                padding: 0 8px;
+                font-size: 13px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+           ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            * {
+                transition-duration: 0.01ms !important;
             }
         }
 /* =========================================================

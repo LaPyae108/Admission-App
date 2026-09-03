@@ -24,6 +24,14 @@ font-size: 14px;
 
 }
 
+/* Visible keyboard focus - the only interactive element on
+   this page is the print button, but it had no focus state
+   at all, making it invisible to keyboard users. */
+:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
 .page {
 width: 100%;
 max-width: 1400px;
@@ -214,12 +222,16 @@ margin-bottom: 28px;
 
 background: #ffffff;
 
-border: 1px solid #e5e7eb;
+border: 1px solid #e3e8ef;
 
-border-radius: 8px;
+border-radius: 9px;
 
 overflow: hidden;
 
+/* Blue accent tying this back to the dashboard's brand
+   color, instead of the plain gray/black report look this
+   page used to share only with itself. */
+border-left: 3px solid #2563eb;
 
 }
 
@@ -239,7 +251,7 @@ padding: 18px 22px;
 
 background: #f9fafb;
 
-border-bottom: 1px solid #e5e7eb;
+border-bottom: 1px solid #e3e8ef;
 
 
 }
@@ -256,7 +268,11 @@ font-weight: 700;
 
 letter-spacing: 1.4px;
 
-color: #6b7280;
+text-transform: uppercase;
+
+/* Was a neutral gray - now the dashboard's accent blue,
+   same color used for its active nav state and buttons. */
+color: #2563eb;
 
 
 }
@@ -269,26 +285,29 @@ font-size: 18px;
 
 font-weight: 700;
 
-color: #111827;
+color: #172033;
 
 
 }
 
 .transaction-count {
-padding: 6px 12px;
+padding: 5px 12px;
 
 
-border: 1px solid #d1d5db;
+border: none;
 
 border-radius: 20px;
 
-background: #ffffff;
+/* Matches styles.css's .status/.payment pill treatment -
+   a soft blue tint instead of plain white/gray, so this
+   reads as the same design system as the dashboard. */
+background: #eff6ff;
 
-color: #6b7280;
+color: #2563eb;
 
-font-size: 12px;
+font-size: 11px;
 
-font-weight: 600;
+font-weight: 700;
 
 
 }
@@ -304,6 +323,21 @@ width: 100%;
 overflow-x: auto;
 
 
+}
+
+/* Thin scrollbar so a table that scrolls sideways on smaller
+   screens actually looks scrollable. */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 4px;
 }
 
 .payment-table {
@@ -710,6 +744,10 @@ box-shadow:
 
 }
 
+.print-container button:focus-visible {
+    outline-offset: 3px;
+}
+
 .print-container button span {
 margin-right: 6px;
 }
@@ -827,6 +865,22 @@ body {
 
     bottom: 15px;
 }
+
+}
+
+/* =========================================================
+REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .print-container button {
+        transition-duration: 0.01ms !important;
+    }
+
+    .print-container button:hover {
+        transform: none;
+    }
 
 }
 
