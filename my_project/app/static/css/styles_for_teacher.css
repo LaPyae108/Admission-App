@@ -1,0 +1,567 @@
+/* =========================================================
+           GLOBAL
+           ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f6f8;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        :focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+           ========================================================= */
+
+        .sidebar {
+            width: 240px;
+            background: #17202a;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h2 {
+            margin: 0 0 5px;
+        }
+
+        .logo p {
+            margin: 0;
+            font-size: 13px;
+            color: #bbb;
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ddd;
+            padding: 12px 15px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .nav-link:focus-visible {
+            outline-color: white;
+            outline-offset: -2px;
+        }
+
+
+        /* =========================================================
+           MAIN CONTENT
+           ========================================================= */
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .topbar {
+            background: white;
+            padding: 25px 35px;
+            border-bottom: 1px solid #ddd;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            margin: 0 0 5px;
+        }
+
+        .topbar p {
+            margin: 0;
+            color: #777;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+           ========================================================= */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0 0 5px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #777;
+        }
+
+
+        /* =========================================================
+           SECTIONS
+           ========================================================= */
+
+        .form-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        .form-section-header {
+            margin-bottom: 25px;
+        }
+
+        .form-section-header h3 {
+            margin: 0 0 5px;
+        }
+
+        .form-section-header p {
+            margin: 0;
+            color: #777;
+        }
+
+
+        /* =========================================================
+           FORM
+           ========================================================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #555;
+        }
+
+
+        /* =========================================================
+           BUTTONS
+           ========================================================= */
+
+        button,
+        .save-btn,
+        .cancel-btn,
+        .action-btn,
+        .print-btn {
+            border: none;
+            padding: 9px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .cancel-btn {
+            background: #ddd;
+            color: #222;
+        }
+
+        .cancel-btn:hover {
+            background: #ccc;
+        }
+
+        .action-btn {
+            background: #555;
+            color: white;
+            margin: 2px;
+        }
+
+        .action-btn:hover {
+            background: #333;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+
+        /* =========================================================
+           MESSAGES
+           ========================================================= */
+
+        .success-message {
+            background: #d8f5df;
+            color: #176b2c;
+            border: 1px solid #a9dfb5;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: #ffdada;
+            color: #8a1c1c;
+            border: 1px solid #efaaaa;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           ADD TEACHER FORM
+           ========================================================= */
+
+        .add-teacher-form {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .add-teacher-form .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+
+        /* =========================================================
+           COURSE GRID
+           ========================================================= */
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .course-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .course-card-header h3 {
+            margin: 0 0 4px;
+            font-size: 18px;
+        }
+
+        .course-card-id {
+            color: #777;
+            font-size: 13px;
+            font-family: "Courier New", monospace;
+        }
+
+        .course-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .course-card-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .course-card-row span:first-child {
+            color: #777;
+        }
+
+        .course-card-row span:last-child {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .course-card-teacher.unassigned {
+            color: #b91c1c;
+        }
+
+        .course-card-footer {
+            margin-top: auto;
+            padding-top: 8px;
+        }
+
+        .course-card-footer .action-btn {
+            width: 100%;
+            text-align: center;
+            margin: 0;
+        }
+
+        .no-courses {
+            padding: 50px 20px;
+            text-align: center;
+            color: #777;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+
+        /* =========================================================
+           COURSE INFO PAGE
+           ========================================================= */
+
+        .course-info-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .course-info-card {
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            padding: 18px;
+            background: #fafafa;
+        }
+
+        .course-info-card span {
+            display: block;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .course-info-card strong {
+            font-size: 18px;
+        }
+
+
+        /* =========================================================
+           TABLE
+           ========================================================= */
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 11px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .student-table th {
+            background: #f1f1f1;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           OTHER
+           ========================================================= */
+
+        .attendance-radio-cell {
+            text-align: center;
+        }
+
+        .attendance-radio-cell input {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .collected.yes {
+            color: green;
+            font-weight: 700;
+        }
+
+        .collected.no {
+            color: #999;
+        }
+
+        .attendance-low {
+            color: #b91c1c;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE - TABLET
+           ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+                text-align: left;
+            }
+
+            .navigation {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 5px;
+            }
+
+            .nav-link {
+                white-space: nowrap;
+            }
+
+            .form-grid,
+            .course-info-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE - PHONE
+           ========================================================= */
+
+        @media (max-width: 480px) {
+
+            .topbar {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .form-section {
+                padding: 15px;
+            }
+
+            .add-teacher-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            button,
+            .save-btn,
+            .cancel-btn,
+            .action-btn,
+            .print-btn {
+                padding: 12px 16px;
+            }
+        }
+
+
+
+        /* =========================================================
+           REDUCED MOTION
+           ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            * {
+                transition-duration: 0.01ms !important;
+            }
+        }

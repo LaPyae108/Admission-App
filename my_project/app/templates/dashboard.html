@@ -58,17 +58,17 @@
             </a>
 
             <a
-                href="#"
+                href="{{ url_for('main.teachers_ui') }}"
                 class="nav-link"
             >
-                Applications
+                Teachers_UI
             </a>
 
             <a
-                href="#"
+                href="{{ url_for('main.attendance_overview') }}"
                 class="nav-link"
             >
-                Payments
+                Attendance
             </a>
 
             <a
@@ -111,8 +111,21 @@
             <div class="admin-profile">
 
                 <span>
-                    Admin
+                    {{ current_user.username }}
                 </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        class="action-btn"
+                    >
+                        Logout
+                    </button>
+                </form>
 
             </div>
 

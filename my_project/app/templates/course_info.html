@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles_for_teachers.css') }}"
+    >
+
+    <title>
+        {{ course_name }} - Course Info
+    </title>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Students
+            </a>
+
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link active"
+            >
+                Teachers
+            </a>
+
+            <a
+                href="{{ url_for('main.attendance_overview') }}"
+                class="nav-link"
+            >
+                Attendance
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Course Info
+                </h1>
+
+                <p>
+                    Enrollment and teacher details
+                </p>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        {{ course_name }}
+                    </h2>
+
+                    <p>
+                        Course ID:
+                        <strong>
+                            {{ course_id }}
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('main.teachers_ui') }}"
+                    class="cancel-btn"
+                >
+                    Back to Teachers' UI
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 COURSE SUMMARY
+                 ================================================= -->
+
+            <div class="course-info-summary">
+
+                <div class="course-info-card">
+
+                    <span>
+                        Start Date
+                    </span>
+
+                    <strong>
+
+                        {% if start_date %}
+                            {{ start_date.strftime("%d %b %Y") }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="course-info-card">
+
+                    <span>
+                        End Date
+                    </span>
+
+                    <strong>
+
+                        {% if end_date %}
+                            {{ end_date.strftime("%d %b %Y") }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="course-info-card">
+
+                    <span>
+                        Teacher
+                    </span>
+
+                    <strong>
+                        {{ teacher.name if teacher else "Unassigned" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="course-info-card">
+
+                    <span>
+                        Enrolled
+                    </span>
+
+                    <strong>
+                        {{ enrollments|length }}
+                        student{% if enrollments|length != 1 %}s{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="course-info-card">
+
+                    <span>
+                        Attendance Rate
+                    </span>
+
+                    <strong>
+
+                        {% if attendance_rate is not none %}
+                            {{ attendance_rate }}%
+                        {% else %}
+                            No data yet
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ATTENDANCE
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Attendance
+                    </h3>
+
+                    <p>
+                        Mark each student for the selected date,
+                        then save. Changing the date reloads
+                        whatever was already marked for that day.
+                    </p>
+
+                </div>
+
+
+                <form
+                    method="GET"
+                    action="{{ url_for(
+                        'main.course_info',
+                        course_id=course_id
+                    ) }}"
+                    class="add-teacher-form"
+                >
+
+                    <div class="form-group">
+
+                        <label for="attendance_date_picker">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="attendance_date_picker"
+                            name="date"
+                            value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                            onchange="this.form.submit()"
+                        >
+
+                    </div>
+
+                </form>
+
+
+                {% if enrollments %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'main.take_attendance',
+                            course_id=course_id
+                        ) }}"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="date"
+                            value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                        >
+
+                        <div class="table-container">
+
+                            <table class="student-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Student Name
+                                        </th>
+
+                                        <th class="attendance-radio-cell">
+                                            Present
+                                        </th>
+
+                                        <th class="attendance-radio-cell">
+                                            Absent
+                                        </th>
+
+                                        <th class="attendance-radio-cell">
+                                            Late
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for enrollment in enrollments %}
+
+                                        <tr>
+
+                                            <td>
+                                                {{ enrollment.student.full_name }}
+                                            </td>
+
+                                            <td class="attendance-radio-cell">
+                                                <input
+                                                    type="radio"
+                                                    name="status_{{ enrollment.id }}"
+                                                    value="present"
+                                                    {% if enrollment.attendance_status_today == "present" %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                            </td>
+
+                                            <td class="attendance-radio-cell">
+                                                <input
+                                                    type="radio"
+                                                    name="status_{{ enrollment.id }}"
+                                                    value="absent"
+                                                    {% if enrollment.attendance_status_today == "absent" %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                            </td>
+
+                                            <td class="attendance-radio-cell">
+                                                <input
+                                                    type="radio"
+                                                    name="status_{{ enrollment.id }}"
+                                                    value="late"
+                                                    {% if enrollment.attendance_status_today == "late" %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="save-btn"
+                            >
+                                Save Attendance
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                {% else %}
+
+                    <p>
+                        No students enrolled.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 ENROLLED STUDENTS
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Enrolled Students
+                    </h3>
+
+                    <p>
+                        Everyone currently enrolled in this course.
+                    </p>
+
+                </div>
+
+
+                {% if enrollments %}
+
+                    <div class="table-container">
+
+                        <table class="student-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Student Name
+                                    </th>
+
+                                    <th>
+                                        Student ID
+                                    </th>
+
+                                    <th>
+                                        Result
+                                    </th>
+
+                                    <th>
+                                        Attendance
+                                    </th>
+
+                                    <th>
+                                        Collected
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for enrollment in enrollments %}
+
+                                    <tr>
+
+                                        <td>
+
+                                            <a
+                                                href="{{ url_for(
+                                                    'main.student_details',
+                                                    student_id=enrollment.student.id
+                                                ) }}"
+                                            >
+                                                {{ enrollment.student.full_name }}
+                                            </a>
+
+                                        </td>
+
+                                        <td>
+                                            {{ enrollment.student.student_id }}
+                                        </td>
+
+                                        <td>
+                                            {{ enrollment.result or "-" }}
+                                        </td>
+
+                                        <td>
+
+                                            {% if enrollment.attendance_rate is not none %}
+
+                                                <span
+                                                    {% if enrollment.attendance_rate < 80 %}
+                                                        class="attendance-low"
+                                                    {% endif %}
+                                                >
+                                                    {{ enrollment.attendance_rate }}%
+                                                    {% if enrollment.attendance_rate < 80 %}
+                                                        ⚠
+                                                    {% endif %}
+                                                </span>
+
+                                            {% else %}
+                                                No data
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+
+                                            {% if enrollment.collected %}
+
+                                                <span class="collected yes">
+                                                    Yes
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="collected no">
+                                                    No
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <p>
+                        No students enrolled.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

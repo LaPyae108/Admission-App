@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles_for_teachers.css') }}"
+    >
+
+    <title>
+        Teachers' UI
+    </title>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            {% if not is_teacher_view %}
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="nav-link"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="nav-link"
+                >
+                    Students
+                </a>
+
+            {% endif %}
+
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link active"
+            >
+                {% if is_teacher_view %}
+                    My Courses
+                {% else %}
+                    Teachers
+                {% endif %}
+            </a>
+
+            {% if not is_teacher_view %}
+
+                <a
+                    href="{{ url_for('main.attendance_overview') }}"
+                    class="nav-link"
+                >
+                    Attendance
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    {% if is_teacher_view %}
+                        My Courses
+                    {% else %}
+                        Teachers' UI
+                    {% endif %}
+                </h1>
+
+                <p>
+                    {% if is_teacher_view %}
+                        Courses assigned to you
+                    {% else %}
+                        Courses and their assigned teachers
+                    {% endif %}
+                </p>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        Courses
+                    </h2>
+
+                    <p>
+                        {{ courses|length }}
+                        course{% if courses|length != 1 %}s{% endif %}
+                        currently running
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MESSAGES
+                 ================================================= -->
+
+            {% if request.args.get("success") %}
+
+                <div class="success-message">
+                    Teacher added successfully.
+                </div>
+
+            {% endif %}
+
+
+            {% if not is_teacher_view %}
+
+                <!-- =================================================
+                     ADD TEACHER
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Add Teacher
+                        </h3>
+
+                        <p>
+                            Teachers added here become available in
+                            the assign-teacher dropdown on each
+                            student's course row.
+                        </p>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('main.add_teacher') }}"
+                        class="add-teacher-form"
+                    >
+
+                        <div class="form-group">
+
+                            <label for="name">
+                                Teacher Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="e.g. Daw Hla Hla"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+                            Add Teacher
+                        </button>
+
+                    </form>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 COURSE GRID
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Courses
+                    </h3>
+
+                    <p>
+                        Course info is drawn from students'
+                        enrollment records - there's no separate
+                        course catalog yet, so a course only
+                        appears here once at least one student
+                        is enrolled in it.
+                    </p>
+
+                </div>
+
+
+                {% if courses %}
+
+                    <div class="course-grid">
+
+                        {% for course in courses %}
+
+                            <div class="course-card">
+
+                                <div class="course-card-header">
+
+                                    <h3>
+                                        {{ course.course_name }}
+                                    </h3>
+
+                                    <div class="course-card-id">
+                                        {{ course.course_id }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="course-card-body">
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Dates
+                                        </span>
+
+                                        <span>
+
+                                            {% if course.start_date %}
+                                                {{ course.start_date.strftime("%d %b %Y") }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+
+                                            &ndash;
+
+                                            {% if course.end_date %}
+                                                {{ course.end_date.strftime("%d %b %Y") }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Enrolled
+                                        </span>
+
+                                        <span>
+                                            {{ course.enrolled_count }}
+                                            student{% if course.enrolled_count != 1 %}s{% endif %}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Teacher
+                                        </span>
+
+                                        <span
+                                            class="course-card-teacher
+                                            {% if not course.teacher %}
+                                                unassigned
+                                            {% endif %}"
+                                        >
+
+                                            {{ course.teacher.name if course.teacher else "Unassigned" }}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="course-card-footer">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'main.course_info',
+                                            course_id=course.course_id
+                                        ) }}"
+                                        class="action-btn"
+                                    >
+                                        View
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-courses">
+
+                        <p>
+                            No courses yet. Courses appear here
+                            once a student is enrolled in one from
+                            their Student Details page.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles_for_teachers.css') }}"
+    >
+
+    <title>
+        Attendance
+    </title>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Students
+            </a>
+
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link"
+            >
+                Teachers
+            </a>
+
+            <a
+                href="{{ url_for('main.attendance_overview') }}"
+                class="nav-link active"
+            >
+                Attendance
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Attendance
+                </h1>
+
+                <p>
+                    Every course's attendance status for one day
+                </p>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <!-- =================================================
+                 PAGE HEADER + DATE PICKER
+                 ================================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        {{ selected_date.strftime("%d %b %Y") }}
+                    </h2>
+
+                    <p>
+                        {{ courses|length }}
+                        course{% if courses|length != 1 %}s{% endif %}
+                    </p>
+
+                </div>
+
+
+                <form
+                    method="GET"
+                    action="{{ url_for('main.attendance_overview') }}"
+                >
+
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                        onchange="this.form.submit()"
+                    >
+
+                </form>
+
+            </div>
+
+
+            <!-- =================================================
+                 COURSE GRID
+                 ================================================= -->
+
+            <div class="form-section">
+
+                {% if courses %}
+
+                    <div class="course-grid">
+
+                        {% for course in courses %}
+
+                            <div class="course-card">
+
+                                <div class="course-card-header">
+
+                                    <h3>
+                                        {{ course.course_name }}
+                                    </h3>
+
+                                    <div class="course-card-id">
+                                        {{ course.course_id }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="course-card-body">
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Present
+                                        </span>
+
+                                        <span>
+                                            {{ course.present }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Absent
+                                        </span>
+
+                                        <span>
+                                            {{ course.absent }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Late
+                                        </span>
+
+                                        <span>
+                                            {{ course.late }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Not yet marked
+                                        </span>
+
+                                        <span
+                                            class="{% if course.unmarked > 0 %}course-card-teacher unassigned{% endif %}"
+                                        >
+                                            {{ course.unmarked }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="course-card-footer">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'main.course_info',
+                                            course_id=course.course_id,
+                                            date=selected_date.strftime('%Y-%m-%d')
+                                        ) }}"
+                                        class="action-btn"
+                                    >
+
+                                        {% if course.unmarked > 0 %}
+                                            Take Attendance
+                                        {% else %}
+                                            View
+                                        {% endif %}
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-courses">
+
+                        <p>
+                            No courses yet.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

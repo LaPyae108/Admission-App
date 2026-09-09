@@ -91,6 +91,20 @@
                 Students
             </a>
 
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link"
+            >
+                Teachers
+            </a>
+
+            <a
+                href="{{ url_for('main.attendance_overview') }}"
+                class="nav-link"
+            >
+                Attendance
+            </a>
+
         </nav>
 
     </aside>
@@ -121,8 +135,25 @@
 
             </div>
 
-            <div>
-                Admin
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
             </div>
 
         </header>
@@ -276,6 +307,65 @@
                                     name="nrc"
                                     value="{{ student.nrc or '' }}"
                                 >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Date of Birth
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="date_of_birth"
+                                    value="{% if student.date_of_birth %}{{ student.date_of_birth.strftime('%Y-%m-%d') }}{% endif %}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Father Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="father_name"
+                                    value="{{ student.father_name or '' }}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Education
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="education"
+                                    value="{{ student.education or '' }}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group full-width">
+
+                                <label>
+                                    Address
+                                </label>
+
+                                <textarea
+                                    name="address"
+                                    rows="2"
+                                >{{ student.address or '' }}</textarea>
 
                             </div>
 
@@ -440,6 +530,66 @@
                             <input
                                 type="text"
                                 value="{{ student.nrc or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Date of Birth
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{% if student.date_of_birth %}{{ student.date_of_birth.strftime('%d %b %Y') }}{% else %}-{% endif %}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Father Name
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.father_name or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Education
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.education or '-' }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group full-width">
+
+                            <label>
+                                Address
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ student.address or '-' }}"
                                 readonly
                             >
 
@@ -709,6 +859,14 @@
                                     </th>
 
                                     <th>
+                                        Attendance
+                                    </th>
+
+                                    <th>
+                                        Teacher
+                                    </th>
+
+                                    <th>
                                         Collected
                                     </th>
 
@@ -825,6 +983,85 @@
                                                 value="{{ result.result or '' }}"
                                                 form="edit-course-{{ result.id }}"
                                             >
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if result.attendance_rate is not none %}
+
+                                                <span
+                                                    {% if result.attendance_rate < 80 %}
+                                                        class="attendance-low"
+                                                    {% endif %}
+                                                >
+                                                    {{ result.attendance_rate }}%
+                                                    {% if result.attendance_rate < 80 %}
+                                                        ⚠
+                                                    {% endif %}
+                                                </span>
+
+                                            {% else %}
+                                                No data
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="inline-view">
+                                                {{ result.teacher.name if result.teacher else "Unassigned" }}
+                                            </span>
+
+                                            <form
+                                                class="inline-edit assign-teacher-form"
+                                                method="POST"
+                                                action="{{ url_for(
+                                                    'main.assign_teacher',
+                                                    course_id=result.course_id
+                                                ) }}"
+                                            >
+
+                                                <input
+                                                    type="hidden"
+                                                    name="student_id"
+                                                    value="{{ student.id }}"
+                                                >
+
+                                                <select
+                                                    name="teacher_id"
+                                                    required
+                                                >
+
+                                                    <option value="">
+                                                        Select
+                                                    </option>
+
+                                                    {% for teacher in teachers %}
+
+                                                        <option
+                                                            value="{{ teacher.id }}"
+                                                            {% if result.teacher_id == teacher.id %}
+                                                                selected
+                                                            {% endif %}
+                                                        >
+                                                            {{ teacher.name }}
+                                                        </option>
+
+                                                    {% endfor %}
+
+                                                </select>
+
+                                                <button
+                                                    type="submit"
+                                                    class="action-btn"
+                                                >
+                                                    Assign
+                                                </button>
+
+                                            </form>
 
                                         </td>
 

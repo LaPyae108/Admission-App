@@ -178,6 +178,10 @@
             gap: 7px;
         }
 
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
         .form-group label {
             font-weight: 600;
         }
@@ -387,6 +391,20 @@
             width: 100%;
         }
 
+        /* The assign-teacher form is its own small form embedded
+           in the Teacher cell - overrides the generic
+           .inline-edit { display: inline-block } so its select
+           and button sit side by side instead of stacking. */
+        .inline-editing .inline-edit.assign-teacher-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .assign-teacher-form select {
+            min-width: 130px;
+        }
+
         .course-actions,
         .payment-actions {
             white-space: nowrap;
@@ -478,6 +496,11 @@
         .payment.unpaid {
             background: #ffdada;
             color: #8a1c1c;
+        }
+
+        .attendance-low {
+            color: #b91c1c;
+            font-weight: 700;
         }
 
 

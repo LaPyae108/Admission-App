@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Log In
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #f4f6f8;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+
+            padding: 35px 30px;
+        }
+
+        .login-box h1 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .login-box p {
+            margin: 0 0 25px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .form-group input:focus {
+            outline: 2px solid #2563eb;
+            outline-offset: 1px;
+            border-color: #2563eb;
+        }
+
+        button {
+            width: 100%;
+            padding: 11px;
+            border: none;
+            border-radius: 5px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .error-message {
+            background: #ffdada;
+            color: #8a1c1c;
+            border: 1px solid #efaaaa;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h1>
+            School Admin
+        </h1>
+
+        <p>
+            Sign in to continue
+        </p>
+
+        {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('main.login') }}">
+
+            <input
+                type="hidden"
+                name="next"
+                value="{{ next or '' }}"
+            >
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    autofocus
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                >
+
+            </div>
+
+            <button type="submit">
+                Log In
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

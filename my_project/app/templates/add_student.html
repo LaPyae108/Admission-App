@@ -105,6 +105,20 @@
                 Students
             </a>
 
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link"
+            >
+                Teachers
+            </a>
+
+            <a
+                href="{{ url_for('main.attendance_overview') }}"
+                class="nav-link"
+            >
+                Attendance
+            </a>
+
         </nav>
 
     </aside>
@@ -132,8 +146,25 @@
 
             </div>
 
-            <div>
-                Admin
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
             </div>
 
         </header>
@@ -279,6 +310,78 @@
                         </div>
 
 
+                        <!-- DATE OF BIRTH -->
+
+                        <div class="form-group">
+
+                            <label for="date_of_birth">
+                                Date of Birth
+                            </label>
+
+                            <input
+                                type="date"
+                                id="date_of_birth"
+                                name="date_of_birth"
+                                value="{{ form_data.get('date_of_birth', '') }}"
+                            >
+
+                        </div>
+
+
+                        <!-- FATHER NAME -->
+
+                        <div class="form-group">
+
+                            <label for="father_name">
+                                Father Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="father_name"
+                                name="father_name"
+                                value="{{ form_data.get('father_name', '') }}"
+                            >
+
+                        </div>
+
+
+                        <!-- EDUCATION -->
+
+                        <div class="form-group">
+
+                            <label for="education">
+                                Education
+                            </label>
+
+                            <input
+                                type="text"
+                                id="education"
+                                name="education"
+                                placeholder="e.g. High School Graduate"
+                                value="{{ form_data.get('education', '') }}"
+                            >
+
+                        </div>
+
+
+                        <!-- ADDRESS -->
+
+                        <div class="form-group full-width">
+
+                            <label for="address">
+                                Address
+                            </label>
+
+                            <textarea
+                                id="address"
+                                name="address"
+                                rows="2"
+                            >{{ form_data.get('address', '') }}</textarea>
+
+                        </div>
+
+
                         <!-- STUDENT TYPE -->
 
                         <div class="form-group">
@@ -338,7 +441,7 @@
                         <div class="form-group">
 
                             <label for="intake_date">
-                                Admisssion Date
+                                Intake Date
                             </label>
 
                             <input
