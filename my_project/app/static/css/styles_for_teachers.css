@@ -325,7 +325,8 @@
 
         .course-card-id {
             color: #777;
-            font-size: 13px;
+            font-size: 15px;
+            font-weight: bold;
             font-family: "Courier New", monospace;
         }
 
