@@ -237,6 +237,111 @@
                  ROOM BOARD
                  ================================================= -->
 
+            {% if is_teacher_view %}
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Your Room Bookings
+                        </h3>
+
+                        <p>
+                            Just your own course(s)' room bookings
+                            for this day.
+                        </p>
+
+                    </div>
+
+
+                    {% if my_bookings %}
+
+                        <div class="table-container">
+
+                            <table class="student-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Period
+                                        </th>
+
+                                        <th>
+                                            Room
+                                        </th>
+
+                                        <th>
+                                            Course
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for booking in my_bookings %}
+
+                                        <tr>
+
+                                            <td>
+                                                {{ booking.period }}
+                                            </td>
+
+                                            <td>
+                                                {{ booking.room.name }}
+                                            </td>
+
+                                            <td>
+
+                                                {% if booking.course %}
+
+                                                    <a
+                                                        href="{{ url_for(
+                                                            'main.course_info',
+                                                            course_id=booking.course.course_id
+                                                        ) }}"
+                                                    >
+                                                        {{ booking.course.course_name }}
+                                                        ({{ booking.course.course_id }})
+                                                    </a>
+
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="no-courses">
+
+                            <p>
+                                No room booked for you on this day.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% else %}
+
             <div class="form-section">
 
                 <div class="form-section-header">
@@ -246,15 +351,9 @@
                     </h3>
 
                     <p>
-
-                        {% if is_teacher_view %}
-                            Every room's booking for each period of the day.
-                        {% else %}
-                            Pick a course for a slot to book it, or
-                            "- Free -" to clear it. Every room/period
-                            combination is shown, booked or not.
-                        {% endif %}
-
+                        Pick a course for a slot to book it, or
+                        "- Free -" to clear it. Every room/period
+                        combination is shown, booked or not.
                     </p>
 
                 </div>
@@ -320,30 +419,6 @@
 
                                         <td class="js-course-cell">
 
-                                            {% if is_teacher_view %}
-
-                                                {% if row.course %}
-
-                                                    <a
-                                                        href="{{ url_for(
-                                                            'main.course_info',
-                                                            course_id=row.course.course_id
-                                                        ) }}"
-                                                    >
-                                                        {{ row.course.course_name }}
-                                                        ({{ row.course.course_id }})
-                                                    </a>
-
-                                                {% else %}
-
-                                                    <span class="course-card-teacher unassigned">
-                                                        Free
-                                                    </span>
-
-                                                {% endif %}
-
-                                            {% else %}
-
                                                 <form
                                                     method="POST"
                                                     action="{{ url_for('main.set_room_period') }}"
@@ -397,8 +472,6 @@
 
                                                 </form>
 
-                                            {% endif %}
-
                                         </td>
 
                                         <td class="js-teacher-cell">
@@ -414,14 +487,6 @@
                                         {% if is_first_period_for_room %}
 
                                             <td rowspan="{{ periods|length }}">
-
-                                                {% if is_teacher_view %}
-
-                                                    <span class="js-info-readonly">
-                                                        {{ row.room.notes or "-" }}
-                                                    </span>
-
-                                                {% else %}
 
                                                     <form
                                                         method="POST"
@@ -451,8 +516,6 @@
 
                                                     </form>
 
-                                                {% endif %}
-
                                             </td>
 
                                         {% endif %}
@@ -472,12 +535,9 @@
                     <div class="no-courses">
 
                         <p>
-                            No rooms yet
-                            {% if not is_teacher_view %}
-                                - <a href="{{ url_for('main.add_room') }}">add one</a> to get started.
-                            {% else %}
-                                .
-                            {% endif %}
+                            No rooms yet -
+                            <a href="{{ url_for('main.add_room') }}">add one</a>
+                            to get started.
                         </p>
 
                     </div>
@@ -485,6 +545,8 @@
                 {% endif %}
 
             </div>
+
+            {% endif %}
 
         </section>
 
@@ -495,7 +557,13 @@
 
 <!-- =========================================================
      INLINE SLOT EDITING + LIVE UPDATES
+
+     Staff/admin only - teachers' simplified list has none of
+     the elements this targets, and /room-assign/data is no
+     longer reachable to teacher accounts anyway.
      ========================================================= -->
+
+{% if not is_teacher_view %}
 
 <script>
 
@@ -679,6 +747,8 @@
     setInterval(pollForUpdates, POLL_INTERVAL_MS);
 
 </script>
+
+{% endif %}
 
 </body>
 </html>

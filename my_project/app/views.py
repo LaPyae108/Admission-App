@@ -115,7 +115,6 @@ TEACHER_ALLOWED_ENDPOINTS = {
     "main.course_info",
     "main.take_attendance",
     "main.room_assign",
-    "main.room_assign_data",
 }
 
 
@@ -2337,17 +2336,77 @@ def add_room():
 @main.route("/room-assign")
 def room_assign():
     """
-    Room-scheduling board: pick a date, see every room x
-    period combination for that day (Morning/Afternoon/Evening
-    x every room) as one flat, scannable list - not just active
-    bookings, empty slots show too. Staff/admin edit a slot's
-    course inline via a dropdown; teachers get a read-only view
-    (see is_teacher_view below).
+    Staff/admin see the full room-scheduling board: every room
+    x period combination for the selected day, editable inline.
+    Teachers see a much simpler personal list - just their own
+    course(s)' room bookings for the day, not the whole
+    school's timetable (see is_teacher_view branch below).
     """
 
     selected_date = (
         parse_form_date(request.args, "date") or date.today()
     )
+
+    is_teacher_view = current_user.is_teacher()
+
+    courses = get_course_summaries()
+
+    courses_by_id = {
+        course["course_id"]: course
+        for course in courses
+    }
+
+    # --------------------------------------------------------
+    # TEACHER VIEW - a short personal list, not the full board
+    # --------------------------------------------------------
+
+    if is_teacher_view:
+
+        my_course_ids = {
+            course["course_id"]
+            for course in courses
+            if course["teacher"]
+            and course["teacher"].id == current_user.teacher_id
+        }
+
+        my_assignments = (
+            RoomAssignment.query
+            .filter(
+                RoomAssignment.date == selected_date,
+                RoomAssignment.course_id.in_(my_course_ids)
+            )
+            .all()
+            if my_course_ids
+            else []
+        )
+
+        period_order = {
+            period: index
+            for index, period in enumerate(ROOM_ASSIGNMENT_PERIODS)
+        }
+
+        my_bookings = sorted(
+            (
+                {
+                    "period": assignment.period,
+                    "room": assignment.room,
+                    "course": courses_by_id.get(assignment.course_id)
+                }
+                for assignment in my_assignments
+            ),
+            key=lambda booking: period_order.get(booking["period"], 99)
+        )
+
+        return render_template(
+            "room_assign.html",
+            is_teacher_view=True,
+            my_bookings=my_bookings,
+            selected_date=selected_date
+        )
+
+    # --------------------------------------------------------
+    # STAFF/ADMIN VIEW - the full board
+    # --------------------------------------------------------
 
     rooms = Room.query.order_by(Room.name).all()
 
@@ -2356,13 +2415,6 @@ def room_assign():
         for assignment in RoomAssignment.query.filter_by(
             date=selected_date
         ).all()
-    }
-
-    courses = get_course_summaries()
-
-    courses_by_id = {
-        course["course_id"]: course
-        for course in courses
     }
 
     # One row per (room, period) - exhaustive, not just the
@@ -2396,7 +2448,7 @@ def room_assign():
         board_rows=board_rows,
         periods=ROOM_ASSIGNMENT_PERIODS,
         selected_date=selected_date,
-        is_teacher_view=current_user.is_teacher()
+        is_teacher_view=False
     )
 
 
