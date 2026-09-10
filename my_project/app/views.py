@@ -4,7 +4,8 @@ from flask import (
     request,
     redirect,
     url_for,
-    abort
+    abort,
+    jsonify
 )
 from sqlalchemy.exc import SQLAlchemyError
 from collections import defaultdict
@@ -114,6 +115,7 @@ TEACHER_ALLOWED_ENDPOINTS = {
     "main.course_info",
     "main.take_attendance",
     "main.room_assign",
+    "main.room_assign_data",
 }
 
 
@@ -2372,6 +2374,84 @@ def room_assign():
         selected_date=selected_date,
         is_teacher_view=current_user.is_teacher()
     )
+
+
+@main.route("/room-assign/data")
+def room_assign_data():
+    """
+    JSON snapshot of every room's booking status for a given
+    date - polled by room_assign.html every ~10 seconds so
+    everyone viewing the page sees someone else's changes
+    without refreshing. Same underlying data as room_assign()
+    itself, just as JSON instead of a full page.
+    """
+
+    selected_date = (
+        parse_form_date(request.args, "date") or date.today()
+    )
+
+    rooms = Room.query.order_by(Room.name).all()
+
+    assignments_for_date = {
+        assignment.room_id: assignment
+        for assignment in RoomAssignment.query.filter_by(
+            date=selected_date
+        ).all()
+    }
+
+    courses_by_id = {
+        course["course_id"]: course
+        for course in get_course_summaries()
+    }
+
+    rooms_data = []
+
+    for room in rooms:
+
+        assignment = assignments_for_date.get(room.id)
+
+        course = (
+            courses_by_id.get(assignment.course_id)
+            if assignment
+            else None
+        )
+
+        rooms_data.append({
+            "id": room.id,
+            "information": room.notes or "",
+            "assignment_id": (
+                assignment.id if assignment else None
+            ),
+            "course_name": (
+                course["course_name"] if course else None
+            ),
+            "course_id": (
+                course["course_id"] if course else None
+            ),
+            "course_url": (
+                url_for(
+                    "main.course_info",
+                    course_id=course["course_id"]
+                )
+                if course
+                else None
+            ),
+            "unassign_url": (
+                url_for(
+                    "main.unassign_room",
+                    assignment_id=assignment.id
+                )
+                if assignment
+                else None
+            ),
+            "teacher_name": (
+                course["teacher"].name
+                if course and course["teacher"]
+                else None
+            )
+        })
+
+    return jsonify(rooms=rooms_data)
 
 
 @main.route(

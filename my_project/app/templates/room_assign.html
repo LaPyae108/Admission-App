@@ -400,7 +400,7 @@
 
                                 {% for room in rooms %}
 
-                                    <tr>
+                                    <tr data-room-id="{{ room.id }}">
 
                                         <td>
                                             {{ room.name }}
@@ -410,7 +410,9 @@
 
                                             {% if is_teacher_view %}
 
-                                                {{ room.notes or "-" }}
+                                                <span class="js-info-readonly">
+                                                    {{ room.notes or "-" }}
+                                                </span>
 
                                             {% else %}
 
@@ -432,6 +434,7 @@
                                                     <input
                                                         type="text"
                                                         name="information"
+                                                        class="js-info-input"
                                                         value="{{ room.notes or '' }}"
                                                         placeholder="e.g. Has a projector, 2nd floor - press Enter to save"
                                                         onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.form.submit(); }"
@@ -445,7 +448,7 @@
 
                                         </td>
 
-                                        <td>
+                                        <td class="js-assigned-cell">
 
                                             {% if room.assigned_course %}
 
@@ -467,7 +470,7 @@
 
                                         </td>
 
-                                        <td>
+                                        <td class="js-teacher-cell">
 
                                             {% if room.assigned_course and room.assigned_course.teacher %}
                                                 {{ room.assigned_course.teacher.name }}
@@ -479,7 +482,7 @@
 
                                         {% if not is_teacher_view %}
 
-                                            <td>
+                                            <td class="js-action-cell">
 
                                                 {% if room.assignment_for_date %}
 
@@ -539,6 +542,161 @@
     </main>
 
 </div>
+
+
+<!-- =========================================================
+     LIVE UPDATES
+     ========================================================= -->
+
+<script>
+
+    // Re-checks the server every 10 seconds and updates only
+    // the cells that changed - not a full page reload, so
+    // scroll position, form focus, and any in-progress typing
+    // are left alone.
+
+    const POLL_INTERVAL_MS = 10000;
+
+    const selectedDate = "{{ selected_date.strftime('%Y-%m-%d') }}";
+
+
+    function escapeHtml(value) {
+
+        const div = document.createElement("div");
+        div.textContent = value;
+        return div.innerHTML;
+
+    }
+
+
+    function updateRoomRow(room) {
+
+        const row = document.querySelector(
+            `tr[data-room-id="${room.id}"]`
+        );
+
+        if (!row) {
+            return;
+        }
+
+        // --------------------------------------------------------
+        // ASSIGNED COURSE CELL
+        // --------------------------------------------------------
+
+        const assignedCell = row.querySelector(".js-assigned-cell");
+
+        if (assignedCell) {
+
+            if (room.course_name) {
+
+                assignedCell.innerHTML =
+                    `<a href="${room.course_url}">` +
+                    `${escapeHtml(room.course_name)} ` +
+                    `(${escapeHtml(room.course_id)})</a>`;
+
+            } else {
+
+                assignedCell.innerHTML =
+                    '<span class="course-card-teacher unassigned">' +
+                    "Not booked</span>";
+
+            }
+
+        }
+
+        // --------------------------------------------------------
+        // TEACHER CELL
+        // --------------------------------------------------------
+
+        const teacherCell = row.querySelector(".js-teacher-cell");
+
+        if (teacherCell) {
+            teacherCell.textContent = room.teacher_name || "-";
+        }
+
+        // --------------------------------------------------------
+        // ACTION / UNASSIGN CELL
+        //
+        // Only present for staff/admin - teachers never have
+        // this cell in the DOM at all, so querySelector just
+        // returns null for them and this whole block is skipped.
+        // --------------------------------------------------------
+
+        const actionCell = row.querySelector(".js-action-cell");
+
+        if (actionCell) {
+
+            if (room.assignment_id) {
+
+                actionCell.innerHTML =
+                    `<form method="POST" action="${room.unassign_url}" ` +
+                    'style="display:inline;" ' +
+                    'onsubmit="return confirm(\'Free up this room for the day?\');">' +
+                    '<button type="submit" class="action-btn">Unassign</button>' +
+                    "</form>";
+
+            } else {
+
+                actionCell.innerHTML = "-";
+
+            }
+
+        }
+
+        // --------------------------------------------------------
+        // INFORMATION CELL
+        //
+        // Skipped entirely while the input is focused, so typing
+        // in progress is never overwritten by someone else's
+        // update landing mid-keystroke.
+        // --------------------------------------------------------
+
+        const infoInput = row.querySelector(".js-info-input");
+
+        if (infoInput && document.activeElement !== infoInput) {
+            infoInput.value = room.information;
+        }
+
+        const infoReadonly = row.querySelector(".js-info-readonly");
+
+        if (infoReadonly) {
+            infoReadonly.textContent = room.information || "-";
+        }
+
+    }
+
+
+    async function pollForUpdates() {
+
+        try {
+
+            const response = await fetch(
+                `/room-assign/data?date=${selectedDate}`
+            );
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+
+            data.rooms.forEach(updateRoomRow);
+
+        } catch (error) {
+
+            // A dropped request just means we try again next
+            // tick - not worth interrupting the person's work
+            // over a single missed poll.
+            console.warn("Room Assign live update skipped:", error);
+
+        }
+
+    }
+
+
+    setInterval(pollForUpdates, POLL_INTERVAL_MS);
+
+</script>
 
 </body>
 </html>
