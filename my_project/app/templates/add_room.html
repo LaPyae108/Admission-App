@@ -183,34 +183,17 @@
                     </div>
 
 
-                    <div class="form-group">
-
-                        <label for="capacity">
-                            Information
-                        </label>
-
-                        <input
-                            type="text"
-                            id="capacity"
-                            name="capacity"
-                            placeholder="Optional"
-                            value="{{ form_data.get('capacity', '') }}"
-                        >
-
-                    </div>
-
-
                     <div class="form-group full-width">
 
                         <label for="notes">
-                            Notes
+                            Information
                         </label>
 
                         <textarea
                             id="notes"
                             name="notes"
                             rows="2"
-                            placeholder="Optional - e.g. 'Has a projector', 'Ground floor'"
+                            placeholder="Optional - e.g. 'Has a projector', 'Ground floor'. Editable later, inline, from the Room Assign page."
                         >{{ form_data.get('notes', '') }}</textarea>
 
                     </div>

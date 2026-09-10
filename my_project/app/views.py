@@ -2287,16 +2287,8 @@ def add_room():
                 form_data=request.form
             )
 
-        capacity_raw = request.form.get("capacity", "").strip()
-
-        capacity = (
-            str(capacity_raw)
-            
-        )
-
         room = Room(
             name=name,
-            capacity=capacity,
             notes=request.form.get("notes", "").strip()
         )
 
@@ -2379,6 +2371,47 @@ def room_assign():
         courses=courses,
         selected_date=selected_date,
         is_teacher_view=current_user.is_teacher()
+    )
+
+
+@main.route(
+    "/rooms/<int:room_id>/update-information",
+    methods=["POST"]
+)
+def update_room_information(room_id):
+    """
+    Save the free-text Information cell for one room, edited
+    inline on the Room Assign table (not a separate form page -
+    the person just types in the cell and it submits on blur).
+    Not on TEACHER_ALLOWED_ENDPOINTS, so this stays staff/admin
+    only even though teachers can view the page itself.
+    """
+
+    room = Room.query.get_or_404(room_id)
+
+    room.notes = request.form.get("information", "").strip()
+
+    selected_date = (
+        parse_form_date(request.form, "date") or date.today()
+    )
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=selected_date.strftime("%Y-%m-%d"),
+                error=f"Could not save that: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "main.room_assign",
+            date=selected_date.strftime("%Y-%m-%d")
+        )
     )
 
 

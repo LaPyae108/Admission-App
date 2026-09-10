@@ -639,11 +639,6 @@ class Room(db.Model):
         nullable=False
     )
 
-    capacity = db.Column(
-        db.String(100),
-        nullable=True
-    )
-
     notes = db.Column(
         db.Text,
         nullable=True

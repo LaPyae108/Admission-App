@@ -407,7 +407,42 @@
                                         </td>
 
                                         <td>
-                                            {{ room.capacity or "-" }}
+
+                                            {% if is_teacher_view %}
+
+                                                {{ room.notes or "-" }}
+
+                                            {% else %}
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'main.update_room_information',
+                                                        room_id=room.id
+                                                    ) }}"
+                                                    style="margin:0;"
+                                                >
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="date"
+                                                        value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                                                    >
+
+                                                    <input
+                                                        type="text"
+                                                        name="information"
+                                                        value="{{ room.notes or '' }}"
+                                                        placeholder="e.g. Has a projector, 2nd floor - press Enter to save"
+                                                        onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.form.submit(); }"
+                                                        style="width:100%; border:1px solid transparent; background:transparent; padding:4px 6px; font:inherit;"
+                                                        onfocus="this.style.border='1px solid #d8dee8'; this.style.background='#fff';"
+                                                    >
+
+                                                </form>
+
+                                            {% endif %}
+
                                         </td>
 
                                         <td>
