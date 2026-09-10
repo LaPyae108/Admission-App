@@ -87,6 +87,13 @@
 
             {% endif %}
 
+            <a
+                href="{{ url_for('main.room_assign') }}"
+                class="nav-link"
+            >
+                Room Assign
+            </a>
+
         </nav>
 
     </aside>
@@ -344,6 +351,26 @@
                                         >
 
                                             {{ course.teacher.name if course.teacher else "Unassigned" }}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="course-card-row">
+
+                                        <span>
+                                            Room Today
+                                        </span>
+
+                                        <span
+                                            class="course-card-teacher
+                                            {% if not course.room_today %}
+                                                unassigned
+                                            {% endif %}"
+                                        >
+
+                                            {{ course.room_today.name if course.room_today else "Not assigned" }}
 
                                         </span>
 

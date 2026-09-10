@@ -292,6 +292,10 @@
             min-width: 200px;
         }
 
+        .add-teacher-form .form-group.full-width {
+            flex: 1 1 100%;
+        }
+
 
         /* =========================================================
            COURSE GRID

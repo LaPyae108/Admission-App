@@ -613,3 +613,111 @@ class User(db.Model, UserMixin):
     def is_teacher(self):
 
         return self.role == "teacher"
+
+
+# ============================================================
+# ROOM
+#
+# A physical teaching space. Kept separate from RoomAssignment
+# below - a Room exists once and gets reused across many days,
+# while a RoomAssignment is one specific room-course-date
+# booking.
+# ============================================================
+
+class Room(db.Model):
+
+    __tablename__ = "rooms"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.String(50),
+        unique=True,
+        nullable=False
+    )
+
+    capacity = db.Column(
+        db.String(100),
+        nullable=True
+    )
+
+    notes = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    assignments = db.relationship(
+        "RoomAssignment",
+        back_populates="room",
+        cascade="all, delete-orphan"
+    )
+
+
+# ============================================================
+# ROOM ASSIGNMENT
+#
+# One room, booked for one course, on one day. course_id is a
+# free-text string (not a foreign key) for the same reason
+# StudentResult.course_id is - there's no separate Course
+# table, courses only exist as the course_id/course_name
+# repeated across StudentResult rows (see get_course_summaries
+# in views.py).
+# ============================================================
+
+class RoomAssignment(db.Model):
+
+    __tablename__ = "room_assignments"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    room_id = db.Column(
+        db.Integer,
+        db.ForeignKey("rooms.id"),
+        nullable=False
+    )
+
+    course_id = db.Column(
+        db.String(50),
+        nullable=False
+    )
+
+    date = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    room = db.relationship(
+        "Room",
+        back_populates="assignments"
+    )
+
+    __table_args__ = (
+
+        # No double-booking: a room can only be assigned to ONE
+        # course per day. This is the database-level backstop -
+        # the view also checks this explicitly first, so the
+        # person gets a clear message instead of a raw
+        # constraint-violation error.
+        db.UniqueConstraint(
+            "room_id",
+            "date",
+            name="uq_room_assignment_room_date"
+        ),
+
+    )

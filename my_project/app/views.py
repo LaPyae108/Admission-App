@@ -33,7 +33,9 @@ from app.models import (
     StudentResult,
     Teacher,
     Attendance,
-    User
+    User,
+    Room,
+    RoomAssignment
 )
 
 
@@ -111,6 +113,7 @@ TEACHER_ALLOWED_ENDPOINTS = {
     "main.teachers_ui",
     "main.course_info",
     "main.take_attendance",
+    "main.room_assign",
 }
 
 
@@ -1937,6 +1940,22 @@ def teachers_ui():
 
         teachers = Teacher.query.order_by(Teacher.name).all()
 
+    # Today's room, if one's been assigned - shown on every
+    # course card so a teacher (or staff) can see at a glance
+    # where a class is happening today without visiting the
+    # separate Room Assign page.
+    todays_room_assignments = {
+        assignment.course_id: assignment.room
+        for assignment in RoomAssignment.query.filter_by(
+            date=date.today()
+        ).all()
+    }
+
+    for course in courses:
+        course["room_today"] = todays_room_assignments.get(
+            course["course_id"]
+        )
+
     return render_template(
         "teachers_ui.html",
         courses=courses,
@@ -2229,4 +2248,240 @@ def attendance_overview():
         "attendance_overview.html",
         courses=courses,
         selected_date=selected_date
+    )
+
+
+# ============================================================
+# ADD ROOM
+# ============================================================
+
+@main.route(
+    "/rooms/add",
+    methods=["GET", "POST"]
+)
+def add_room():
+    """Create a new teaching room. A dedicated page, same shape as add_student.html, even though a room has far fewer fields."""
+
+    if request.method == "POST":
+
+        name = request.form.get("name", "").strip()
+
+        if not name:
+            return render_template(
+                "add_room.html",
+                error="Room name is required.",
+                form_data=request.form
+            )
+
+        if len(name) > 50:
+            return render_template(
+                "add_room.html",
+                error="Room name is too long (maximum 50 characters).",
+                form_data=request.form
+            )
+
+        if Room.query.filter_by(name=name).first():
+            return render_template(
+                "add_room.html",
+                error=f"A room named '{name}' already exists.",
+                form_data=request.form
+            )
+
+        capacity_raw = request.form.get("capacity", "").strip()
+
+        capacity = (
+            str(capacity_raw)
+            
+        )
+
+        room = Room(
+            name=name,
+            capacity=capacity,
+            notes=request.form.get("notes", "").strip()
+        )
+
+        db.session.add(room)
+
+        try:
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return render_template(
+                "add_room.html",
+                error=f"Could not save this room: {str(e)}",
+                form_data=request.form
+            )
+
+        return redirect(
+            url_for("main.room_assign", success="1")
+        )
+
+    return render_template(
+        "add_room.html",
+        error=None,
+        form_data={}
+    )
+
+
+# ============================================================
+# ROOM ASSIGN
+#
+# Which room each course is using on a given day. course_id is
+# free text (see RoomAssignment's own comment in models.py),
+# so "assigning a room" just means creating a row that links a
+# room_id + course_id + date together - it's not a real FK to
+# a Course table, because there isn't one.
+# ============================================================
+
+@main.route("/room-assign")
+def room_assign():
+    """Room-scheduling page: pick a date, see every room's status for that day. Staff/admin can book or unassign rooms; teachers get a read-only view (see is_teacher_view below)."""
+
+    selected_date = (
+        parse_form_date(request.args, "date") or date.today()
+    )
+
+    rooms = Room.query.order_by(Room.name).all()
+
+    assignments_for_date = {
+        assignment.room_id: assignment
+        for assignment in RoomAssignment.query.filter_by(
+            date=selected_date
+        ).all()
+    }
+
+    courses = get_course_summaries()
+
+    courses_by_id = {
+        course["course_id"]: course
+        for course in courses
+    }
+
+    # Attach the selected date's assignment (if any) directly
+    # onto each room object, same "not a real database column"
+    # pattern used for enrollment.attendance_status_today
+    # elsewhere - just convenient for the template to read.
+    for room in rooms:
+
+        assignment = assignments_for_date.get(room.id)
+
+        room.assignment_for_date = assignment
+
+        room.assigned_course = (
+            courses_by_id.get(assignment.course_id)
+            if assignment
+            else None
+        )
+
+    return render_template(
+        "room_assign.html",
+        rooms=rooms,
+        courses=courses,
+        selected_date=selected_date,
+        is_teacher_view=current_user.is_teacher()
+    )
+
+
+@main.route(
+    "/room-assign/assign",
+    methods=["POST"]
+)
+def assign_room():
+    """Book a room for a course on a specific date. Blocks outright if that room is already booked for that date - no double-booking."""
+
+    room_id = request.form.get("room_id", type=int)
+    course_id = request.form.get("course_id", "").strip()
+
+    assignment_date = parse_form_date(request.form, "date")
+
+    if not room_id or not course_id or not assignment_date:
+        return redirect(
+            url_for(
+                "main.room_assign",
+                error="Please choose a room, a course, and a date."
+            )
+        )
+
+    room = Room.query.get_or_404(room_id)
+
+    # Checked explicitly here (not just left to the database's
+    # unique constraint) so the person gets a clear, specific
+    # message instead of a raw constraint-violation error.
+    existing = RoomAssignment.query.filter_by(
+        room_id=room_id,
+        date=assignment_date
+    ).first()
+
+    if existing:
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=assignment_date.strftime("%Y-%m-%d"),
+                error=(
+                    f"{room.name} is already booked for "
+                    f"{assignment_date.strftime('%d %b %Y')}."
+                )
+            )
+        )
+
+    assignment = RoomAssignment(
+        room_id=room_id,
+        course_id=course_id,
+        date=assignment_date
+    )
+
+    db.session.add(assignment)
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=assignment_date.strftime("%Y-%m-%d"),
+                error=f"Could not save this assignment: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "main.room_assign",
+            date=assignment_date.strftime("%Y-%m-%d"),
+            success="1"
+        )
+    )
+
+
+@main.route(
+    "/room-assign/<int:assignment_id>/unassign",
+    methods=["POST"]
+)
+def unassign_room(assignment_id):
+    """Free up a room that was booked in error, or because a class was cancelled/moved."""
+
+    assignment = RoomAssignment.query.get_or_404(assignment_id)
+
+    assignment_date = assignment.date
+
+    db.session.delete(assignment)
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=assignment_date.strftime("%Y-%m-%d"),
+                error=f"Could not remove this assignment: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "main.room_assign",
+            date=assignment_date.strftime("%Y-%m-%d"),
+            success="1"
+        )
     )

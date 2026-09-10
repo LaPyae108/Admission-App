@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles_for_teachers.css') }}"
+    >
+
+    <title>
+        Room Assign
+    </title>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            {% if not is_teacher_view %}
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="nav-link"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="nav-link"
+                >
+                    Students
+                </a>
+
+            {% endif %}
+
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link"
+            >
+                {% if is_teacher_view %}
+                    My Courses
+                {% else %}
+                    Teachers
+                {% endif %}
+            </a>
+
+            {% if not is_teacher_view %}
+
+                <a
+                    href="{{ url_for('main.attendance_overview') }}"
+                    class="nav-link"
+                >
+                    Attendance
+                </a>
+
+            {% endif %}
+
+            <a
+                href="{{ url_for('main.room_assign') }}"
+                class="nav-link active"
+            >
+                Room Assign
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Room Assign
+                </h1>
+
+                <p>
+                    Which room each course is using, by day
+                </p>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <!-- =================================================
+                 MESSAGES
+                 ================================================= -->
+
+            {% if request.args.get("error") %}
+
+                <div class="error-message">
+                    {{ request.args.get("error") }}
+                </div>
+
+            {% endif %}
+
+            {% if request.args.get("success") %}
+
+                <div class="success-message">
+                    Saved.
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 PAGE HEADER + DATE PICKER
+                 ================================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        {{ selected_date.strftime("%d %b %Y") }}
+                    </h2>
+
+                    <p>
+                        {{ rooms|length }}
+                        room{% if rooms|length != 1 %}s{% endif %}
+                    </p>
+
+                </div>
+
+
+                <div style="display:flex; align-items:center; gap:12px;">
+
+                    <form
+                        method="GET"
+                        action="{{ url_for('main.room_assign') }}"
+                    >
+
+                        <input
+                            type="date"
+                            name="date"
+                            value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                            onchange="this.form.submit()"
+                        >
+
+                    </form>
+
+                    {% if not is_teacher_view %}
+
+                        <a
+                            href="{{ url_for('main.add_room') }}"
+                            class="action-btn"
+                        >
+                            + Add Room
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ASSIGN A ROOM
+                 ================================================= -->
+
+            {% if not is_teacher_view %}
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Book a Room
+                        </h3>
+
+                    <p>
+                        A room can only be booked for one course
+                        per day - trying to double-book shows an
+                        error instead of saving.
+                    </p>
+
+                </div>
+
+
+                {% if rooms and courses %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('main.assign_room') }}"
+                        class="add-teacher-form"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="date"
+                            value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                        >
+
+                        <div class="form-group">
+
+                            <label for="room_id">
+                                Room
+                            </label>
+
+                            <select
+                                id="room_id"
+                                name="room_id"
+                                required
+                            >
+
+                                {% for room in rooms %}
+
+                                    <option value="{{ room.id }}">
+                                        {{ room.name }}
+                                        {% if room.assignment_for_date %}
+                                            (booked)
+                                        {% endif %}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="course_id">
+                                Course
+                            </label>
+
+                            <select
+                                id="course_id"
+                                name="course_id"
+                                required
+                            >
+
+                                {% for course in courses %}
+
+                                    <option value="{{ course.course_id }}">
+                                        {{ course.course_name }} ({{ course.course_id }})
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+                            Book Room
+                        </button>
+
+                    </form>
+
+                {% elif not rooms %}
+
+                    <p>
+                        No rooms yet -
+                        <a href="{{ url_for('main.add_room') }}">add one</a>
+                        to get started.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        No courses yet - a course needs at least
+                        one enrolled student before it can be
+                        booked a room.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 ROOM STATUS TABLE
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Rooms
+                    </h3>
+
+                </div>
+
+
+                {% if rooms %}
+
+                    <div class="table-container">
+
+                        <table class="student-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Room
+                                    </th>
+
+                                    <th>
+                                        Information
+                                    </th>
+
+                                    <th>
+                                        Assigned Course
+                                    </th>
+
+                                    <th>
+                                        Teacher
+                                    </th>
+
+                                    {% if not is_teacher_view %}
+
+                                        <th>
+                                            Action
+                                        </th>
+
+                                    {% endif %}
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for room in rooms %}
+
+                                    <tr>
+
+                                        <td>
+                                            {{ room.name }}
+                                        </td>
+
+                                        <td>
+                                            {{ room.capacity or "-" }}
+                                        </td>
+
+                                        <td>
+
+                                            {% if room.assigned_course %}
+
+                                                <a
+                                                    href="{{ url_for(
+                                                        'main.course_info',
+                                                        course_id=room.assigned_course.course_id
+                                                    ) }}"
+                                                >
+                                                    {{ room.assigned_course.course_name }}
+                                                    ({{ room.assigned_course.course_id }})
+                                                </a>
+
+                                            {% else %}
+                                                <span class="course-card-teacher unassigned">
+                                                    Not booked
+                                                </span>
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+
+                                            {% if room.assigned_course and room.assigned_course.teacher %}
+                                                {{ room.assigned_course.teacher.name }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+
+                                        </td>
+
+                                        {% if not is_teacher_view %}
+
+                                            <td>
+
+                                                {% if room.assignment_for_date %}
+
+                                                    <form
+                                                        method="POST"
+                                                        action="{{ url_for(
+                                                            'main.unassign_room',
+                                                            assignment_id=room.assignment_for_date.id
+                                                        ) }}"
+                                                        style="display:inline;"
+                                                        onsubmit="return confirm('Free up this room for the day?');"
+                                                    >
+
+                                                        <button
+                                                            type="submit"
+                                                            class="action-btn"
+                                                        >
+                                                            Unassign
+                                                        </button>
+
+                                                    </form>
+
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            </td>
+
+                                        {% endif %}
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-courses">
+
+                        <p>
+                            No rooms yet.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
