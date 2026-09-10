@@ -16,7 +16,7 @@
     >
 
     <title>
-        Add Room
+        Settings
     </title>
 
 </head>
@@ -77,21 +77,17 @@
 
             <a
                 href="{{ url_for('main.room_assign') }}"
-                class="nav-link active"
+                class="nav-link"
             >
                 Room Assign
             </a>
 
-            {% if current_user.is_admin() %}
-
-                <a
-                    href="{{ url_for('main.settings') }}"
-                    class="nav-link"
-                >
-                    Settings
-                </a>
-
-            {% endif %}
+            <a
+                href="{{ url_for('main.settings') }}"
+                class="nav-link active"
+            >
+                Settings
+            </a>
 
         </nav>
 
@@ -109,11 +105,11 @@
             <div>
 
                 <h1>
-                    Add Room
+                    Settings
                 </h1>
 
                 <p>
-                    Register a new teaching room
+                    Manage student types
                 </p>
 
             </div>
@@ -144,68 +140,63 @@
 
         <section class="content">
 
+
+            {% if request.args.get("error") %}
+
+                <div class="error-message">
+                    {{ request.args.get("error") }}
+                </div>
+
+            {% endif %}
+
+            {% if request.args.get("success") %}
+
+                <div class="success-message">
+                    Saved.
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 ADD STUDENT TYPE
+                 ================================================= -->
+
             <div class="form-section">
 
                 <div class="form-section-header">
 
                     <h3>
-                        Room Details
+                        Add Student Type
                     </h3>
 
                     <p>
-                        Rooms added here become available to
-                        assign to courses on the Room Assign
-                        page.
+                        Student types show up in the type dropdown
+                        on Add Student and the Dashboard filter.
                     </p>
 
                 </div>
 
 
-                {% if error %}
-
-                    <div class="error-message">
-                        {{ error }}
-                    </div>
-
-                {% endif %}
-
-
                 <form
                     method="POST"
-                    action="{{ url_for('main.add_room') }}"
+                    action="{{ url_for('main.add_student_type') }}"
                     class="add-teacher-form"
                 >
 
                     <div class="form-group">
 
                         <label for="name">
-                            Room Name
+                            Type Name
                         </label>
 
                         <input
                             type="text"
                             id="name"
                             name="name"
-                            placeholder="e.g. Room 101"
-                            value="{{ form_data.get('name', '') }}"
+                            placeholder="e.g. Regular, VIP, Scholarship"
                             required
                         >
-
-                    </div>
-
-
-                    <div class="form-group full-width">
-
-                        <label for="notes">
-                            Information
-                        </label>
-
-                        <textarea
-                            id="notes"
-                            name="notes"
-                            rows="2"
-                            placeholder="Optional - e.g. 'Has a projector', 'Ground floor'. Editable later, inline, from the Room Assign page."
-                        >{{ form_data.get('notes', '') }}</textarea>
 
                     </div>
 
@@ -214,10 +205,84 @@
                         type="submit"
                         class="save-btn"
                     >
-                        Add Room
+                        Add
                     </button>
 
                 </form>
+
+            </div>
+
+
+            <!-- =================================================
+                 EXISTING STUDENT TYPES
+                 ================================================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <h3>
+                        Student Types
+                    </h3>
+
+                    <p>
+                        {{ student_types|length }}
+                        type{% if student_types|length != 1 %}s{% endif %}
+                    </p>
+
+                </div>
+
+
+                {% if student_types %}
+
+                    <div class="table-container">
+
+                        <table class="student-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Name
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for student_type in student_types %}
+
+                                    <tr>
+
+                                        <td>
+                                            {{ student_type.name }}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-courses">
+
+                        <p>
+                            No student types yet - add one above.
+                        </p>
+
+                    </div>
+
+                {% endif %}
 
             </div>
 

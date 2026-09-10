@@ -47,34 +47,63 @@
 
         <nav class="navigation">
 
-            <!--<a
-                href="{{ url_for('main.dashboard') }}"
-                class="nav-link"
-            >
-                Dashboard
-            </a>
+            {% if not is_teacher_view %}
 
-            <a
-                href="{{ url_for('main.dashboard') }}"
-                class="nav-link"
-            >
-                Students
-            </a>
-        -->
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="nav-link"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="{{ url_for('main.dashboard') }}"
+                    class="nav-link"
+                >
+                    Students
+                </a>
+
+            {% endif %}
 
             <a
                 href="{{ url_for('main.teachers_ui') }}"
                 class="nav-link active"
             >
-                Teachers
+                {% if is_teacher_view %}
+                    My Courses
+                {% else %}
+                    Teachers
+                {% endif %}
             </a>
-<!--
+
+            {% if not is_teacher_view %}
+
+                <a
+                    href="{{ url_for('main.attendance_overview') }}"
+                    class="nav-link"
+                >
+                    Attendance
+                </a>
+
+            {% endif %}
+
             <a
-                href="{{ url_for('main.attendance_overview') }}"
+                href="{{ url_for('main.room_assign') }}"
                 class="nav-link"
             >
-                Attendance
-            </a>-->
+                Room Assign
+            </a>
+
+            {% if current_user.is_admin() %}
+
+                <a
+                    href="{{ url_for('main.settings') }}"
+                    class="nav-link"
+                >
+                    Settings
+                </a>
+
+            {% endif %}
 
         </nav>
 

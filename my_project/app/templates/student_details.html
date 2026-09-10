@@ -105,6 +105,24 @@
                 Attendance
             </a>
 
+            <a
+                href="{{ url_for('main.room_assign') }}"
+                class="nav-link"
+            >
+                Room Assign
+            </a>
+
+            {% if current_user.is_admin() %}
+
+                <a
+                    href="{{ url_for('main.settings') }}"
+                    class="nav-link"
+                >
+                    Settings
+                </a>
+
+            {% endif %}
+
         </nav>
 
     </aside>

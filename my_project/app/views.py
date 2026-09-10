@@ -2070,7 +2070,8 @@ def course_info(course_id):
         teacher=teacher,
         enrollments=enrollments,
         selected_date=selected_date,
-        attendance_rate=attendance_rate
+        attendance_rate=attendance_rate,
+        is_teacher_view=current_user.is_teacher()
     )
 
 
@@ -2597,4 +2598,81 @@ def unassign_room(assignment_id):
             date=assignment_date.strftime("%Y-%m-%d"),
             success="1"
         )
+    )
+
+
+# ============================================================
+# SETTINGS
+#
+# Currently just student-type management - the only piece of
+# reference data in the app with no other page to manage it
+# from (unlike Teachers or Rooms, which each have their own
+# page). Admin-only, unlike Add Teacher/Add Room which any
+# logged-in staff can use.
+# ============================================================
+
+@main.route("/settings")
+@admin_required
+def settings():
+    """Admin settings page - currently just the student-type list and the form to add new ones."""
+
+    student_types = StudentType.query.order_by(StudentType.name).all()
+
+    return render_template(
+        "settings.html",
+        student_types=student_types
+    )
+
+
+@main.route(
+    "/student-types/add",
+    methods=["POST"]
+)
+@admin_required
+def add_student_type():
+    """Create a new student type. Admin only."""
+
+    name = request.form.get("name", "").strip()
+
+    if not name:
+        return redirect(
+            url_for(
+                "main.settings",
+                error="Student type name is required."
+            )
+        )
+
+    if len(name) > 50:
+        return redirect(
+            url_for(
+                "main.settings",
+                error="Student type name is too long (maximum 50 characters)."
+            )
+        )
+
+    if StudentType.query.filter_by(name=name).first():
+        return redirect(
+            url_for(
+                "main.settings",
+                error=f"'{name}' already exists."
+            )
+        )
+
+    student_type = StudentType(name=name)
+
+    db.session.add(student_type)
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.settings",
+                error=f"Could not save this student type: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for("main.settings", success="1")
     )

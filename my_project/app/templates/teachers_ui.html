@@ -94,6 +94,17 @@
                 Room Assign
             </a>
 
+            {% if current_user.is_admin() %}
+
+                <a
+                    href="{{ url_for('main.settings') }}"
+                    class="nav-link"
+                >
+                    Settings
+                </a>
+
+            {% endif %}
+
         </nav>
 
     </aside>
@@ -288,7 +299,7 @@
                                     </h3>
 
                                     <div class="course-card-id">
-                                        ({{ course.course_id }})
+                                        {{ course.course_id }}
                                     </div>
 
                                 </div>
