@@ -430,12 +430,6 @@ def get_payment_amount_in_course_currency(
 INVOICE_ID_OFFSET = 1
 LOW_ATTENDANCE_THRESHOLD = 80
 
-# Fixed set of named periods a room can be booked for, rather
-# than free-form start/end times - keeps "does this conflict?"
-# a simple lookup instead of interval-overlap math, at the cost
-# of not supporting arbitrary time ranges.
-ROOM_ASSIGNMENT_PERIODS = ["Morning", "Afternoon", "Evening"]
-
 
 # ============================================================
 # FIELD LENGTH LIMITS
@@ -2336,11 +2330,13 @@ def add_room():
 @main.route("/room-assign")
 def room_assign():
     """
-    Staff/admin see the full room-scheduling board: every room
-    x period combination for the selected day, editable inline.
-    Teachers see a much simpler personal list - just their own
-    course(s)' room bookings for the day, not the whole
-    school's timetable (see is_teacher_view branch below).
+    Whiteboard-style room schedule: a plain list of actual
+    bookings for the selected date, not a pre-filled grid - a
+    room with nothing written for it just doesn't appear, same
+    as a real whiteboard only shows what's been written on it.
+    Staff/admin can add, edit, and delete bookings inline.
+    Teachers get a simpler personal list - just their own
+    course(s)' bookings for the day (see is_teacher_view below).
     """
 
     selected_date = (
@@ -2375,27 +2371,20 @@ def room_assign():
                 RoomAssignment.date == selected_date,
                 RoomAssignment.course_id.in_(my_course_ids)
             )
+            .order_by(RoomAssignment.id)
             .all()
             if my_course_ids
             else []
         )
 
-        period_order = {
-            period: index
-            for index, period in enumerate(ROOM_ASSIGNMENT_PERIODS)
-        }
-
-        my_bookings = sorted(
-            (
-                {
-                    "period": assignment.period,
-                    "room": assignment.room,
-                    "course": courses_by_id.get(assignment.course_id)
-                }
-                for assignment in my_assignments
-            ),
-            key=lambda booking: period_order.get(booking["period"], 99)
-        )
+        my_bookings = [
+            {
+                "period": assignment.period,
+                "room": assignment.room,
+                "course": courses_by_id.get(assignment.course_id)
+            }
+            for assignment in my_assignments
+        ]
 
         return render_template(
             "room_assign.html",
@@ -2405,48 +2394,34 @@ def room_assign():
         )
 
     # --------------------------------------------------------
-    # STAFF/ADMIN VIEW - the full board
+    # STAFF/ADMIN VIEW - the whiteboard itself
     # --------------------------------------------------------
 
     rooms = Room.query.order_by(Room.name).all()
 
-    assignments_by_key = {
-        (assignment.room_id, assignment.period): assignment
-        for assignment in RoomAssignment.query.filter_by(
-            date=selected_date
-        ).all()
-    }
+    assignments = (
+        RoomAssignment.query
+        .filter_by(date=selected_date)
+        .join(Room)
+        .order_by(Room.name, RoomAssignment.id)
+        .all()
+    )
 
-    # One row per (room, period) - exhaustive, not just the
-    # slots that happen to be booked, so an empty room reads as
-    # clearly "free" rather than just being absent from the list.
-    board_rows = []
-
-    for room in rooms:
-
-        for period in ROOM_ASSIGNMENT_PERIODS:
-
-            assignment = assignments_by_key.get((room.id, period))
-
-            course = (
-                courses_by_id.get(assignment.course_id)
-                if assignment
-                else None
-            )
-
-            board_rows.append({
-                "room": room,
-                "period": period,
-                "assignment": assignment,
-                "course": course
-            })
+    bookings = [
+        {
+            "id": assignment.id,
+            "room": assignment.room,
+            "period": assignment.period,
+            "course": courses_by_id.get(assignment.course_id)
+        }
+        for assignment in assignments
+    ]
 
     return render_template(
         "room_assign.html",
         rooms=rooms,
         courses=courses,
-        board_rows=board_rows,
-        periods=ROOM_ASSIGNMENT_PERIODS,
+        bookings=bookings,
         selected_date=selected_date,
         is_teacher_view=False
     )
@@ -2455,137 +2430,67 @@ def room_assign():
 @main.route("/room-assign/data")
 def room_assign_data():
     """
-    JSON snapshot of the whole room x period board for a given
-    date - polled by room_assign.html every ~10 seconds so
-    everyone viewing the page sees someone else's changes
-    without refreshing. Same underlying data as room_assign()
-    itself, just as JSON instead of a full page.
+    JSON snapshot of the whiteboard for a given date - polled
+    by room_assign.html every ~10 seconds so everyone viewing
+    the page sees someone else's changes without refreshing.
+    Same underlying data as room_assign() itself, just as JSON.
     """
 
     selected_date = (
         parse_form_date(request.args, "date") or date.today()
     )
 
-    rooms = Room.query.order_by(Room.name).all()
-
-    assignments_by_key = {
-        (assignment.room_id, assignment.period): assignment
-        for assignment in RoomAssignment.query.filter_by(
-            date=selected_date
-        ).all()
-    }
-
     courses_by_id = {
         course["course_id"]: course
         for course in get_course_summaries()
     }
 
-    rooms_data = []
+    assignments = (
+        RoomAssignment.query
+        .filter_by(date=selected_date)
+        .join(Room)
+        .order_by(Room.name, RoomAssignment.id)
+        .all()
+    )
 
-    for room in rooms:
+    bookings_data = []
 
-        slots = {}
+    for assignment in assignments:
 
-        for period in ROOM_ASSIGNMENT_PERIODS:
+        course = courses_by_id.get(assignment.course_id)
 
-            assignment = assignments_by_key.get((room.id, period))
-
-            course = (
-                courses_by_id.get(assignment.course_id)
-                if assignment
+        bookings_data.append({
+            "id": assignment.id,
+            "room_name": assignment.room.name,
+            "period": assignment.period,
+            "course_name": (
+                course["course_name"] if course else None
+            ),
+            "course_id": assignment.course_id,
+            "course_url": (
+                url_for(
+                    "main.course_info",
+                    course_id=assignment.course_id
+                )
+                if course
+                else None
+            ),
+            "teacher_name": (
+                course["teacher"].name
+                if course and course["teacher"]
                 else None
             )
-
-            slots[period] = {
-                "course_id": (
-                    course["course_id"] if course else ""
-                ),
-                "course_name": (
-                    course["course_name"] if course else None
-                ),
-                "course_url": (
-                    url_for(
-                        "main.course_info",
-                        course_id=course["course_id"]
-                    )
-                    if course
-                    else None
-                ),
-                "teacher_name": (
-                    course["teacher"].name
-                    if course and course["teacher"]
-                    else None
-                )
-            }
-
-        rooms_data.append({
-            "id": room.id,
-            "information": room.notes or "",
-            "slots": slots
         })
 
-    return jsonify(rooms=rooms_data)
+    return jsonify(bookings=bookings_data)
 
 
 @main.route(
-    "/rooms/<int:room_id>/update-information",
+    "/room-assign/add",
     methods=["POST"]
 )
-def update_room_information(room_id):
-    """
-    Save the free-text Information cell for one room, edited
-    inline on the Room Assign board (not a separate form page -
-    the person just types in the cell and presses Enter to
-    save). Not on TEACHER_ALLOWED_ENDPOINTS, so this stays
-    staff/admin only even though teachers can view the page
-    itself.
-    """
-
-    room = Room.query.get_or_404(room_id)
-
-    room.notes = request.form.get("information", "").strip()
-
-    selected_date = (
-        parse_form_date(request.form, "date") or date.today()
-    )
-
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        return redirect(
-            url_for(
-                "main.room_assign",
-                date=selected_date.strftime("%Y-%m-%d"),
-                error=f"Could not save that: {str(e)}"
-            )
-        )
-
-    return redirect(
-        url_for(
-            "main.room_assign",
-            date=selected_date.strftime("%Y-%m-%d")
-        )
-    )
-
-
-@main.route(
-    "/room-assign/set",
-    methods=["POST"]
-)
-def set_room_period():
-    """
-    Book, change, or clear ONE room's ONE period on ONE date -
-    a single inline dropdown pick handles all three cases.
-    Picking a course when the slot is empty books it; picking a
-    different course when it's already booked replaces it;
-    picking "- Free -" clears it. Because a room+date+period
-    can only ever have one row (see the unique constraint on
-    RoomAssignment), there's no separate double-booking check
-    needed here the way the old day-level version required -
-    the dropdown structurally can't represent two bookings for
-    the same slot at once.
-    """
+def add_room_booking():
+    """Write a new entry on the whiteboard - a room, a free-text time period, and a course, for one date."""
 
     room_id = request.form.get("room_id", type=int)
     period = request.form.get("period", "").strip()
@@ -2593,44 +2498,31 @@ def set_room_period():
 
     assignment_date = parse_form_date(request.form, "date")
 
-    if (
-        not room_id
-        or period not in ROOM_ASSIGNMENT_PERIODS
-        or not assignment_date
-    ):
+    if not room_id or not period or not course_id or not assignment_date:
         return redirect(
             url_for(
                 "main.room_assign",
-                error="Invalid room, period, or date."
+                error="Please fill in room, time period, and course."
             )
         )
 
-    existing = RoomAssignment.query.filter_by(
+    if len(period) > 100:
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=assignment_date.strftime("%Y-%m-%d"),
+                error="Time period is too long (maximum 100 characters)."
+            )
+        )
+
+    booking = RoomAssignment(
         room_id=room_id,
-        date=assignment_date,
-        period=period
-    ).first()
+        period=period,
+        course_id=course_id,
+        date=assignment_date
+    )
 
-    if not course_id:
-
-        # Empty selection clears the slot.
-        if existing:
-            db.session.delete(existing)
-
-    elif existing:
-
-        existing.course_id = course_id
-
-    else:
-
-        db.session.add(
-            RoomAssignment(
-                room_id=room_id,
-                date=assignment_date,
-                period=period,
-                course_id=course_id
-            )
-        )
+    db.session.add(booking)
 
     try:
         db.session.commit()
@@ -2648,6 +2540,96 @@ def set_room_period():
         url_for(
             "main.room_assign",
             date=assignment_date.strftime("%Y-%m-%d"),
+            success="1"
+        )
+    )
+
+
+@main.route(
+    "/room-assign/<int:booking_id>/edit",
+    methods=["POST"]
+)
+def edit_room_booking(booking_id):
+    """Update an existing whiteboard entry's time period and/or course - like erasing and rewriting a line, in place."""
+
+    booking = RoomAssignment.query.get_or_404(booking_id)
+
+    period = request.form.get("period", "").strip()
+    course_id = request.form.get("course_id", "").strip()
+
+    selected_date = booking.date
+
+    if not period or not course_id:
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=selected_date.strftime("%Y-%m-%d"),
+                error="Time period and course can't be empty - delete the entry instead if it should be removed."
+            )
+        )
+
+    if len(period) > 100:
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=selected_date.strftime("%Y-%m-%d"),
+                error="Time period is too long (maximum 100 characters)."
+            )
+        )
+
+    booking.period = period
+    booking.course_id = course_id
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=selected_date.strftime("%Y-%m-%d"),
+                error=f"Could not save that: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "main.room_assign",
+            date=selected_date.strftime("%Y-%m-%d"),
+            success="1"
+        )
+    )
+
+
+@main.route(
+    "/room-assign/<int:booking_id>/delete",
+    methods=["POST"]
+)
+def delete_room_booking(booking_id):
+    """Erase a whiteboard entry entirely."""
+
+    booking = RoomAssignment.query.get_or_404(booking_id)
+
+    selected_date = booking.date
+
+    db.session.delete(booking)
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.room_assign",
+                date=selected_date.strftime("%Y-%m-%d"),
+                error=f"Could not remove that: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "main.room_assign",
+            date=selected_date.strftime("%Y-%m-%d"),
             success="1"
         )
     )

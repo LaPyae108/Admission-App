@@ -692,13 +692,16 @@ class RoomAssignment(db.Model):
         nullable=False
     )
 
-    # "Morning", "Afternoon", or "Evening" - see
-    # ROOM_ASSIGNMENT_PERIODS in views.py. A fixed, small set
-    # of named periods rather than free-form start/end times,
-    # so booking a slot is a dropdown pick with no time-overlap
-    # math needed to detect conflicts.
+    # Free text, typed by whoever's booking the room - e.g.
+    # "9:00 AM - 11:00 AM" or "Morning" or "Period 3". No fixed
+    # list of periods anymore, so there's no unique constraint
+    # here either: "9-11am" and "9:00 AM to 11:00 AM" are the
+    # same time to a person but different strings to a database,
+    # so conflicts can't be reliably detected automatically -
+    # same as a real whiteboard, avoiding double-booking is on
+    # whoever's writing, not the system.
     period = db.Column(
-        db.String(20),
+        db.String(100),
         nullable=False
     )
 
@@ -710,23 +713,4 @@ class RoomAssignment(db.Model):
     room = db.relationship(
         "Room",
         back_populates="assignments"
-    )
-
-    __table_args__ = (
-
-        # A room can have several different bookings on the
-        # same day now (a morning class and a separate evening
-        # class in the same room), as long as they're in
-        # different periods - this constraint just prevents the
-        # SAME room+date+period being double-booked, which the
-        # inline dropdown UI can't actually produce anyway
-        # (picking a new course for a slot updates that slot's
-        # one existing row rather than creating a second one).
-        db.UniqueConstraint(
-            "room_id",
-            "date",
-            "period",
-            name="uq_room_assignment_room_date_period"
-        ),
-
     )

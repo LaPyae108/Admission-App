@@ -125,7 +125,7 @@
                 </h1>
 
                 <p>
-                    Which room each course is using, by day and period
+                    A whiteboard for room bookings
                 </p>
 
             </div>
@@ -190,13 +190,15 @@
                         {{ selected_date.strftime("%d %b %Y") }}
                     </h2>
 
-                    <p>
-                        {{ rooms|length }}
-                        room{% if rooms|length != 1 %}s{% endif %}
-                        &middot;
-                        {{ periods|length }}
-                        periods each
-                    </p>
+                    {% if not is_teacher_view %}
+
+                        <p>
+                            {{ bookings|length }}
+                            booking{% if bookings|length != 1 %}s{% endif %}
+                            written for this day
+                        </p>
+
+                    {% endif %}
 
                 </div>
 
@@ -234,7 +236,7 @@
 
 
             <!-- =================================================
-                 ROOM BOARD
+                 TEACHER VIEW - simple personal list
                  ================================================= -->
 
             {% if is_teacher_view %}
@@ -266,11 +268,11 @@
                                     <tr>
 
                                         <th>
-                                            Period
+                                            Room
                                         </th>
 
                                         <th>
-                                            Room
+                                            Time Period
                                         </th>
 
                                         <th>
@@ -289,11 +291,11 @@
                                         <tr>
 
                                             <td>
-                                                {{ booking.period }}
+                                                {{ booking.room.name }}
                                             </td>
 
                                             <td>
-                                                {{ booking.room.name }}
+                                                {{ booking.period }}
                                             </td>
 
                                             <td>
@@ -340,199 +342,122 @@
 
                 </div>
 
+
+            <!-- =================================================
+                 STAFF/ADMIN VIEW - the whiteboard
+                 ================================================= -->
+
             {% else %}
 
-            <div class="form-section">
+                <div class="form-section">
 
-                <div class="form-section-header">
+                    <div class="form-section-header">
 
-                    <h3>
-                        Timetable
-                    </h3>
+                        <h3>
+                            Write a New Booking
+                        </h3>
 
-                    <p>
-                        Pick a course for a slot to book it, or
-                        "- Free -" to clear it. Every room/period
-                        combination is shown, booked or not.
-                    </p>
-
-                </div>
-
-
-                {% if rooms %}
-
-                    <div class="table-container">
-
-                        <table class="student-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Room
-                                    </th>
-
-                                    <th>
-                                        Period
-                                    </th>
-
-                                    <th>
-                                        Course
-                                    </th>
-
-                                    <th>
-                                        Teacher
-                                    </th>
-
-                                    <th>
-                                        Information
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-                                {% for row in board_rows %}
-
-                                    {% set is_first_period_for_room = (loop.index0 % periods|length == 0) %}
-
-                                    <tr
-                                        data-room-id="{{ row.room.id }}"
-                                        data-period="{{ row.period }}"
-                                    >
-
-                                        {% if is_first_period_for_room %}
-
-                                            <td rowspan="{{ periods|length }}">
-                                                {{ row.room.name }}
-                                            </td>
-
-                                        {% endif %}
-
-                                        <td>
-                                            {{ row.period }}
-                                        </td>
-
-                                        <td class="js-course-cell">
-
-                                                <form
-                                                    method="POST"
-                                                    action="{{ url_for('main.set_room_period') }}"
-                                                    class="js-slot-form"
-                                                    style="margin:0;"
-                                                >
-
-                                                    <input
-                                                        type="hidden"
-                                                        name="room_id"
-                                                        value="{{ row.room.id }}"
-                                                    >
-
-                                                    <input
-                                                        type="hidden"
-                                                        name="period"
-                                                        value="{{ row.period }}"
-                                                    >
-
-                                                    <input
-                                                        type="hidden"
-                                                        name="date"
-                                                        value="{{ selected_date.strftime('%Y-%m-%d') }}"
-                                                    >
-
-                                                    <select
-                                                        name="course_id"
-                                                        class="js-course-select"
-                                                        data-original-value="{{ row.course.course_id if row.course else '' }}"
-                                                        onchange="handleSlotChange(this)"
-                                                    >
-
-                                                        <option value="">
-                                                            - Free -
-                                                        </option>
-
-                                                        {% for course in courses %}
-
-                                                            <option
-                                                                value="{{ course.course_id }}"
-                                                                {% if row.course and row.course.course_id == course.course_id %}
-                                                                    selected
-                                                                {% endif %}
-                                                            >
-                                                                {{ course.course_name }} ({{ course.course_id }})
-                                                            </option>
-
-                                                        {% endfor %}
-
-                                                    </select>
-
-                                                </form>
-
-                                        </td>
-
-                                        <td class="js-teacher-cell">
-
-                                            {% if row.course and row.course.teacher %}
-                                                {{ row.course.teacher.name }}
-                                            {% else %}
-                                                -
-                                            {% endif %}
-
-                                        </td>
-
-                                        {% if is_first_period_for_room %}
-
-                                            <td rowspan="{{ periods|length }}">
-
-                                                    <form
-                                                        method="POST"
-                                                        action="{{ url_for(
-                                                            'main.update_room_information',
-                                                            room_id=row.room.id
-                                                        ) }}"
-                                                        style="margin:0;"
-                                                    >
-
-                                                        <input
-                                                            type="hidden"
-                                                            name="date"
-                                                            value="{{ selected_date.strftime('%Y-%m-%d') }}"
-                                                        >
-
-                                                        <input
-                                                            type="text"
-                                                            name="information"
-                                                            class="js-info-input"
-                                                            value="{{ row.room.notes or '' }}"
-                                                            placeholder="e.g. Has a projector - press Enter to save"
-                                                            onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.form.submit(); }"
-                                                            style="width:100%; border:1px solid transparent; background:transparent; padding:4px 6px; font:inherit;"
-                                                            onfocus="this.style.border='1px solid #d8dee8'; this.style.background='#fff';"
-                                                        >
-
-                                                    </form>
-
-                                            </td>
-
-                                        {% endif %}
-
-                                    </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-
-                        </table>
+                        <p>
+                            Room, a time period in your own words
+                            (e.g. "9:00 AM - 11:00 AM"), and a
+                            course.
+                        </p>
 
                     </div>
 
-                {% else %}
 
-                    <div class="no-courses">
+                    {% if rooms and courses %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('main.add_room_booking') }}"
+                            class="add-teacher-form"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="date"
+                                value="{{ selected_date.strftime('%Y-%m-%d') }}"
+                            >
+
+                            <div class="form-group">
+
+                                <label for="room_id">
+                                    Room
+                                </label>
+
+                                <select
+                                    id="room_id"
+                                    name="room_id"
+                                    required
+                                >
+
+                                    {% for room in rooms %}
+
+                                        <option value="{{ room.id }}">
+                                            {{ room.name }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="period">
+                                    Time Period
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="period"
+                                    name="period"
+                                    placeholder="e.g. 9:00 AM - 11:00 AM"
+                                    maxlength="100"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="course_id">
+                                    Course
+                                </label>
+
+                                <select
+                                    id="course_id"
+                                    name="course_id"
+                                    required
+                                >
+
+                                    {% for course in courses %}
+
+                                        <option value="{{ course.course_id }}">
+                                            {{ course.course_name }} ({{ course.course_id }})
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="save-btn"
+                            >
+                                Assign Room
+                            </button>
+
+                        </form>
+
+                    {% elif not rooms %}
 
                         <p>
                             No rooms yet -
@@ -540,11 +465,196 @@
                             to get started.
                         </p>
 
+                    {% else %}
+
+                        <p>
+                            No courses yet - a course needs at
+                            least one enrolled student before it
+                            can be booked a room.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            The Board
+                        </h3>
+
+                        <p>
+                            Click a time period or course to edit
+                            it in place.
+                        </p>
+
                     </div>
 
-                {% endif %}
 
-            </div>
+                    {% if bookings %}
+
+                        <div class="table-container">
+
+                            <table class="student-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Room
+                                        </th>
+
+                                        <th>
+                                            Time Period
+                                        </th>
+
+                                        <th>
+                                            Course
+                                        </th>
+
+                                        <th>
+                                            Teacher
+                                        </th>
+
+                                        <th>
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for booking in bookings %}
+
+                                        <tr data-booking-id="{{ booking.id }}">
+
+                                            <td>
+                                                {{ booking.room.name }}
+                                            </td>
+
+                                            <td>
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'main.edit_room_booking',
+                                                        booking_id=booking.id
+                                                    ) }}"
+                                                    class="js-edit-form"
+                                                    style="margin:0;"
+                                                >
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="course_id"
+                                                        class="js-hidden-course"
+                                                        value="{{ booking.course.course_id if booking.course else '' }}"
+                                                    >
+
+                                                    <input
+                                                        type="text"
+                                                        name="period"
+                                                        class="js-period-input"
+                                                        value="{{ booking.period }}"
+                                                        maxlength="100"
+                                                        onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.form.submit(); }"
+                                                        style="width:100%; border:1px solid transparent; background:transparent; padding:4px 6px; font:inherit;"
+                                                        onfocus="this.style.border='1px solid #d8dee8'; this.style.background='#fff';"
+                                                    >
+
+                                                </form>
+
+                                            </td>
+
+                                            <td class="js-course-cell">
+
+                                                <select
+                                                    class="js-course-select"
+                                                    data-original-value="{{ booking.course.course_id if booking.course else '' }}"
+                                                    onchange="handleCourseChange(this)"
+                                                >
+
+                                                    {% for course in courses %}
+
+                                                        <option
+                                                            value="{{ course.course_id }}"
+                                                            {% if booking.course and booking.course.course_id == course.course_id %}
+                                                                selected
+                                                            {% endif %}
+                                                        >
+                                                            {{ course.course_name }} ({{ course.course_id }})
+                                                        </option>
+
+                                                    {% endfor %}
+
+                                                </select>
+
+                                            </td>
+
+                                            <td class="js-teacher-cell">
+
+                                                {% if booking.course and booking.course.teacher %}
+                                                    {{ booking.course.teacher.name }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            </td>
+
+                                            <td>
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'main.delete_room_booking',
+                                                        booking_id=booking.id
+                                                    ) }}"
+                                                    style="display:inline;"
+                                                    onsubmit="return confirm('Erase this booking?');"
+                                                >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn"
+                                                    >
+                                                        Delete Room
+                                                    </button>
+
+                                                </form>
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="no-courses">
+
+                            <p>
+                                Nothing written on the board for
+                                this day yet.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
 
             {% endif %}
 
@@ -556,11 +666,10 @@
 
 
 <!-- =========================================================
-     INLINE SLOT EDITING + LIVE UPDATES
+     INLINE EDITING + LIVE UPDATES
 
      Staff/admin only - teachers' simplified list has none of
-     the elements this targets, and /room-assign/data is no
-     longer reachable to teacher accounts anyway.
+     the elements this targets.
      ========================================================= -->
 
 {% if not is_teacher_view %}
@@ -568,38 +677,48 @@
 <script>
 
     // --------------------------------------------------------
-    // BOOKING/CHANGING/CLEARING A SLOT
+    // CHANGING A BOOKING'S COURSE
     //
-    // Every dropdown auto-submits on change. Replacing an
-    // ALREADY-booked slot with a different course (not just
-    // filling an empty one) asks for confirmation first, since
-    // that silently displaces whatever was there.
+    // The course dropdown submits its row's edit form on
+    // change. Since course_id lives as a hidden field inside
+    // the SAME form as the period text input, changing the
+    // dropdown copies its value into that hidden field first,
+    // then submits - so editing either field saves both.
     // --------------------------------------------------------
 
-    function handleSlotChange(select) {
+    function handleCourseChange(select) {
 
-        const originalValue = select.dataset.originalValue || "";
-        const newValue = select.value;
+        const row = select.closest("tr");
+        const form = row.querySelector(".js-edit-form");
+        const hiddenCourseField = form.querySelector(".js-hidden-course");
 
-        const wasBookedWithSomethingElse =
-            originalValue !== "" && originalValue !== newValue;
+        hiddenCourseField.value = select.value;
 
-        if (wasBookedWithSomethingElse) {
+        form.submit();
 
-            const confirmed = confirm(
-                "This slot is already booked. Replace it?"
-            );
+    }
 
-            if (!confirmed) {
-                select.value = originalValue;
+
+    // Pressing Enter in the period field should also carry the
+    // CURRENT course dropdown's value, not whatever was there
+    // when the page loaded.
+    document.querySelectorAll(".js-period-input").forEach(function (input) {
+
+        input.addEventListener("keydown", function (event) {
+
+            if (event.key !== "Enter") {
                 return;
             }
 
-        }
+            const row = input.closest("tr");
+            const select = row.querySelector(".js-course-select");
+            const hiddenCourseField = input.closest("form").querySelector(".js-hidden-course");
 
-        select.closest("form").submit();
+            hiddenCourseField.value = select.value;
 
-    }
+        });
+
+    });
 
 
     // --------------------------------------------------------
@@ -608,7 +727,9 @@
     // Re-checks the server every 10 seconds and updates only
     // the cells that changed - not a full page reload, so
     // scroll position and any in-progress typing/selecting are
-    // left alone.
+    // left alone. New/removed bookings still need a manual
+    // refresh (or a date-picker change) to appear, since rows
+    // aren't created or removed automatically mid-poll.
     // --------------------------------------------------------
 
     const POLL_INTERVAL_MS = 10000;
@@ -616,101 +737,41 @@
     const selectedDate = "{{ selected_date.strftime('%Y-%m-%d') }}";
 
 
-    function escapeHtml(value) {
-
-        const div = document.createElement("div");
-        div.textContent = value;
-        return div.innerHTML;
-
-    }
-
-
-    function updateSlotCell(room, period) {
+    function updateBookingRow(booking) {
 
         const row = document.querySelector(
-            `tr[data-room-id="${room.id}"][data-period="${period}"]`
+            'tr[data-booking-id="' + booking.id + '"]'
         );
 
         if (!row) {
             return;
         }
 
-        const slot = room.slots[period];
+        const periodInput = row.querySelector(".js-period-input");
 
-        // --------------------------------------------------------
-        // COURSE CELL
-        // --------------------------------------------------------
+        if (periodInput && document.activeElement !== periodInput) {
+            periodInput.value = booking.period;
+        }
 
         const select = row.querySelector(".js-course-select");
 
         if (select && document.activeElement !== select) {
 
-            select.value = slot.course_id;
-            select.dataset.originalValue = slot.course_id;
+            select.value = booking.course_id;
+            select.dataset.originalValue = booking.course_id;
 
-        }
+            const hiddenCourseField = row.querySelector(".js-hidden-course");
 
-        const cell = row.querySelector(".js-course-cell");
-
-        if (cell && !select) {
-
-            if (slot.course_name) {
-
-                cell.innerHTML =
-                    `<a href="${slot.course_url}">` +
-                    `${escapeHtml(slot.course_name)} ` +
-                    `(${escapeHtml(slot.course_id)})</a>`;
-
-            } else {
-
-                cell.innerHTML =
-                    '<span class="course-card-teacher unassigned">Free</span>';
-
+            if (hiddenCourseField) {
+                hiddenCourseField.value = booking.course_id;
             }
 
         }
 
-        // --------------------------------------------------------
-        // TEACHER CELL
-        // --------------------------------------------------------
-
         const teacherCell = row.querySelector(".js-teacher-cell");
 
         if (teacherCell) {
-            teacherCell.textContent = slot.teacher_name || "-";
-        }
-
-    }
-
-
-    function updateRoom(room) {
-
-        Object.keys(room.slots).forEach(function (period) {
-            updateSlotCell(room, period);
-        });
-
-        // --------------------------------------------------------
-        // INFORMATION CELL (once per room, not per slot)
-        // --------------------------------------------------------
-
-        const firstRow = document.querySelector(
-            `tr[data-room-id="${room.id}"]`
-        );
-
-        if (!firstRow) {
-            return;
-        }
-
-        const infoInput = firstRow.querySelector(".js-info-input");
-
-        if (infoInput && document.activeElement !== infoInput) {
-            infoInput.value = room.information;
-        }
-
-        const infoReadonly = firstRow.querySelector(".js-info-readonly");
-
-        if (infoReadonly) {
-            infoReadonly.textContent = room.information || "-";
+            teacherCell.textContent = booking.teacher_name || "-";
         }
 
     }
@@ -721,7 +782,7 @@
         try {
 
             const response = await fetch(
-                `/room-assign/data?date=${selectedDate}`
+                "/room-assign/data?date=" + selectedDate
             );
 
             if (!response.ok) {
@@ -730,7 +791,7 @@
 
             const data = await response.json();
 
-            data.rooms.forEach(updateRoom);
+            data.bookings.forEach(updateBookingRow);
 
         } catch (error) {
 
