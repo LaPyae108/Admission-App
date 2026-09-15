@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/stylestudent.css') }}"
+    >
+
+    <title>
+        Add Course - {{ student.full_name }}
+    </title>
+
+</head>
+
+
+{% macro account_options(selected) %}
+
+    <option value="" {% if not selected %}selected{% endif %}>
+        Select Account
+    </option>
+
+    {% for account_name in [
+        "AYA-Pay",
+        "Cash",
+        "KBZ-Bank",
+        "CB-Bank",
+        "Yoma-Bank",
+        "K-Pay",
+        "Wave-Pay",
+        "AYA-Bank"
+    ] %}
+
+        <option
+            value="{{ account_name }}"
+            {% if selected == account_name %}selected{% endif %}
+        >
+            {{ account_name }}
+        </option>
+
+    {% endfor %}
+
+{% endmacro %}
+
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>
+                School Admin
+            </h2>
+
+            <p>
+                Administration Portal
+            </p>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link"
+            >
+                Students
+            </a>
+
+            <a
+                href="{{ url_for('main.teachers_ui') }}"
+                class="nav-link"
+            >
+                Teachers
+            </a>
+
+            <a
+                href="{{ url_for('main.attendance_overview') }}"
+                class="nav-link"
+            >
+                Attendance
+            </a>
+
+            <a
+                href="{{ url_for('main.room_assign') }}"
+                class="nav-link"
+            >
+                Room Assign
+            </a>
+
+            {% if current_user.is_admin() %}
+
+                <a
+                    href="{{ url_for('main.settings') }}"
+                    class="nav-link"
+                >
+                    Settings
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Add Course
+                </h1>
+
+                <p>
+                    For {{ student.full_name }} ({{ student.student_id }})
+                </p>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+
+                <span style="font-weight:600;">
+                    {{ current_user.username }}
+                </span>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('main.logout') }}"
+                    style="margin:0;"
+                >
+                    <button
+                        type="submit"
+                        style="padding:7px 13px; background:#fff; border:1px solid #d8dee8; border-radius:6px; color:#374151; font-size:13px; font-weight:600; cursor:pointer;"
+                    >
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        New Course
+                    </h2>
+
+                    <p>
+                        Enroll this student in another course.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for(
+                        'main.student_details',
+                        student_id=student.id
+                    ) }}"
+                    class="cancel-btn"
+                >
+                    Back
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 MESSAGES
+                 ================================================= -->
+
+            {% if error %}
+
+                <div class="error-message">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'main.add_course',
+                    student_id=student.id
+                ) }}"
+            >
+
+                <!-- =================================================
+                     COURSE INFORMATION
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Course Information
+                        </h3>
+
+                        <p>
+                            Course Name and Course ID are required.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="course_name">
+                                Course Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="course_name"
+                                name="course_name"
+                                placeholder="Course name"
+                                value="{{ form_data.get('course_name', '') }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="course_id">
+                                Course ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="course_id"
+                                name="course_id"
+                                placeholder="Course ID"
+                                value="{{ form_data.get('course_id', '') }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="start_date">
+                                Start Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="start_date"
+                                name="start_date"
+                                value="{{ form_data.get('start_date', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="end_date">
+                                End Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="end_date"
+                                name="end_date"
+                                value="{{ form_data.get('end_date', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="result">
+                                Result
+                            </label>
+
+                            <input
+                                type="text"
+                                id="result"
+                                name="result"
+                                placeholder="Result"
+                                value="{{ form_data.get('result', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="collected">
+                                Collected
+                            </label>
+
+                            <select
+                                id="collected"
+                                name="collected"
+                            >
+
+                                <option value="no">
+                                    No
+                                </option>
+
+                                <option value="yes">
+                                    Yes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="teacher_id">
+                                Teacher
+                            </label>
+
+                            <select
+                                id="teacher_id"
+                                name="teacher_id"
+                            >
+
+                                <option value="">
+                                    Unassigned
+                                </option>
+
+                                {% for teacher in teachers %}
+
+                                    <option value="{{ teacher.id }}">
+                                        {{ teacher.name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     INITIAL PAYMENT (optional)
+                     ================================================= -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Initial Payment
+                        </h3>
+
+                        <p>
+                            Add a payment for this course now, or
+                            skip it - one can still be added later
+                            from its own section on the student's
+                            profile.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="include_payment">
+                                Include a Payment?
+                            </label>
+
+                            <select
+                                id="include_payment"
+                                name="include_payment"
+                                onchange="togglePaymentFields()"
+                            >
+
+                                <option value="no">
+                                    No - just add the course
+                                </option>
+
+                                <option value="yes">
+                                    Yes - record a payment too
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="form-grid"
+                        id="payment-fields"
+                        style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid #e1e6ee;"
+                    >
+
+                        <div class="form-group">
+
+                            <label for="total_amount">
+                                Total Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="total_amount"
+                                name="total_amount"
+                                placeholder="0.00"
+                                value="{{ form_data.get('total_amount', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="discount_type">
+                                Discount Type
+                            </label>
+
+                            <select
+                                id="discount_type"
+                                name="discount_type"
+                            >
+                                <option value="none">None</option>
+                                <option value="percentage">Percentage</option>
+                                <option value="promotion">Promotion (fixed amount)</option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="discount">
+                                Discount (%) / Promotion Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="discount"
+                                name="discount"
+                                placeholder="0"
+                                value="{{ form_data.get('discount', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="amount_paid">
+                                Amount Paid Now
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="amount_paid"
+                                name="amount_paid"
+                                placeholder="0.00"
+                                value="{{ form_data.get('amount_paid', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="payment_currency">
+                                Payment Currency
+                            </label>
+
+                            <select
+                                id="payment_currency"
+                                name="payment_currency"
+                            >
+                                <option value="MMK">MMK</option>
+                                <option value="USD">USD</option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="exchange_rate">
+                                Exchange Rate
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                min="0"
+                                id="exchange_rate"
+                                name="exchange_rate"
+                                placeholder="Only if paying in a different currency"
+                                value="{{ form_data.get('exchange_rate', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="account">
+                                Account
+                            </label>
+
+                            <select
+                                id="account"
+                                name="account"
+                            >
+
+                                {{ account_options(form_data.get('account')) }}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group full-width">
+
+                            <label for="payment_comment">
+                                Payment Comment
+                            </label>
+
+                            <input
+                                type="text"
+                                id="payment_comment"
+                                name="payment_comment"
+                                placeholder="Optional"
+                                value="{{ form_data.get('payment_comment', '') }}"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="save-btn"
+                    >
+                        Add Course
+                    </button>
+
+                    <a
+                        href="{{ url_for(
+                            'main.student_details',
+                            student_id=student.id
+                        ) }}"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    // The payment fields are DISABLED (not just hidden) when
+    // "No" is selected - a disabled field is left out of the
+    // form submission entirely, so toggling back to "No" after
+    // typing something in can't accidentally submit a stray
+    // payment. No server-side change needed for this: the
+    // backend already only creates a payment when it actually
+    // receives non-zero amounts.
+
+    function togglePaymentFields() {
+
+        const includePayment =
+            document.getElementById("include_payment");
+
+        const paymentFields =
+            document.getElementById("payment-fields");
+
+        if (!includePayment || !paymentFields) {
+            return;
+        }
+
+        const showFields =
+            includePayment.value === "yes";
+
+        paymentFields.style.display =
+            showFields ? "grid" : "none";
+
+        paymentFields
+            .querySelectorAll("input, select")
+            .forEach(function (field) {
+                field.disabled = !showFields;
+            });
+
+    }
+
+
+    togglePaymentFields();
+
+</script>
+
+</body>
+</html>

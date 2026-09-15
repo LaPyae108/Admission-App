@@ -56,6 +56,109 @@
 
 
 <!-- =========================================================
+     ON-SCREEN CONTROLS (never printed)
+     ========================================================= -->
+
+<div
+    class="no-print"
+    style="max-width: 900px; margin: 20px auto 0; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-family: Arial, Helvetica, sans-serif;"
+>
+
+    {% if request.args.get("error") %}
+
+        <div style="background:#ffdada; color:#8a1c1c; border:1px solid #efaaaa; padding:10px 14px; border-radius:6px; font-size:14px;">
+            {{ request.args.get("error") }}
+        </div>
+
+    {% endif %}
+
+    {% if request.args.get("success") %}
+
+        <div style="background:#d7f5e0; color:#1c6b3b; border:1px solid #a6e6bf; padding:10px 14px; border-radius:6px; font-size:14px;">
+            Saved.
+        </div>
+
+    {% endif %}
+
+    <form
+        method="GET"
+        action="{{ url_for('main.end_of_day') }}"
+    >
+
+        <input
+            type="date"
+            name="date"
+            value="{{ report_date.strftime('%Y-%m-%d') if report_date else '' }}"
+            onchange="this.form.submit()"
+        >
+
+    </form>
+
+
+    <div style="display:flex; align-items:center; gap:12px;">
+
+        {% if is_closed %}
+
+            <span style="color:#1c6b3b; font-weight:600; font-size:14px;">
+                Closed
+                {{ closed_report.closed_at.strftime("%d %b %Y, %H:%M") }}
+                {% if closed_report.closed_by %}
+                    by {{ closed_report.closed_by.username }}
+                {% endif %}
+            </span>
+
+        {% endif %}
+
+        <form
+            method="POST"
+            action="{{ url_for('main.close_end_of_day') }}"
+            {% if is_closed %}
+                onsubmit="return confirm('This day is already closed. Re-closing overwrites the previous snapshot with today\'s current numbers. Continue?');"
+            {% else %}
+                onsubmit="return confirm('Close this day? This saves a permanent snapshot of the totals below.');"
+            {% endif %}
+        >
+
+            <input
+                type="hidden"
+                name="date"
+                value="{{ report_date.strftime('%Y-%m-%d') if report_date else '' }}"
+            >
+
+            <button
+                type="submit"
+                style="padding:9px 16px; background:#2563eb; color:#fff; border:none; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer;"
+            >
+                {% if is_closed %}
+                    Re-close Day
+                {% else %}
+                    Close Day
+                {% endif %}
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% if is_closed %}
+
+    <div
+        class="no-print"
+        style="max-width: 900px; margin: 6px auto 0; padding: 0 20px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #6b7280;"
+    >
+        The totals below are the frozen snapshot from closing -
+        the transaction list further down stays live, so if a
+        payment dated this day gets edited afterward, the two
+        can drift apart. Re-close to bring the totals back in
+        sync.
+    </div>
+
+{% endif %}
+
+
+<!-- =========================================================
      REPORT INFORMATION
      ========================================================= -->
 
@@ -85,6 +188,23 @@
             <strong>
                 {{ report_date.strftime("%d/%m/%Y")
                    if report_date else "-" }}
+            </strong>
+
+        </div>
+
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                Status
+            </span>
+
+            <strong>
+                {% if is_closed %}
+                    Closed ({{ closed_report.closed_at.strftime("%d/%m/%Y %H:%M") }})
+                {% else %}
+                    Not yet closed
+                {% endif %}
             </strong>
 
         </div>

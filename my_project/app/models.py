@@ -289,6 +289,24 @@ class StudentPayment(db.Model):
         nullable=False
     )
 
+    # Which course enrollment this payment is for - nullable
+    # because existing payments predate this field and stay
+    # untagged (they keep showing under the combined,
+    # all-courses view exactly as before). New payments get
+    # tagged so a student taking two courses at once can have
+    # two genuinely separate balances instead of one combined
+    # pool that has to be tracked by hand.
+    student_result_id = db.Column(
+        db.Integer,
+        db.ForeignKey("student_results.id"),
+        nullable=True
+    )
+
+    student_result = db.relationship(
+        "StudentResult",
+        backref="payments"
+    )
+
     # --------------------------------------------------------
     # PAYMENT INFORMATION
     # --------------------------------------------------------
@@ -713,4 +731,98 @@ class RoomAssignment(db.Model):
     room = db.relationship(
         "Room",
         back_populates="assignments"
+    )
+
+
+# ============================================================
+# END OF DAY REPORT
+#
+# A permanent snapshot of one day's cash totals, saved when
+# staff explicitly "close" the day - not the same as the live
+# End of Day page, which recomputes totals fresh from
+# StudentPayment every time it's viewed. Once closed, this
+# record reflects what was true AT CLOSING TIME, even if
+# payments dated that day are edited afterward.
+# ============================================================
+
+class EndOfDayReport(db.Model):
+
+    __tablename__ = "end_of_day_reports"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    # One closing per calendar day - closing again overwrites
+    # the previous snapshot rather than creating a second one.
+    date = db.Column(
+        db.Date,
+        unique=True,
+        nullable=False
+    )
+
+    closed_by_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=True
+    )
+
+    closed_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    closed_by = db.relationship("User")
+
+    lines = db.relationship(
+        "EndOfDayReportLine",
+        back_populates="report",
+        cascade="all, delete-orphan"
+    )
+
+
+# ============================================================
+# END OF DAY REPORT LINE
+#
+# One (account, currency) total within a closed report - e.g.
+# "Cash, MMK, 450000". Grand totals aren't stored separately;
+# they're the sum of these lines grouped by currency, computed
+# at display time - storing both risked them silently drifting
+# apart if only one was ever updated.
+# ============================================================
+
+class EndOfDayReportLine(db.Model):
+
+    __tablename__ = "end_of_day_report_lines"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    report_id = db.Column(
+        db.Integer,
+        db.ForeignKey("end_of_day_reports.id"),
+        nullable=False
+    )
+
+    account = db.Column(
+        db.String(50),
+        nullable=False
+    )
+
+    currency = db.Column(
+        db.String(3),
+        nullable=False
+    )
+
+    amount = db.Column(
+        db.Numeric(16, 2),
+        nullable=False
+    )
+
+    report = db.relationship(
+        "EndOfDayReport",
+        back_populates="lines"
     )

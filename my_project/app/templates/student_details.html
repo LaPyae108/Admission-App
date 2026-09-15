@@ -702,144 +702,35 @@
 
             <div class="form-section">
 
-                <div class="form-section-header">
-
-                    <h3>
-                        Course Records
-                    </h3>
-
-                    <p>
-                        Courses and academic results.
-                    </p>
-
-                </div>
-
-
-                <!-- =================================================
-                     ADD COURSE
-                     ================================================= -->
-
-                <form
-                    method="POST"
-                    action="{{ url_for(
-                        'main.add_course',
-                        student_id=student.id
-                    ) }}"
+                <div
+                    class="form-section-header"
+                    style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px;"
                 >
 
-                    <div class="form-grid">
+                    <div>
 
+                        <h3>
+                            Course Records
+                        </h3>
 
-                        <div class="form-group">
-
-                            <label>
-                                Course Name
-                            </label>
-
-                            <input
-                                type="text"
-                                name="course_name"
-                                placeholder="Course name"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Course ID
-                            </label>
-
-                            <input
-                                type="text"
-                                name="course_id"
-                                placeholder="Course ID"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Start Date
-                            </label>
-
-                            <input
-                                type="date"
-                                name="start_date"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                End Date
-                            </label>
-
-                            <input
-                                type="date"
-                                name="end_date"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Result
-                            </label>
-
-                            <input
-                                type="text"
-                                name="result"
-                                placeholder="Result"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Collected
-                            </label>
-
-                            <select name="collected">
-
-                                <option value="no">
-                                    No
-                                </option>
-
-                                <option value="yes">
-                                    Yes
-                                </option>
-
-                            </select>
-
-                        </div>
+                        <p>
+                            Courses and academic results.
+                        </p>
 
                     </div>
 
+                    <a
+                        href="{{ url_for(
+                            'main.add_course',
+                            student_id=student.id
+                        ) }}"
+                        class="action-btn"
+                        style="white-space:nowrap;"
+                    >
+                        + Add Course
+                    </a>
 
-                    <div class="form-actions">
-
-                        <button
-                            type="submit"
-                            class="save-btn"
-                        >
-                            Add Course
-                        </button>
-
-                    </div>
-
-                </form>
+                </div>
 
 
                 <!-- =================================================
@@ -1224,7 +1115,14 @@
 
 
             <!-- =================================================
-                 PAYMENT RECORDS
+                 COURSE RECORDS SECTION STAYS THE SAME
+                 (see the section above - unchanged)
+                 ================================================= -->
+
+
+            <!-- =================================================
+                 TOTAL SUMMARY (new) - grand totals across every
+                 payment-record-section below, courses + General
                  ================================================= -->
 
             <div class="form-section">
@@ -1232,36 +1130,30 @@
                 <div class="form-section-header">
 
                     <h3>
-                        Payment Records
+                        Total Summary
                     </h3>
 
                     <p>
-                        Complete payment history for this student.
+                        Combined across every course's payment
+                        record section below.
                     </p>
 
                 </div>
 
-
-                <!-- =================================================
-                     PAYMENT SUMMARY
-                     ================================================= -->
-
                 <div class="payment-summary">
-
 
                     <div class="payment-summary-card">
 
                         <span>
-                            Total After Discount
+                            Total Receivable
                         </span>
 
                         <strong>
-                            {{ "{:,.2f}".format(total_payment) }}
+                            {{ "{:,.2f}".format(grand_total_receivable) }}
                             {{ student.currency or "MMK" }}
                         </strong>
 
                     </div>
-
 
                     <div class="payment-summary-card">
 
@@ -1270,12 +1162,11 @@
                         </span>
 
                         <strong>
-                            {{ "{:,.2f}".format(total_received) }}
+                            {{ "{:,.2f}".format(grand_total_received) }}
                             {{ student.currency or "MMK" }}
                         </strong>
 
                     </div>
-
 
                     <div class="payment-summary-card">
 
@@ -1284,7 +1175,7 @@
                         </span>
 
                         <strong>
-                            {{ "{:,.2f}".format(total_pending) }}
+                            {{ "{:,.2f}".format(grand_total_pending) }}
                             {{ student.currency or "MMK" }}
                         </strong>
 
@@ -1292,1023 +1183,940 @@
 
                 </div>
 
-
-                <!-- =================================================
-                     DISCOUNT SUMMARY
-                     ================================================= -->
-
-                {% if payments %}
-
-                    {% set original_payment = payments[0] %}
-
-                    <div class="discount-summary">
+            </div>
 
 
-                        <div class="discount-card">
+            <!-- =================================================
+                 PAYMENT RECORD SECTIONS - one per course, in a
+                 horizontally-scrollable strip ("slide bar") so
+                 several courses stay browsable side by side
+                 without the page growing endlessly wide.
+                 ================================================= -->
 
-                            <span>
-                                Original Course Total
-                            </span>
+            <div class="form-section form-section-payment-strip">
 
-                            <strong>
-
-                                {{ "{:,.2f}".format(
-                                    original_payment.total_amount or 0
-                                ) }}
-
-                                {{ student.currency or "MMK" }}
-
-                            </strong>
-
-                        </div>
-
-
-                        <div class="discount-card">
-
-                            <span>
-                                Discount Type
-                            </span>
-
-                            <strong>
-
-                                {% if original_payment.discount_type == "promotion" %}
-
-                                    Cash Promotion
-
-                                {% elif original_payment.discount_type == "percentage" %}
-
-                                    Percentage Discount
-
-                                {% else %}
-
-                                    None
-
-                                {% endif %}
-
-                            </strong>
-
-                        </div>
-
-
-                        <div class="discount-card">
-
-                            <span>
-                                Discount
-                            </span>
-
-                            <strong>
-
-                                {% if original_payment.discount_type == "promotion" %}
-
-                                    {{ "{:,.2f}".format(
-                                        original_payment.promotion_amount or 0
-                                    ) }}
-
-                                    {{ student.currency or "MMK" }}
-
-                                {% elif original_payment.discount_type == "percentage" %}
-
-                                    {{ "{:,.2f}".format(
-                                        original_payment.discount or 0
-                                    ) }}
-                                    %
-
-                                {% else %}
-
-                                    0
-
-                                {% endif %}
-
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                {% endif %}
-
-
-                <!-- =================================================
-                     ADD PAYMENT
-                     ================================================= -->
-
-                <div class="payment-add-form">
+                <div class="form-section-header">
 
                     <h3>
-                        Add Payment Record
+                        Payment Record Sections
                     </h3>
 
-
-                    <form
-                        method="POST"
-                        action="{{ url_for(
-                            'main.add_payment',
-                            student_id=student.id
-                        ) }}"
-                    >
-
-                        <div class="form-grid">
-
-
-                            <!-- PAYMENT DATE -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Payment Date
-                                </label>
-
-                                <input
-                                    type="date"
-                                    id="payment_date"
-                                    name="payment_date"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <!-- TOTAL AFTER DISCOUNT -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Total After Discount
-                                </label>
-
-                                <div class="amount-with-currency">
-
-                                    <input
-                                        type="number"
-                                        value="{{ total_payment }}"
-                                        readonly
-                                    >
-
-                                    <span class="currency">
-                                        {{ student.currency or "MMK" }}
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- CURRENT RECEIVABLE -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Current Receivable
-                                </label>
-
-                                <div class="amount-with-currency">
-
-                                    <input
-                                        type="number"
-                                        value="{{ total_pending }}"
-                                        readonly
-                                    >
-
-                                    <span class="currency">
-                                        {{ student.currency or "MMK" }}
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- PAYMENT ACCOUNT -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Payment Account
-                                </label>
-
-                                <select
-                                    name="account"
-                                    id="payment_account"
-                                    required
-                                >
-
-                                    {{ account_options(None) }}
-
-                                </select>
-
-                            </div>
-
-
-                            <!-- USE EXCHANGE RATE -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Use Exchange Rate?
-                                </label>
-
-                                <select
-                                    name="use_exchange_rate"
-                                    id="use_exchange_rate"
-                                    required
-                                >
-
-                                    <option value="no">
-                                        No
-                                    </option>
-
-                                    <option value="yes">
-                                        Yes
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <!-- NORMAL AMOUNT PAID -->
-
-                            <div
-                                class="form-group"
-                                id="normal-payment-group"
-                            >
-
-                                <label>
-                                    Amount Paid
-                                </label>
-
-                                <div class="amount-with-currency">
-
-                                    <input
-                                        type="number"
-                                        id="payment_paid"
-                                        name="amount_paid"
-                                        min="0"
-                                        step="0.01"
-                                        max="{{ total_pending }}"
-                                        placeholder="Enter payment amount"
-                                        required
-                                    >
-
-                                    <span class="currency">
-                                        {{ student.currency or "MMK" }}
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- EXCHANGE RATE -->
-
-                            <div
-                                class="form-group"
-                                id="exchange-rate-group"
-                                style="display:none;"
-                            >
-
-                                <label>
-                                    Exchange Rate
-                                </label>
-
-                                <input
-                                    type="number"
-                                    name="exchange_rate"
-                                    id="exchange_rate"
-                                    min="0"
-                                    step="0.01"
-                                    placeholder="Example: 3500"
-                                >
-
-                                <small>
-                                    Example: 1 USD = 3,500 MMK
-                                </small>
-
-                            </div>
-
-
-                            <!-- MMK AMOUNT PAID -->
-
-                            <div
-                                class="form-group"
-                                id="mmk-payment-group"
-                                style="display:none;"
-                            >
-
-                                <label>
-                                    MMK Amount Paid
-                                </label>
-
-                                <div class="amount-with-currency">
-
-                                    <input
-                                        type="number"
-                                        id="mmk_amount_paid"
-                                        name="mmk_amount_paid"
-                                        min="0"
-                                        step="0.01"
-                                        placeholder="Enter MMK amount"
-                                    >
-
-                                    <span class="currency">
-                                        MMK
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- CONVERTED USD -->
-
-                            <div
-                                class="form-group"
-                                id="converted-amount-group"
-                                style="display:none;"
-                            >
-
-                                <label>
-                                    Converted Amount
-                                </label>
-
-                                <div class="amount-with-currency">
-
-                                    <input
-                                        type="number"
-                                        id="converted_amount"
-                                        name="converted_amount"
-                                        readonly
-                                    >
-
-                                    <span class="currency">
-                                        USD
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- PENDING AFTER PAYMENT -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Pending After Payment
-                                </label>
-
-                                <div class="amount-with-currency">
-
-                                    <input
-                                        type="number"
-                                        id="payment_pending"
-                                        value="{{ total_pending }}"
-                                        readonly
-                                    >
-
-                                    <span class="currency">
-                                        {{ student.currency or "MMK" }}
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- PAYMENT COMMENT -->
-
-                            <div class="form-group">
-
-                                <label>
-                                    Payment Comment
-                                </label>
-
-                                <textarea
-                                    name="payment_comment"
-                                    rows="4"
-                                    placeholder="Enter comment..."
-                                ></textarea>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="form-actions">
-
-                            <button
-                                type="submit"
-                                class="save-btn"
-                            >
-                                Add Payment Record
-                            </button>
-
-                        </div>
-
-                    </form>
+                    <p>
+                        Scroll sideways to see every course. Each
+                        section adds a payment for that course only.
+                    </p>
 
                 </div>
 
 
-                <!-- =================================================
-                     PAYMENT HISTORY
-                     ================================================= -->
+                <div class="course-payment-strip-wrapper">
 
-                {% if payment_rows %}
+                    <button
+                        type="button"
+                        class="strip-nav-arrow strip-nav-left"
+                        onclick="showPaymentCard(-1)"
+                        aria-label="Previous course"
+                    >
+                        &#8249;
+                    </button>
 
-                    <div class="table-container">
+                    <div
+                        class="course-payment-viewport"
+                        id="course-payment-viewport"
+                    >
 
-                        <table class="student-table payment-table">
+                    {% for summary in course_payment_summaries %}
 
+                        <div
+                            class="course-payment-card"
+                            data-card-index="{{ loop.index0 }}"
+                            {% if not loop.first %}style="display:none;"{% endif %}
+                        >
 
-                            <thead>
+                            <div class="course-payment-card-title">
+                                {{ summary.result.course_name }}
+                                ({{ summary.result.course_id }})
+                            </div>
 
-                                <tr>
 
-                                    <th>#</th>
-                                    <th>Voucher ID</th>
-                                    <th>Payment Date</th>
-                                    <th>Original Amount</th>
-                                    <th>Discount Type</th>
-                                    <th>Discount</th>
-                                    <th>Discount Amount</th>
-                                    <th>Total After Discount</th>
-                                    <th>Current Receivable</th>
-                                    <th>Amount Paid</th>
-                                    <th>Pending</th>
-                                    <th>Status</th>
-                                    <th>Comment</th>
-                                    <th>Payment-Account</th>
-                                    <th>Receipt</th>
-                                    <th>Edit</th>
 
-                                </tr>
+                            <!-- TOTAL-AFTER-DISCOUNT / TOTAL RECEIVED / TOTAL PENDING -->
 
-                            </thead>
+                            <div class="course-payment-mini-summary">
 
+                                <div class="course-payment-mini-card">
+                                    <span>Total After Discount</span>
+                                    <strong>{{ "{:,.2f}".format(summary.total_payment) }}</strong>
+                                </div>
 
-                            <tbody>
+                                <div class="course-payment-mini-card">
+                                    <span>Total Received</span>
+                                    <strong>{{ "{:,.2f}".format(summary.total_received) }}</strong>
+                                </div>
 
+                                <div class="course-payment-mini-card">
+                                    <span>Total Pending</span>
+                                    <strong>{{ "{:,.2f}".format(summary.total_pending) }}</strong>
+                                </div>
 
-                                {% for row in payment_rows %}
+                            </div>
 
-                                    {% set payment = row.payment %}
 
+                            <!-- ORIGINAL-TOTAL-COST / DISCOUNT TYPE / DISCOUNT / DISCOUNT AMOUNT -->
 
-                                    <tr
-                                        id="payment-row-{{ payment.id }}"
-                                        class="payment-row"
-                                    >
+                            <div class="course-payment-mini-summary course-payment-mini-summary--four">
 
+                                <div class="course-payment-mini-card">
+                                    <span>Original Total Cost</span>
+                                    <strong>{{ "{:,.2f}".format(summary.original_total_cost) }}</strong>
+                                </div>
 
-                                        <!-- NUMBER -->
+                                <div class="course-payment-mini-card">
+                                    <span>Discount Type</span>
+                                    <strong>{{ summary.discount_type|title }}</strong>
+                                </div>
 
-                                        <td>
-                                            {{ loop.index }}
-                                        </td>
+                                <div class="course-payment-mini-card">
+                                    <span>Discount</span>
+                                    <strong>{{ summary.discount_display }}</strong>
+                                </div>
 
+                                <div class="course-payment-mini-card">
+                                    <span>Discount Amount</span>
+                                    <strong>{{ "{:,.2f}".format(summary.discount_amount) }}</strong>
+                                </div>
 
-                                        <!-- VOUCHER ID -->
+                            </div>
 
-                                        <td>
 
-                                            <span class="inline-view">
+                            <!-- ADD-PAYMENT-RECORD, scoped to this course -->
 
-                                                <strong>
-                                                    {{ payment.invoice_id or '-' }}
-                                                </strong>
+                            <div class="course-payment-subform">
 
-                                            </span>
+                                <div class="course-payment-subform-title">
+                                    Add Payment Record
+                                </div>
 
-                                            <input
-                                                class="inline-edit"
-                                                type="text"
-                                                name="invoice_id"
-                                                value="{{ payment.invoice_id or '' }}"
-                                                form="edit-payment-{{ payment.id }}"
-                                                required
-                                            >
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('main.add_payment', student_id=student.id) }}"
+                                    class="js-add-payment-form"
+                                    data-course-currency="{{ student.currency or 'MMK' }}"
+                                >
 
-                                        </td>
+                                    <input type="hidden" name="student_result_id" value="{{ summary.result.id }}">
 
+                                    <div class="form-grid">
 
-                                        <!-- PAYMENT DATE -->
-
-                                        <td>
-
-                                            <span class="inline-view">
-
-                                                {% if payment.payment_date %}
-
-                                                    {{ payment.payment_date.strftime(
-                                                        "%d %b %Y"
-                                                    ) }}
-
-                                                {% else %}
-
-                                                    -
-
-                                                {% endif %}
-
-                                            </span>
-
-
-                                            <input
-                                                class="inline-edit"
-                                                type="date"
-                                                name="payment_date"
-                                                value="{% if payment.payment_date %}{{ payment.payment_date.strftime('%Y-%m-%d') }}{% endif %}"
-                                                form="edit-payment-{{ payment.id }}"
-                                            >
-
-                                        </td>
-
-
-                                        <!-- ORIGINAL AMOUNT -->
-
-                                        <td>
-
-                                            <span class="inline-view">
-
-                                                {{ "{:,.2f}".format(
-                                                    payment.total_amount or 0
-                                                ) }}
-
-                                                {{ student.currency or "MMK" }}
-
-                                            </span>
-
-
-                                            <input
-                                                class="inline-edit payment-total-amount"
-                                                type="number"
-                                                name="total_amount"
-                                                value="{{ payment.total_amount or 0 }}"
-                                                min="0"
-                                                step="0.01"
-                                                data-payment-id="{{ payment.id }}"
-                                                form="edit-payment-{{ payment.id }}"
-                                                required
-                                            >
-
-                                        </td>
-
-
-                                        <!-- DISCOUNT TYPE -->
-
-                                        <td>
-
-                                            <span class="inline-view">
-
-                                                {% if payment.discount_type == "promotion" %}
-
-                                                    <span class="discount-badge">
-                                                        Cash Promotion
-                                                    </span>
-
-                                                {% elif payment.discount_type == "percentage" %}
-
-                                                    <span class="discount-badge">
-                                                        Percentage
-                                                    </span>
-
-                                                {% else %}
-
-                                                    -
-
-                                                {% endif %}
-
-                                            </span>
-
-
-                                            <select
-                                                class="inline-edit payment-discount-type"
-                                                name="discount_type"
-                                                data-payment-id="{{ payment.id }}"
-                                                form="edit-payment-{{ payment.id }}"
-                                            >
-
-                                                <option
-                                                    value="none"
-                                                    {% if payment.discount_type == "none" or not payment.discount_type %}
-                                                        selected
-                                                    {% endif %}
-                                                >
-                                                    None
-                                                </option>
-
-                                                <option
-                                                    value="percentage"
-                                                    {% if payment.discount_type == "percentage" %}
-                                                        selected
-                                                    {% endif %}
-                                                >
-                                                    Percentage
-                                                </option>
-
-                                                <option
-                                                    value="promotion"
-                                                    {% if payment.discount_type == "promotion" %}
-                                                        selected
-                                                    {% endif %}
-                                                >
-                                                    Cash Promotion
-                                                </option>
-
+                                        <div class="form-group">
+                                            <label>Payment Date</label>
+                                            <input type="date" name="payment_date" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Total After Discount</label>
+                                            <input type="text" value="{{ "{:,.2f}".format(summary.total_payment) }}" readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Current Receivable</label>
+                                            <input type="text" value="{{ "{:,.2f}".format(summary.total_pending) }}" readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Payment Account</label>
+                                            <select name="account">
+                                                {{ account_options() }}
                                             </select>
+                                        </div>
 
-                                        </td>
+                                        <div class="form-group">
+                                            <label>Payment Currency</label>
+                                            <select
+                                                name="payment_currency"
+                                                class="js-payment-currency"
+                                            >
+                                                <option value="{{ student.currency or 'MMK' }}" selected>
+                                                    {{ student.currency or 'MMK' }}
+                                                </option>
+                                                <option value="{{ 'MMK' if (student.currency or 'MMK') == 'USD' else 'USD' }}">
+                                                    {{ 'MMK' if (student.currency or 'MMK') == 'USD' else 'USD' }}
+                                                </option>
+                                            </select>
+                                            <small class="js-payment-currency-help">
+                                                Currency the student is using to pay.
+                                            </small>
+                                        </div>
 
+                                        <div
+                                            class="form-group js-exchange-rate-field"
+                                            style="display:none;"
+                                        >
+                                            <label>Exchange Rate</label>
+                                            <div class="exchange-rate-input">
+                                                <span class="exchange-prefix">1 USD =</span>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    name="exchange_rate"
+                                                    placeholder="Enter MMK rate"
+                                                    class="js-exchange-rate"
+                                                >
+                                                <span class="exchange-suffix">MMK</span>
+                                            </div>
+                                            <small>
+                                                Required when payment and course
+                                                currencies are different.
+                                            </small>
+                                        </div>
 
-                                        <!-- DISCOUNT -->
-
-                                        <td>
-
-                                            <span class="inline-view">
-
-                                                {% if payment.discount_type == "promotion" %}
-
-                                                    {{ "{:,.2f}".format(
-                                                        payment.promotion_amount or 0
-                                                    ) }}
-
-                                                    {{ student.currency or "MMK" }}
-
-                                                {% elif payment.discount_type == "percentage" %}
-
-                                                    {{ "{:,.2f}".format(
-                                                        payment.discount or 0
-                                                    ) }}%
-
-                                                {% else %}
-
-                                                    -
-
-                                                {% endif %}
-
-                                            </span>
-
-
+                                        <div class="form-group">
+                                            <label>Amount Paid</label>
                                             <input
-                                                class="inline-edit payment-discount"
                                                 type="number"
-                                                name="discount"
-                                                value="{% if payment.discount_type == 'promotion' %}{{ payment.promotion_amount or 0 }}{% else %}{{ payment.discount or 0 }}{% endif %}"
-                                                min="0"
                                                 step="0.01"
-                                                data-payment-id="{{ payment.id }}"
-                                                form="edit-payment-{{ payment.id }}"
-                                            >
-
-                                        </td>
-
-
-                                        <!-- DISCOUNT AMOUNT -->
-
-                                        <td>
-
-                                            <span
-                                                id="discount-amount-{{ payment.id }}"
-                                            >
-
-                                                {{ "{:,.2f}".format(
-                                                    payment.discount_amount or 0
-                                                ) }}{{ student.currency or "MMK" }}
-
-                                            </span>
-
-                                        </td>
-
-
-                                        <!-- TOTAL AFTER DISCOUNT -->
-
-                                        <td>
-
-                                            <strong
-                                                id="total-after-discount-{{ payment.id }}"
-                                            >
-
-                                                {{ "{:,.2f}".format(
-                                                    payment.total_after_discount or 0
-                                                ) }}{{ student.currency or "MMK" }}
-
-                                            </strong>
-
-                                        </td>
-
-
-                                        <!-- CURRENT RECEIVABLE -->
-
-                                        <td>
-
-                                            <strong
-                                                id="receivable-{{ payment.id }}"
-                                            >
-
-                                                {{ "{:,.2f}".format(
-                                                    row.current_receivable
-                                                ) }}{{ student.currency or "MMK" }}
-
-                                            </strong>
-
-                                        </td>
-
-
-                                        <!-- AMOUNT PAID -->
-
-                                        <td>
-
-                                            <span class="inline-view">
-
-                                                {{ "{:,.2f}".format(
-                                                    row.amount_paid or 0
-                                                ) }}{{ row.payment_currency or student.currency or "MMK" }}
-
-                                            </span>
-
-
-                                            <input
-                                                class="inline-edit payment-amount-paid"
-                                                type="number"
+                                                min="0"
                                                 name="amount_paid"
-                                                value="{{ row.amount_paid or 0 }}"
-                                                min="0"
-                                                step="0.01"
-                                                data-payment-id="{{ payment.id }}"
-                                                data-payment-currency="{{ row.payment_currency or student.currency or 'MMK' }}"
-                                                data-course-currency="{{ row.course_currency or student.currency or 'MMK' }}"
-                                                data-exchange-enabled="{{ 'yes' if payment.exchange_enabled else 'no' }}"
-                                                data-exchange-rate="{{ payment.exchange_rate or '' }}"
-                                                data-cumulative-paid-before="{{ row.cumulative_paid_before_this_row or 0 }}"
-                                                form="edit-payment-{{ payment.id }}"
                                                 required
+                                                class="js-amount-paid"
                                             >
+                                            <small class="js-amount-paid-help">
+                                                Amount received from the student.
+                                            </small>
+                                        </div>
 
-                                            <span class="inline-edit currency">
-                                                {{ row.payment_currency or student.currency or "MMK" }}
-                                            </span>
-
-                                        </td>
-
-
-                                        <!-- PENDING -->
-
-                                        <td>
-
-                                            <strong
-                                                id="pending-{{ payment.id }}"
+                                        <div class="form-group js-converted-amount-field" style="display:none;">
+                                            <label>Payment Value in Course Currency</label>
+                                            <input
+                                                type="text"
+                                                class="js-converted-amount"
+                                                readonly
                                             >
+                                        </div>
 
-                                                {{ "{:,.2f}".format(
-                                                    row.pending
-                                                ) }}
-
-                                                {{ student.currency or "MMK" }}
-
-                                            </strong>
-
-                                        </td>
-
-
-                                        <!-- STATUS -->
-
-                                        <td>
-
-                                            <span
-                                                id="status-{{ payment.id }}"
-                                                class="payment
-                                                {% if row.pending == 0 and row.cumulative_paid > 0 %}
-                                                    paid
-                                                {% elif row.amount_paid > 0 %}
-                                                    partial
-                                                {% else %}
-                                                    unpaid
-                                                {% endif %}"
+                                        <div class="form-group">
+                                            <label>Pending After This Payment</label>
+                                            <input
+                                                type="text"
+                                                class="js-pending-after"
+                                                data-current-receivable="{{ summary.total_pending }}"
+                                                value="{{ "{:,.2f}".format(summary.total_pending) }}"
+                                                readonly
                                             >
+                                        </div>
 
-                                                {% if row.pending == 0 and row.cumulative_paid > 0 %}
+                                        <div class="form-group">
+                                            <label>Payment Comment</label>
+                                            <input type="text" name="payment_comment" placeholder="Optional">
+                                        </div>
 
-                                                    Paid
+                                    </div>
 
-                                                {% elif row.amount_paid > 0 %}
+                                    <div class="form-actions">
+                                        <button type="submit" class="save-btn">Add Payment</button>
+                                    </div>
 
-                                                    Partial
+                                </form>
 
-                                                {% else %}
-
-                                                    Unpaid
-
-                                                {% endif %}
-
-                                            </span>
-
-                                        </td>
+                            </div>
 
 
-                                        <!-- COMMENT -->
+                            <!-- PAYMENT HISTORY for this course -->
 
-                                        <td>
+                            {% if summary.payment_rows %}
 
-                                            <span class="inline-view">
+                                <div class="table-container">
 
-                                                {% if payment.comment %}
+                                    <table class="student-table payment-table">
 
-                                                    {{ payment.comment }}
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Course</th>
+                                                <th>Voucher ID</th>
+                                                <th>Payment Date</th>
+                                                <th>Original Amount</th>
+                                                <th>Discount Type</th>
+                                                <th>Discount</th>
+                                                <th>Discount Amount</th>
+                                                <th>Total After Discount</th>
+                                                <th>Current Receivable</th>
+                                                <th>Amount Paid</th>
+                                                <th>Pending</th>
+                                                <th>Status</th>
+                                                <th>Comment</th>
+                                                <th>Payment-Account</th>
+                                                <th>Receipt</th>
+                                                <th>Edit</th>
+                                            </tr>
+                                        </thead>
 
-                                                {% else %}
+                                        <tbody>
 
-                                                    -
+                                            {% for row in summary.payment_rows %}
 
-                                                {% endif %}
+                                                {% set payment = row.payment %}
 
-                                            </span>
-
-
-                                            <textarea
-                                                class="inline-edit"
-                                                name="payment_comment"
-                                                rows="3"
-                                                style="min-width:180px;"
-                                                form="edit-payment-{{ payment.id }}"
-                                            >{{ payment.comment or '' }}</textarea>
-
-                                        </td>
-
-
-                                        <!-- PAYMENT ACCOUNT -->
-
-                                        <td>
-
-                                            <span class="inline-view">
-
-                                                {{ payment.account or '-' }}
-
-                                            </span>
-
-
-                                            <select
-                                                class="inline-edit"
-                                                name="account"
-                                                form="edit-payment-{{ payment.id }}"
-                                            >
-
-                                                {{ account_options(payment.account) }}
-
-                                            </select>
-
-                                        </td>
-
-
-                                        <!-- RECEIPT -->
-
-                                        <td>
-
-                                            <a
-                                                href="{{ url_for(
-                                                    'main.official_receipt',
-                                                    student_id=student.id,
-                                                    payment_id=payment.id
-                                                ) }}"
-                                                class="print-btn"
-                                                target="_blank"
-                                            >
-                                                Print
-                                            </a>
-
-                                        </td>
-
-
-                                        <!-- ACTION -->
-
-                                        <td class="payment-actions">
-
-
-                                            <div class="inline-view">
-
-                                                <button
-                                                    type="button"
-                                                    class="action-btn"
-                                                    onclick="enablePaymentEdit({{ payment.id }})"
+                                                <tr
+                                                    id="payment-row-{{ payment.id }}"
+                                                    class="payment-row"
                                                 >
-                                                    Edit
-                                                </button>
 
-                                            </div>
+                                                    <td>{{ loop.index }}</td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {% if payment.student_result_id %}
+                                                                {% for result in results %}
+                                                                    {% if result.id == payment.student_result_id %}{{ result.course_name }}{% endif %}
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                General
+                                                            {% endif %}
+                                                        </span>
+                                                        <select
+                                                            class="inline-edit"
+                                                            name="student_result_id"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                            <option value="" {% if not payment.student_result_id %}selected{% endif %}>
+                                                                General (not tied to a course)
+                                                            </option>
+                                                            {% for result in results %}
+                                                                <option
+                                                                    value="{{ result.id }}"
+                                                                    {% if payment.student_result_id == result.id %}selected{% endif %}
+                                                                >
+                                                                    {{ result.course_name }} ({{ result.course_id }})
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+
+                                                    <td>{{ payment.invoice_id }}</td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.payment_date.strftime("%d/%m/%Y") if payment.payment_date else "-" }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit"
+                                                            type="date"
+                                                            name="payment_date"
+                                                            value="{% if payment.payment_date %}{{ payment.payment_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ "{:,.2f}".format(payment.total_amount) }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit payment-total-amount"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            name="total_amount"
+                                                            value="{{ payment.total_amount }}"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.discount_type|title }}
+                                                        </span>
+                                                        <select
+                                                            class="inline-edit payment-discount-type"
+                                                            name="discount_type"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                            <option value="none" {% if payment.discount_type == "none" %}selected{% endif %}>None</option>
+                                                            <option value="percentage" {% if payment.discount_type == "percentage" %}selected{% endif %}>Percentage</option>
+                                                            <option value="promotion" {% if payment.discount_type == "promotion" %}selected{% endif %}>Promotion</option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {% if payment.discount_type == "percentage" %}
+                                                                {{ payment.discount }}%
+                                                            {% elif payment.discount_type == "promotion" %}
+                                                                {{ "{:,.2f}".format(payment.promotion_amount) }}
+                                                            {% else %}
+                                                                -
+                                                            {% endif %}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit payment-discount"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            name="discount"
+                                                            value="{% if payment.discount_type == 'promotion' %}{{ payment.promotion_amount }}{% else %}{{ payment.discount }}{% endif %}"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td id="discount-amount-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(payment.discount_amount) }}
+                                                    </td>
+
+                                                    <td id="total-after-discount-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(payment.total_after_discount) }}
+                                                    </td>
+
+                                                    <td id="receivable-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(row.current_receivable) }}
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ "{:,.2f}".format(row.amount_paid) }} {{ row.payment_currency }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit payment-amount-paid"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            name="amount_paid"
+                                                            value="{{ row.amount_paid }}"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            data-payment-currency="{{ row.payment_currency }}"
+                                                            data-course-currency="{{ row.course_currency }}"
+                                                            data-exchange-enabled="{{ 'yes' if payment.exchange_enabled else 'no' }}"
+                                                            data-exchange-rate="{{ payment.exchange_rate or 0 }}"
+                                                            data-cumulative-paid-before="{{ row.cumulative_paid_before_this_row }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td id="pending-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(row.pending) }}
+                                                    </td>
+
+                                                    <td>
+                                                        <span
+                                                            id="status-{{ payment.id }}"
+                                                            class="payment {% if row.pending <= 0 and row.amount_paid > 0 %}paid{% elif row.amount_paid > 0 %}partial{% else %}unpaid{% endif %}"
+                                                        >
+                                                            {% if row.pending <= 0 and row.amount_paid > 0 %}
+                                                                Paid
+                                                            {% elif row.amount_paid > 0 %}
+                                                                Partial
+                                                            {% else %}
+                                                                Unpaid
+                                                            {% endif %}
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.comment or "-" }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit"
+                                                            type="text"
+                                                            name="payment_comment"
+                                                            value="{{ payment.comment or '' }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.account or "-" }}
+                                                        </span>
+                                                        <select
+                                                            class="inline-edit"
+                                                            name="account"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                            {{ account_options(payment.account) }}
+                                                        </select>
+                                                    </td>
+
+                                                    <td>
+                                                        <a
+                                                            href="{{ url_for(
+                                                                'main.official_receipt',
+                                                                student_id=student.id,
+                                                                payment_id=payment.id
+                                                            ) }}"
+                                                            class="action-btn"
+                                                            target="_blank"
+                                                        >
+                                                            Receipt
+                                                        </a>
+                                                    </td>
+
+                                                    <td class="course-actions">
+
+                                                        <div class="inline-view">
+                                                            <button
+                                                                type="button"
+                                                                class="action-btn"
+                                                                onclick="enablePaymentEdit({{ payment.id }})"
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="inline-edit">
+
+                                                            <form
+                                                                id="edit-payment-{{ payment.id }}"
+                                                                method="POST"
+                                                                action="{{ url_for(
+                                                                    'main.edit_payment',
+                                                                    payment_id=payment.id
+                                                                ) }}"
+                                                            >
+                                                            </form>
+
+                                                            <button
+                                                                type="submit"
+                                                                form="edit-payment-{{ payment.id }}"
+                                                                class="save-btn"
+                                                            >
+                                                                Save
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
+                                                                class="cancel-btn"
+                                                                onclick="cancelPaymentEdit({{ payment.id }})"
+                                                            >
+                                                                Cancel
+                                                            </button>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            {% else %}
+
+                                <p class="course-payment-empty">
+                                    No payments yet for this course.
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
 
 
-                                            <div class="inline-edit">
+                    {% if general_payment_summary %}
 
+                        <div
+                            class="course-payment-card"
+                            data-card-index="{{ course_payment_summaries|length }}"
+                            {% if course_payment_summaries %}style="display:none;"{% endif %}
+                        >
 
-                                                <form
-                                                    id="edit-payment-{{ payment.id }}"
-                                                    method="POST"
-                                                    action="{{ url_for(
-                                                        'main.edit_payment',
-                                                        payment_id=payment.id
-                                                    ) }}"
+                            <div class="course-payment-card-title">
+                                General (not tied to a course)
+                            </div>
+
+                            <div class="course-payment-mini-summary">
+
+                                <div class="course-payment-mini-card">
+                                    <span>Total After Discount</span>
+                                    <strong>{{ "{:,.2f}".format(general_payment_summary.total_payment) }}</strong>
+                                </div>
+
+                                <div class="course-payment-mini-card">
+                                    <span>Total Received</span>
+                                    <strong>{{ "{:,.2f}".format(general_payment_summary.total_received) }}</strong>
+                                </div>
+
+                                <div class="course-payment-mini-card">
+                                    <span>Total Pending</span>
+                                    <strong>{{ "{:,.2f}".format(general_payment_summary.total_pending) }}</strong>
+                                </div>
+
+                            </div>
+
+                            <div class="course-payment-mini-summary course-payment-mini-summary--four">
+
+                                <div class="course-payment-mini-card">
+                                    <span>Original Total Cost</span>
+                                    <strong>{{ "{:,.2f}".format(general_payment_summary.original_total_cost) }}</strong>
+                                </div>
+
+                                <div class="course-payment-mini-card">
+                                    <span>Discount Type</span>
+                                    <strong>{{ general_payment_summary.discount_type|title }}</strong>
+                                </div>
+
+                                <div class="course-payment-mini-card">
+                                    <span>Discount</span>
+                                    <strong>{{ general_payment_summary.discount_display }}</strong>
+                                </div>
+
+                                <div class="course-payment-mini-card">
+                                    <span>Discount Amount</span>
+                                    <strong>{{ "{:,.2f}".format(general_payment_summary.discount_amount) }}</strong>
+                                </div>
+
+                            </div>
+
+                            <p class="course-payment-note">
+                                Predates course tagging - new payments
+                                should be added from a specific
+                                course's section above instead.
+                            </p>
+
+                            {% if general_payment_summary.payment_rows %}
+
+                                <div class="table-container">
+
+                                    <table class="student-table payment-table">
+
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Course</th>
+                                                <th>Voucher ID</th>
+                                                <th>Payment Date</th>
+                                                <th>Original Amount</th>
+                                                <th>Discount Type</th>
+                                                <th>Discount</th>
+                                                <th>Discount Amount</th>
+                                                <th>Total After Discount</th>
+                                                <th>Current Receivable</th>
+                                                <th>Amount Paid</th>
+                                                <th>Pending</th>
+                                                <th>Status</th>
+                                                <th>Comment</th>
+                                                <th>Payment-Account</th>
+                                                <th>Receipt</th>
+                                                <th>Edit</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            {% for row in general_payment_summary.payment_rows %}
+
+                                                {% set payment = row.payment %}
+
+                                                <tr
+                                                    id="payment-row-{{ payment.id }}"
+                                                    class="payment-row"
                                                 >
-                                                </form>
+
+                                                    <td>{{ loop.index }}</td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {% if payment.student_result_id %}
+                                                                {% for result in results %}
+                                                                    {% if result.id == payment.student_result_id %}{{ result.course_name }}{% endif %}
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                General
+                                                            {% endif %}
+                                                        </span>
+                                                        <select
+                                                            class="inline-edit"
+                                                            name="student_result_id"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                            <option value="" {% if not payment.student_result_id %}selected{% endif %}>
+                                                                General (not tied to a course)
+                                                            </option>
+                                                            {% for result in results %}
+                                                                <option
+                                                                    value="{{ result.id }}"
+                                                                    {% if payment.student_result_id == result.id %}selected{% endif %}
+                                                                >
+                                                                    {{ result.course_name }} ({{ result.course_id }})
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+
+                                                    <td>{{ payment.invoice_id }}</td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.payment_date.strftime("%d/%m/%Y") if payment.payment_date else "-" }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit"
+                                                            type="date"
+                                                            name="payment_date"
+                                                            value="{% if payment.payment_date %}{{ payment.payment_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ "{:,.2f}".format(payment.total_amount) }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit payment-total-amount"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            name="total_amount"
+                                                            value="{{ payment.total_amount }}"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.discount_type|title }}
+                                                        </span>
+                                                        <select
+                                                            class="inline-edit payment-discount-type"
+                                                            name="discount_type"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                            <option value="none" {% if payment.discount_type == "none" %}selected{% endif %}>None</option>
+                                                            <option value="percentage" {% if payment.discount_type == "percentage" %}selected{% endif %}>Percentage</option>
+                                                            <option value="promotion" {% if payment.discount_type == "promotion" %}selected{% endif %}>Promotion</option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {% if payment.discount_type == "percentage" %}
+                                                                {{ payment.discount }}%
+                                                            {% elif payment.discount_type == "promotion" %}
+                                                                {{ "{:,.2f}".format(payment.promotion_amount) }}
+                                                            {% else %}
+                                                                -
+                                                            {% endif %}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit payment-discount"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            name="discount"
+                                                            value="{% if payment.discount_type == 'promotion' %}{{ payment.promotion_amount }}{% else %}{{ payment.discount }}{% endif %}"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td id="discount-amount-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(payment.discount_amount) }}
+                                                    </td>
+
+                                                    <td id="total-after-discount-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(payment.total_after_discount) }}
+                                                    </td>
+
+                                                    <td id="receivable-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(row.current_receivable) }}
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ "{:,.2f}".format(row.amount_paid) }} {{ row.payment_currency }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit payment-amount-paid"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            name="amount_paid"
+                                                            value="{{ row.amount_paid }}"
+                                                            data-payment-id="{{ payment.id }}"
+                                                            data-payment-currency="{{ row.payment_currency }}"
+                                                            data-course-currency="{{ row.course_currency }}"
+                                                            data-exchange-enabled="{{ 'yes' if payment.exchange_enabled else 'no' }}"
+                                                            data-exchange-rate="{{ payment.exchange_rate or 0 }}"
+                                                            data-cumulative-paid-before="{{ row.cumulative_paid_before_this_row }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td id="pending-{{ payment.id }}">
+                                                        {{ "{:,.2f}".format(row.pending) }}
+                                                    </td>
+
+                                                    <td>
+                                                        <span
+                                                            id="status-{{ payment.id }}"
+                                                            class="payment {% if row.pending <= 0 and row.amount_paid > 0 %}paid{% elif row.amount_paid > 0 %}partial{% else %}unpaid{% endif %}"
+                                                        >
+                                                            {% if row.pending <= 0 and row.amount_paid > 0 %}
+                                                                Paid
+                                                            {% elif row.amount_paid > 0 %}
+                                                                Partial
+                                                            {% else %}
+                                                                Unpaid
+                                                            {% endif %}
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.comment or "-" }}
+                                                        </span>
+                                                        <input
+                                                            class="inline-edit"
+                                                            type="text"
+                                                            name="payment_comment"
+                                                            value="{{ payment.comment or '' }}"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="inline-view">
+                                                            {{ payment.account or "-" }}
+                                                        </span>
+                                                        <select
+                                                            class="inline-edit"
+                                                            name="account"
+                                                            form="edit-payment-{{ payment.id }}"
+                                                        >
+                                                            {{ account_options(payment.account) }}
+                                                        </select>
+                                                    </td>
+
+                                                    <td>
+                                                        <a
+                                                            href="{{ url_for(
+                                                                'main.official_receipt',
+                                                                student_id=student.id,
+                                                                payment_id=payment.id
+                                                            ) }}"
+                                                            class="action-btn"
+                                                            target="_blank"
+                                                        >
+                                                            Receipt
+                                                        </a>
+                                                    </td>
+
+                                                    <td class="course-actions">
+
+                                                        <div class="inline-view">
+                                                            <button
+                                                                type="button"
+                                                                class="action-btn"
+                                                                onclick="enablePaymentEdit({{ payment.id }})"
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="inline-edit">
+
+                                                            <form
+                                                                id="edit-payment-{{ payment.id }}"
+                                                                method="POST"
+                                                                action="{{ url_for(
+                                                                    'main.edit_payment',
+                                                                    payment_id=payment.id
+                                                                ) }}"
+                                                            >
+                                                            </form>
+
+                                                            <button
+                                                                type="submit"
+                                                                form="edit-payment-{{ payment.id }}"
+                                                                class="save-btn"
+                                                            >
+                                                                Save
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
+                                                                class="cancel-btn"
+                                                                onclick="cancelPaymentEdit({{ payment.id }})"
+                                                            >
+                                                                Cancel
+                                                            </button>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
 
 
-                                                <button
-                                                    type="submit"
-                                                    form="edit-payment-{{ payment.id }}"
-                                                    class="save-btn"
-                                                >
-                                                    Save
-                                                </button>
+                    {% if not course_payment_summaries and not general_payment_summary %}
 
+                        <p>
+                            {% if results %}
+                                None of this student's courses have
+                                a payment recorded yet.
+                            {% else %}
+                                No courses yet - add one above to
+                                start tracking payments.
+                            {% endif %}
+                        </p>
 
-                                                <button
-                                                    type="button"
-                                                    class="cancel-btn"
-                                                    onclick="cancelPaymentEdit({{ payment.id }})"
-                                                >
-                                                    Cancel
-                                                </button>
-
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-
-
-                            <!-- PAYMENT TOTAL -->
-
-                            <tfoot>
-
-                                <tr>
-
-                                    <th colspan="7">
-                                        Total
-                                    </th>
-
-                                    <th>
-
-                                        {{ "{:,.2f}".format(
-                                            total_payment
-                                        ) }}
-
-                                        {{ student.currency or "MMK" }}
-
-                                    </th>
-
-                                    <th>
-
-                                        {{ "{:,.2f}".format(
-                                            total_payment
-                                        ) }}
-
-                                        {{ student.currency or "MMK" }}
-
-                                    </th>
-
-                                    <th>
-
-                                        {{ "{:,.2f}".format(
-                                            total_received
-                                        ) }}
-
-                                        {{ student.currency or "MMK" }}
-
-                                    </th>
-
-                                    <th>
-
-                                        {{ "{:,.2f}".format(
-                                            total_pending
-                                        ) }}
-
-                                        {{ student.currency or "MMK" }}
-
-                                    </th>
-
-                                    <th></th>
-                                    <th></th>
-                                    <th colspan="3"></th>
-
-                                </tr>
-
-                            </tfoot>
-
-                        </table>
+                    {% endif %}
 
                     </div>
 
-                {% else %}
+                    {% set total_cards = course_payment_summaries|length + (1 if general_payment_summary else 0) %}
 
-                    <p>
-                        No payment records found.
-                    </p>
+                    {% if total_cards > 1 %}
 
-                {% endif %}
+                        <span
+                            class="strip-nav-indicator"
+                            id="course-payment-indicator"
+                        >
+                            1 / {{ total_cards }}
+                        </span>
+
+                    {% endif %}
+
+                    <button
+                        type="button"
+                        class="strip-nav-arrow strip-nav-right"
+                        onclick="showPaymentCard(1)"
+                        aria-label="Next course"
+                    >
+                        &#8250;
+                    </button>
+
+                </div>
 
             </div>
+
 
 
             <!-- =================================================
@@ -2431,6 +2239,351 @@
      ============================================================= -->
 
 <script>
+
+
+    /* =========================================================
+       STOP SCROLL-WHEEL FROM CHANGING AMOUNT PAID
+
+       Browsers silently increment/decrement a focused
+       type="number" input when the mouse wheel scrolls over
+       it - so scrolling the page while the cursor happens to
+       be sitting over an Amount Paid field quietly changes the
+       payment amount without the person noticing. Blurring the
+       field on wheel lets the page scroll normally instead of
+       the input eating the scroll. Covers both the Add Payment
+       Record form's amount field and the editable amount field
+       in each payment history row.
+       ========================================================= */
+
+    document.addEventListener(
+        "wheel",
+        function (event) {
+
+            const target = event.target;
+
+            if (
+                target.classList &&
+                (
+                    target.classList.contains("js-amount-paid") ||
+                    target.classList.contains("payment-amount-paid")
+                ) &&
+                document.activeElement === target
+            ) {
+                target.blur();
+            }
+
+        },
+        { passive: true }
+    );
+
+
+    /* =========================================================
+       ADD PAYMENT RECORD - CURRENCY LOGIC (matches Add Student)
+
+       Each course has its own Add Payment form (there can be
+       several on the page, one per course), so everything here
+       is scoped by walking up to the closest
+       .js-add-payment-form rather than targeting one specific
+       element by id - the same script works for all of them.
+       Mirrors add_student.html's conversion math exactly
+       (convertPaymentToCourseCurrency there): same currency =
+       no conversion; MMK->USD divides by the rate; USD->MMK
+       multiplies by it. The rate is always "1 USD = X MMK",
+       same convention as the rest of the app.
+       ========================================================= */
+
+    function convertToCourseCurrency(amount, courseCurrency, paymentCurrency, rate) {
+
+        if (courseCurrency === paymentCurrency) {
+            return amount;
+        }
+
+        if (courseCurrency === "USD" && paymentCurrency === "MMK") {
+            return rate > 0 ? amount / rate : 0;
+        }
+
+        if (courseCurrency === "MMK" && paymentCurrency === "USD") {
+            return rate > 0 ? amount * rate : 0;
+        }
+
+        return amount;
+
+    }
+
+
+    function formatMoney(value) {
+
+        return Number(value || 0).toLocaleString(
+            undefined,
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+    function updateExchangeRateVisibility(form) {
+
+        const courseCurrency =
+            form.dataset.courseCurrency;
+
+        const paymentCurrencySelect =
+            form.querySelector(".js-payment-currency");
+
+        const exchangeRateField =
+            form.querySelector(".js-exchange-rate-field");
+
+        const exchangeRateInput =
+            form.querySelector(".js-exchange-rate");
+
+        const convertedAmountField =
+            form.querySelector(".js-converted-amount-field");
+
+        if (!paymentCurrencySelect || !exchangeRateField) {
+            return;
+        }
+
+        const paymentCurrency =
+            paymentCurrencySelect.value;
+
+        const differentCurrency =
+            paymentCurrency !== courseCurrency;
+
+        exchangeRateField.style.display =
+            differentCurrency ? "block" : "none";
+
+        if (exchangeRateInput) {
+            exchangeRateInput.required = differentCurrency;
+        }
+
+        if (convertedAmountField) {
+            convertedAmountField.style.display =
+                differentCurrency ? "block" : "none";
+        }
+
+    }
+
+
+    function updatePendingAfterPreview(form) {
+
+        const courseCurrency =
+            form.dataset.courseCurrency;
+
+        const paymentCurrencySelect =
+            form.querySelector(".js-payment-currency");
+
+        const amountPaidField =
+            form.querySelector(".js-amount-paid");
+
+        const exchangeRateInput =
+            form.querySelector(".js-exchange-rate");
+
+        const convertedAmountInput =
+            form.querySelector(".js-converted-amount");
+
+        const pendingAfterField =
+            form.querySelector(".js-pending-after");
+
+        if (!amountPaidField || !pendingAfterField) {
+            return;
+        }
+
+        const paymentCurrency =
+            paymentCurrencySelect ? paymentCurrencySelect.value : courseCurrency;
+
+        const currentReceivable =
+            parseFloat(pendingAfterField.dataset.currentReceivable) || 0;
+
+        const amountPaid =
+            Math.max(parseFloat(amountPaidField.value) || 0, 0);
+
+        const rate =
+            Math.max(parseFloat(exchangeRateInput ? exchangeRateInput.value : 0) || 0, 0);
+
+        const amountInCourseCurrency =
+            convertToCourseCurrency(amountPaid, courseCurrency, paymentCurrency, rate);
+
+        const pendingAfter =
+            Math.max(currentReceivable - amountInCourseCurrency, 0);
+
+        if (convertedAmountInput) {
+            convertedAmountInput.value =
+                formatMoney(amountInCourseCurrency) + " " + courseCurrency;
+        }
+
+        pendingAfterField.value =
+            formatMoney(pendingAfter);
+
+    }
+
+
+    function refreshPaymentForm(form) {
+        updateExchangeRateVisibility(form);
+        updatePendingAfterPreview(form);
+    }
+
+
+    document.addEventListener("input", function (event) {
+
+        const form =
+            event.target.closest(".js-add-payment-form");
+
+        if (!form) {
+            return;
+        }
+
+        if (
+            event.target.classList.contains("js-amount-paid") ||
+            event.target.classList.contains("js-exchange-rate")
+        ) {
+            updatePendingAfterPreview(form);
+        }
+
+    });
+
+
+    document.addEventListener("change", function (event) {
+
+        if (!event.target.classList.contains("js-payment-currency")) {
+            return;
+        }
+
+        const form =
+            event.target.closest(".js-add-payment-form");
+
+        if (form) {
+            refreshPaymentForm(form);
+        }
+
+    });
+
+
+    document.querySelectorAll(".js-add-payment-form").forEach(refreshPaymentForm);
+
+
+    /* =========================================================
+       PAYMENT RECORD SECTIONS - ONE-AT-A-TIME NAVIGATION
+
+       Only one course's payment section is visible at a time,
+       at full width. The arrows switch which one is shown
+       (hide the current, show the next/previous) rather than
+       scrolling a row of cards - and disable themselves at the
+       first/last course instead of wrapping around.
+       ========================================================= */
+
+    let currentPaymentCardIndex = 0;
+
+
+    function showPaymentCard(direction) {
+
+        const viewport =
+            document.getElementById(
+                "course-payment-viewport"
+            );
+
+        if (!viewport) {
+            return;
+        }
+
+        const cards =
+            viewport.querySelectorAll(
+                ".course-payment-card"
+            );
+
+        if (cards.length === 0) {
+            return;
+        }
+
+        const newIndex =
+            currentPaymentCardIndex + direction;
+
+        // No wraparound - a click past the first or last course
+        // simply does nothing, matching the disabled arrow.
+        if (newIndex < 0 || newIndex >= cards.length) {
+            return;
+        }
+
+        cards[currentPaymentCardIndex].style.display =
+            "none";
+
+        cards[newIndex].style.display =
+            "block";
+
+        currentPaymentCardIndex = newIndex;
+
+        updatePaymentCardArrows(
+            cards.length
+        );
+
+    }
+
+
+    function updatePaymentCardArrows(totalCards) {
+
+        const leftArrow =
+            document.querySelector(
+                ".strip-nav-left"
+            );
+
+        const rightArrow =
+            document.querySelector(
+                ".strip-nav-right"
+            );
+
+        const indicator =
+            document.getElementById(
+                "course-payment-indicator"
+            );
+
+        if (leftArrow) {
+
+            leftArrow.disabled =
+                currentPaymentCardIndex <= 0;
+
+        }
+
+        if (rightArrow) {
+
+            rightArrow.disabled =
+                currentPaymentCardIndex >= totalCards - 1;
+
+        }
+
+        if (indicator) {
+
+            indicator.textContent =
+                (currentPaymentCardIndex + 1) +
+                " / " +
+                totalCards;
+
+        }
+
+    }
+
+
+    (function initPaymentCardArrows() {
+
+        const viewport =
+            document.getElementById(
+                "course-payment-viewport"
+            );
+
+        if (!viewport) {
+            return;
+        }
+
+        const totalCards =
+            viewport.querySelectorAll(
+                ".course-payment-card"
+            ).length;
+
+        updatePaymentCardArrows(
+            totalCards
+        );
+
+    })();
 
 
     /* =========================================================

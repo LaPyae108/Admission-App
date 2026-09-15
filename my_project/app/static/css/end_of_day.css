@@ -1,4 +1,44 @@
 /* =========================================================
+   DESIGN TOKENS
+   Same palette as styles.css (the dashboard) - both files
+   now draw from one shared source instead of two different
+   color systems, so this report visually matches the rest
+   of the app instead of looking like a separate product.
+========================================================= */
+
+:root {
+
+    --color-accent: #2563eb;
+    --color-accent-hover: #1d4ed8;
+    --color-accent-soft: #eff6ff;
+
+    /* Same dark navy as the dashboard's sidebar - used here
+       for the grand-total banner, tying the two pages'
+       "dark accent" together instead of end_of_day.html
+       inventing its own near-black (#111827). */
+    --color-dark: #102a43;
+
+    --color-bg: #f5f7fb;
+    --color-surface: #ffffff;
+    --color-border: #e3e8ef;
+    --color-border-soft: #edf0f4;
+
+    --color-text: #172033;
+    --color-text-muted: #718096;
+    --color-text-subtle: #64748b;
+    --color-text-body: #374151;
+
+    --radius-sm: 6px;
+    --radius-md: 7px;
+    --radius-lg: 9px;
+    --radius-pill: 20px;
+
+    --transition: 0.2s ease;
+
+}
+
+
+/* =========================================================
 GLOBAL
 ========================================================= */
 
@@ -10,17 +50,22 @@ body {
 margin: 0;
 padding: 0;
 
-background: #f3f4f6;
+background: var(--color-bg);
 
-color: #1f2937;
+color: var(--color-text);
 
 font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
     Arial,
     Helvetica,
     sans-serif;
 
 font-size: 14px;
 
+line-height: 1.5;
 
 }
 
@@ -28,7 +73,7 @@ font-size: 14px;
    this page is the print button, but it had no focus state
    at all, making it invisible to keyboard users. */
 :focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
 }
 
@@ -48,10 +93,10 @@ REPORT HEADER
 ========================================================= */
 
 .report-header {
-background: #ffffff;
+background: var(--color-surface);
 
 
-border-bottom: 4px solid #1f2937;
+border-bottom: 4px solid var(--color-dark);
 
 padding: 28px 30px;
 
@@ -68,7 +113,7 @@ font-weight: 700;
 
 letter-spacing: 0.3px;
 
-color: #111827;
+color: var(--color-text);
 
 
 }
@@ -77,7 +122,7 @@ color: #111827;
 margin: 5px 0;
 
 
-color: #4b5563;
+color: var(--color-text-muted);
 
 font-size: 14px;
 
@@ -88,7 +133,7 @@ font-size: 14px;
 font-weight: 600;
 
 
-color: #374151;
+color: var(--color-text-body);
 
 
 }
@@ -120,11 +165,11 @@ margin-top: 20px;
 
 padding: 22px 25px;
 
-background: #ffffff;
+background: var(--color-surface);
 
-border: 1px solid #e5e7eb;
+border: 1px solid var(--color-border);
 
-border-radius: 8px;
+border-radius: var(--radius-lg);
 
 
 }
@@ -145,7 +190,9 @@ font-weight: 700;
 
 letter-spacing: 1.5px;
 
-color: #6b7280;
+/* Blue accent, matching the dashboard's eyebrow-label
+   treatment (e.g. table header text) instead of plain gray. */
+color: var(--color-accent);
 
 
 }
@@ -156,7 +203,7 @@ margin: 0;
 
 font-size: 21px;
 
-color: #111827;
+color: var(--color-text);
 
 
 }
@@ -192,7 +239,7 @@ text-transform: uppercase;
 
 letter-spacing: 0.8px;
 
-color: #6b7280;
+color: var(--color-text-muted);
 
 
 }
@@ -201,7 +248,7 @@ color: #6b7280;
 font-size: 14px;
 
 
-color: #111827;
+color: var(--color-text);
 
 }
 
@@ -220,18 +267,17 @@ ACCOUNT SECTION
 .account-section {
 margin-bottom: 28px;
 
-background: #ffffff;
+background: var(--color-surface);
 
-border: 1px solid #e3e8ef;
+border: 1px solid var(--color-border);
 
-border-radius: 9px;
+border-radius: var(--radius-lg);
 
 overflow: hidden;
 
-/* Blue accent tying this back to the dashboard's brand
-   color, instead of the plain gray/black report look this
-   page used to share only with itself. */
-border-left: 3px solid #2563eb;
+/* Blue accent tying each account block back to the
+   dashboard's brand color. */
+border-left: 3px solid var(--color-accent);
 
 }
 
@@ -251,7 +297,7 @@ padding: 18px 22px;
 
 background: #f9fafb;
 
-border-bottom: 1px solid #e3e8ef;
+border-bottom: 1px solid var(--color-border);
 
 
 }
@@ -270,9 +316,7 @@ letter-spacing: 1.4px;
 
 text-transform: uppercase;
 
-/* Was a neutral gray - now the dashboard's accent blue,
-   same color used for its active nav state and buttons. */
-color: #2563eb;
+color: var(--color-accent);
 
 
 }
@@ -285,7 +329,7 @@ font-size: 18px;
 
 font-weight: 700;
 
-color: #172033;
+color: var(--color-text);
 
 
 }
@@ -296,14 +340,11 @@ padding: 5px 12px;
 
 border: none;
 
-border-radius: 20px;
+border-radius: var(--radius-pill);
 
-/* Matches styles.css's .status/.payment pill treatment -
-   a soft blue tint instead of plain white/gray, so this
-   reads as the same design system as the dashboard. */
-background: #eff6ff;
+background: var(--color-accent-soft);
 
-color: #2563eb;
+color: var(--color-accent);
 
 font-size: 11px;
 
@@ -336,8 +377,8 @@ overflow-x: auto;
 }
 
 .table-container::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
-    border-radius: 4px;
+    background-color: var(--color-border);
+    border-radius: var(--radius-sm);
 }
 
 .payment-table {
@@ -352,16 +393,16 @@ table-layout: auto;
 }
 
 .payment-table thead {
-background: #f3f4f6;
+background: #f8fafc;
 }
 
 .payment-table th {
 padding: 13px 14px;
 
 
-border-bottom: 2px solid #d1d5db;
+border-bottom: 2px solid var(--color-border);
 
-color: #374151;
+color: var(--color-text-subtle);
 
 font-size: 11px;
 
@@ -382,9 +423,9 @@ white-space: nowrap;
 padding: 13px 14px;
 
 
-border-bottom: 1px solid #e5e7eb;
+border-bottom: 1px solid var(--color-border-soft);
 
-color: #374151;
+color: var(--color-text-body);
 
 vertical-align: middle;
 
@@ -392,11 +433,11 @@ vertical-align: middle;
 }
 
 .payment-table tbody tr {
-transition: background 0.15s ease;
+transition: background var(--transition);
 }
 
 .payment-table tbody tr:hover {
-background: #f9fafb;
+background: #f8fafc;
 }
 
 .payment-table tbody tr:last-child td {
@@ -412,7 +453,7 @@ width: 55px;
 
 text-align: center !important;
 
-color: #6b7280 !important;
+color: var(--color-text-muted) !important;
 
 
 }
@@ -424,12 +465,12 @@ min-width: 220px;
 .student-name {
 font-weight: 500;
 
-color: #111827 !important;
+color: var(--color-text) !important;
 
 }
 
 .student-id {
-color: #374151;
+color: var(--color-text-body);
 
 
 white-space: nowrap;
@@ -445,7 +486,7 @@ monospace;
 
 font-size: 13px;
 
-color: #374151;
+color: var(--color-text-body);
 
 
 }
@@ -463,7 +504,7 @@ white-space: nowrap;
 font-weight: 700;
 
 
-color: #111827 !important;
+color: var(--color-text) !important;
 
 
 }
@@ -476,7 +517,7 @@ font-size: 11px;
 
 font-weight: 600;
 
-color: #6b7280;
+color: var(--color-text-muted);
 
 
 }
@@ -493,7 +534,7 @@ background: #f9fafb;
 padding: 15px 14px;
 
 
-border-top: 2px solid #d1d5db;
+border-top: 2px solid var(--color-border);
 
 border-bottom: none;
 
@@ -508,7 +549,7 @@ font-size: 13px;
 
 font-weight: 700;
 
-color: #374151 !important;
+color: var(--color-text-body) !important;
 
 text-transform: uppercase;
 
@@ -521,7 +562,7 @@ font-size: 15px;
 
 font-weight: 800;
 
-color: #111827 !important;
+color: var(--color-text) !important;
 
 
 }
@@ -534,11 +575,11 @@ NO RECORDS
 padding: 70px 20px;
 
 
-background: #ffffff;
+background: var(--color-surface);
 
-border: 1px solid #e5e7eb;
+border: 1px solid var(--color-border);
 
-border-radius: 8px;
+border-radius: var(--radius-lg);
 
 text-align: center;
 
@@ -562,7 +603,7 @@ margin: 0 0 6px;
 
 font-size: 18px;
 
-color: #374151;
+color: var(--color-text-body);
 
 
 }
@@ -571,7 +612,7 @@ color: #374151;
 margin: 0;
 
 
-color: #6b7280;
+color: var(--color-text-muted);
 
 
 }
@@ -599,9 +640,11 @@ align-items: center;
 
 padding: 22px 25px;
 
-background: #111827;
+/* Same dark navy as the dashboard's sidebar - see the
+   DESIGN TOKENS note at the top of this file. */
+background: var(--color-dark);
 
-border-radius: 8px;
+border-radius: var(--radius-lg);
 
 color: #ffffff;
 
@@ -627,7 +670,7 @@ font-weight: 700;
 
 letter-spacing: 1.5px;
 
-color: #9ca3af;
+color: #a9bbd0;
 
 
 }
@@ -662,7 +705,7 @@ font-size: 13px;
 
 font-weight: 600;
 
-color: #d1d5db;
+color: #cbd5e1;
 
 
 }
@@ -681,9 +724,9 @@ gap: 20px;
 
 padding: 15px 5px;
 
-border-top: 1px solid #d1d5db;
+border-top: 1px solid var(--color-border);
 
-color: #6b7280;
+color: var(--color-text-subtle);
 
 font-size: 11px;
 
@@ -712,9 +755,11 @@ padding: 12px 20px;
 
 border: none;
 
-border-radius: 7px;
+border-radius: var(--radius-md);
 
-background: #111827;
+/* Blue, matching the dashboard's primary action buttons
+   (e.g. Add Student) instead of a separate near-black. */
+background: var(--color-accent);
 
 color: #ffffff;
 
@@ -725,9 +770,10 @@ font-weight: 700;
 cursor: pointer;
 
 box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.18);
+    0 4px 12px rgba(37, 99, 235, 0.28);
 
 transition:
+    background var(--transition),
     transform 0.15s ease,
     box-shadow 0.15s ease;
 
@@ -735,11 +781,13 @@ transition:
 }
 
 .print-container button:hover {
+background: var(--color-accent-hover);
+
 transform: translateY(-1px);
 
 
 box-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.22);
+    0 6px 16px rgba(37, 99, 235, 0.32);
 
 
 }
@@ -874,7 +922,7 @@ REDUCED MOTION
 
 @media (prefers-reduced-motion: reduce) {
 
-    .print-container button {
+    * {
         transition-duration: 0.01ms !important;
     }
 
@@ -883,10 +931,6 @@ REDUCED MOTION
     }
 
 }
-
-/* =========================================================
-PORTRAIT / VERTICAL PRINT
-========================================================= */
 
 @media print {
 
@@ -926,6 +970,10 @@ body {
    --------------------------------------------------------- */
 
 .print-container {
+    display: none !important;
+}
+
+.no-print {
     display: none !important;
 }
 

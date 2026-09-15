@@ -459,7 +459,7 @@
                         <div class="form-group">
 
                             <label for="intake_date">
-                                Admission Date
+                                Intake Date
                             </label>
 
                             <input
@@ -474,6 +474,183 @@
                     </div>
 
                 </div>
+
+
+                <!-- =================================================
+                     COURSE INFORMATION (optional)
+
+                     Only shown when adding a brand new student -
+                     editing an existing one uses its own Course
+                     Records section on their profile instead,
+                     which edit_student() doesn't touch at all.
+
+                     A student can be added with no course yet -
+                     this is only created if both Course Name and
+                     Course ID are filled in. If it is, the initial
+                     payment below gets tagged to this course
+                     automatically instead of staying untagged.
+                     ================================================= -->
+
+                {% if not edit_mode %}
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Course Information (optional)
+                        </h3>
+
+                        <p>
+                            Enroll the student in their first
+                            course now, or leave blank and add one
+                            later from their profile.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="course_name">
+                                Course Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="course_name"
+                                name="course_name"
+                                placeholder="Course name"
+                                value="{{ form_data.get('course_name', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="course_id">
+                                Course ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="course_id"
+                                name="course_id"
+                                placeholder="Course ID"
+                                value="{{ form_data.get('course_id', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="start_date">
+                                Start Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="start_date"
+                                name="start_date"
+                                value="{{ form_data.get('start_date', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="end_date">
+                                End Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="end_date"
+                                name="end_date"
+                                value="{{ form_data.get('end_date', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="result">
+                                Result
+                            </label>
+
+                            <input
+                                type="text"
+                                id="result"
+                                name="result"
+                                placeholder="Result"
+                                value="{{ form_data.get('result', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="collected">
+                                Collected
+                            </label>
+
+                            <select
+                                id="collected"
+                                name="collected"
+                            >
+
+                                <option value="no">
+                                    No
+                                </option>
+
+                                <option value="yes">
+                                    Yes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="teacher_id">
+                                Teacher
+                            </label>
+
+                            <select
+                                id="teacher_id"
+                                name="teacher_id"
+                            >
+
+                                <option value="">
+                                    Unassigned
+                                </option>
+
+                                {% for teacher in teachers %}
+
+                                    <option value="{{ teacher.id }}">
+                                        {{ teacher.name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
 
 
                 <!-- =================================================

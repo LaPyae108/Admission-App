@@ -109,7 +109,7 @@
 
         .content {
             padding: 30px;
-            max-width: 1500px;
+            max-width: 1800px;
             margin: auto;
         }
 
@@ -146,6 +146,16 @@
             margin-bottom: 25px;
             padding: 25px;
             overflow-x: auto;
+        }
+
+        /* The payment record cards no longer scroll sideways as
+           a strip (each course shows one at a time, full width -
+           see .course-payment-viewport below), but the section
+           still shouldn't scroll horizontally as a whole, since
+           the wide payment history table inside each card has
+           its own scroll container already. */
+        .form-section-payment-strip {
+            overflow-x: visible;
         }
 
         .form-section-header {
@@ -202,6 +212,23 @@
         textarea:focus {
             outline: none;
             border-color: #555;
+        }
+
+        /* Amount Paid fields specifically - the native spinner
+           arrows invite accidental clicks that nudge the value
+           by a tiny 0.01 step, easy to miss on a money field.
+           Typing is still the only intended way to set these. */
+        .js-amount-paid::-webkit-outer-spin-button,
+        .js-amount-paid::-webkit-inner-spin-button,
+        .payment-amount-paid::-webkit-outer-spin-button,
+        .payment-amount-paid::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .js-amount-paid,
+        .payment-amount-paid {
+            -moz-appearance: textfield;
         }
 
         input[readonly] {
@@ -387,7 +414,9 @@
            ========================================================= */
 
         .course-row.inline-editing input,
-        .course-row.inline-editing select {
+        .course-row.inline-editing select,
+        .payment-row.inline-editing input,
+        .payment-row.inline-editing select {
             width: 100%;
         }
 
@@ -474,6 +503,147 @@
         /* =========================================================
            PAYMENT STATUS
            ========================================================= */
+
+        /* =========================================================
+           PER-COURSE PAYMENT RECORD SECTIONS
+
+           A horizontally-scrolling strip of cards, one per
+           course, each a self-contained payment record: totals,
+           discount breakdown, its own Add Payment form, and a
+           short history table. Reuses the same border/radius/
+           color language as .payment-summary-card and
+           .discount-card above, just at a scale that fits inside
+           a nested card instead of the page's top-level summary.
+           ========================================================= */
+
+        .course-payment-strip-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .course-payment-viewport {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .strip-nav-arrow {
+            flex: 0 0 auto;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #374151;
+        }
+
+        .strip-nav-arrow:hover:not(:disabled) {
+            background: #f4f6f8;
+            border-color: #bbb;
+        }
+
+        .strip-nav-arrow:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .strip-nav-indicator {
+            flex: 0 0 auto;
+            font-size: 13px;
+            color: #777;
+            min-width: 48px;
+            text-align: center;
+        }
+
+        .course-payment-card {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 18px;
+            background: white;
+        }
+
+        .course-payment-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .course-payment-mini-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .course-payment-mini-summary--four {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .course-payment-mini-card {
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            padding: 16px;
+            background: #fafafa;
+        }
+
+        .course-payment-mini-card span {
+            display: block;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .course-payment-mini-card strong {
+            font-size: 20px;
+        }
+
+        .course-payment-subform {
+            border-top: 1px solid #eee;
+            padding-top: 14px;
+            margin-bottom: 16px;
+        }
+
+        .course-payment-subform-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .course-payment-subform .form-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px 12px;
+        }
+
+        .course-payment-subform .form-group label {
+            font-size: 14px;
+        }
+
+        .course-payment-subform input,
+        .course-payment-subform select {
+            padding: 11px;
+            font-size: 15px;
+        }
+
+        .course-payment-empty {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .course-payment-note {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
 
         .payment {
             display: inline-block;

@@ -36,7 +36,9 @@ from app.models import (
     Attendance,
     User,
     Room,
-    RoomAssignment
+    RoomAssignment,
+    EndOfDayReport,
+    EndOfDayReportLine
 )
 
 
@@ -496,10 +498,20 @@ def create_payment_with_invoice_id(**payment_fields):
 
 
 def get_student_payments(student_id):
-    """All of one student's payments, oldest first - the ordering every balance calculation below depends on."""
+    """All of one student's payments, oldest first, across every course - the ordering every balance calculation below depends on."""
     return (
         StudentPayment.query
         .filter_by(student_id=student_id)
+        .order_by(StudentPayment.id.asc())
+        .all()
+    )
+
+
+def get_course_payments(student_result_id):
+    """All payments tagged to ONE course enrollment, oldest first - same ordering rule as get_student_payments, just scoped to one course instead of the whole student."""
+    return (
+        StudentPayment.query
+        .filter_by(student_result_id=student_result_id)
         .order_by(StudentPayment.id.asc())
         .all()
     )
@@ -515,15 +527,15 @@ def get_course_total_after_discount(initial_payment):
     return total_after_discount
 
 
-def calculate_student_totals(student_id):
+def calculate_totals_for_payments(payments):
     """
-    A student's total course fee, total received, and total
-    still pending - all converted into the course's own
-    currency, since payments can come in different currencies.
-    Returns (total_payment, total_received, total_pending).
+    Shared by calculate_student_totals (a student's payments
+    combined, across every course) and calculate_course_totals
+    (just one course's tagged payments) - same discount/
+    currency-conversion math either way, just given a
+    different pre-fetched list. Returns (total_payment,
+    total_received, total_pending).
     """
-    payments = get_student_payments(student_id)
-
     if not payments:
         return (Decimal("0"), Decimal("0"), Decimal("0"))
 
@@ -548,8 +560,27 @@ def calculate_student_totals(student_id):
     return (total_payment, total_received, total_pending)
 
 
+def calculate_student_totals(student_id):
+    """
+    A student's total course fee, total received, and total
+    still pending - across EVERY course combined (unchanged
+    behavior; this is what the Dashboard's payment_status still
+    reflects). For just one course, see calculate_course_totals.
+    """
+    return calculate_totals_for_payments(
+        get_student_payments(student_id)
+    )
+
+
+def calculate_course_totals(student_result_id):
+    """Same as calculate_student_totals, but scoped to just ONE course enrollment's tagged payments."""
+    return calculate_totals_for_payments(
+        get_course_payments(student_result_id)
+    )
+
+
 def update_student_payment_status(student):
-    """Recompute and set a student's payment_status ('unpaid'/'partial'/'paid') from their current totals."""
+    """Recompute and set a student's payment_status ('unpaid'/'partial'/'paid') from their COMBINED totals across every course."""
     (total_payment, total_received, total_pending) = calculate_student_totals(student.id)
 
     if total_received <= 0:
@@ -560,16 +591,14 @@ def update_student_payment_status(student):
         student.payment_status = "paid"
 
 
-def rebuild_payment_balances(student_id, total_after_discount=None):
+def rebuild_balances_for_payments(payments, total_after_discount=None):
     """
-    Recalculate current_receivable and pending_amount on EVERY
-    payment for a student, in order - needed whenever a
-    payment is added, edited, or the course total changes,
-    since each payment's balance depends on all the ones
-    before it. Also refreshes the student's payment_status.
+    Shared by rebuild_payment_balances (all of a student's
+    payments) and rebuild_course_payment_balances (just one
+    course's tagged payments) - recalculates current_receivable
+    and pending_amount on every payment IN ORDER, since each
+    one's balance depends on all the ones before it.
     """
-    payments = get_student_payments(student_id)
-
     if not payments:
         return
 
@@ -589,9 +618,36 @@ def rebuild_payment_balances(student_id, total_after_discount=None):
             total_after_discount - cumulative_paid, Decimal("0")
         )
 
+
+def rebuild_payment_balances(student_id, total_after_discount=None):
+    """Recalculate running balances for ALL of a student's payments combined (unchanged behavior). Also refreshes the student's overall payment_status."""
+    payments = get_student_payments(student_id)
+
+    rebuild_balances_for_payments(payments, total_after_discount)
+
     student = Student.query.get(student_id)
     if student:
         update_student_payment_status(student)
+
+
+def rebuild_course_payment_balances(student_result_id, total_after_discount=None):
+    """
+    Same as rebuild_payment_balances, but scoped to just ONE
+    course enrollment's tagged payments - used once a payment
+    is tagged to a specific course, so its running balance is
+    tracked against that course's own total, separately from
+    any other course the same student is taking. Also refreshes
+    the student's overall payment_status, which still reflects
+    everything combined.
+    """
+    payments = get_course_payments(student_result_id)
+
+    rebuild_balances_for_payments(payments, total_after_discount)
+
+    if payments:
+        student = payments[0].student
+        if student:
+            update_student_payment_status(student)
 
 
 def build_payment_rows(payments):
@@ -655,7 +711,7 @@ def build_payment_rows(payments):
     return rows
 
 
-def render_student_form(student_types, error, form_data, edit_mode, student):
+def render_student_form(student_types, error, form_data, edit_mode, student, teachers=None):
     """Shared render_template call for add_student.html - used by both add_student() and edit_student() so their error/validation responses stay in sync."""
     return render_template(
         "add_student.html",
@@ -663,7 +719,8 @@ def render_student_form(student_types, error, form_data, edit_mode, student):
         error=error,
         form_data=form_data,
         edit_mode=edit_mode,
-        student=student
+        student=student,
+        teachers=(teachers or [])
     )
 
 
@@ -811,16 +868,143 @@ def dashboard():
     )
 
 
+def create_course_with_optional_payment(student, form):
+    """
+    Shared by add_student() and add_course() - both let staff
+    enroll a student in a course and optionally record its
+    first payment in the same submission, with identical
+    fields either way. Creates nothing at all if course_name
+    or course_id is missing - a course is only ever created
+    when someone deliberately provided both. Any payment
+    fields (total_amount, amount_paid, etc.) are read the same
+    way regardless of caller, and the payment - if one gets
+    created - is tagged to this course directly.
+
+    Returns (course_or_none, error_or_none). A returned course
+    with no error means success (possibly with no payment, if
+    none was filled in). A returned error always means nothing
+    was committed - the caller should roll back and show it.
+    """
+
+    course_name = form.get("course_name", "").strip()
+    course_id_value = form.get("course_id", "").strip()
+
+    if not (course_name and course_id_value):
+        return None, None
+
+    course_start_date = parse_form_date(form, "start_date")
+    course_end_date = parse_form_date(form, "end_date")
+    course_result = form.get("result", "").strip()
+    course_collected = (form.get("collected", "no") == "yes")
+    course_teacher_id = form.get("teacher_id", type=int)
+
+    course = StudentResult(
+        student_id=student.id,
+        course_name=course_name,
+        course_id=course_id_value,
+        start_date=course_start_date,
+        end_date=course_end_date,
+        result=course_result or None,
+        published_date=(date.today() if course_result else None),
+        collected=course_collected,
+        teacher_id=course_teacher_id
+    )
+
+    db.session.add(course)
+
+    try:
+        db.session.flush()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return None, f"Could not save the course: {str(e)}"
+
+    # ----------------------------------------------------
+    # OPTIONAL INITIAL PAYMENT FOR THIS COURSE
+    # ----------------------------------------------------
+
+    total_amount = to_decimal(form.get("total_amount", "0"))
+
+    amount_paid = max(
+        to_money(form.get("amount_paid", "0")), Decimal("0")
+    )
+
+    discount_type = form.get("discount_type", "none").strip().lower()
+    discount = to_decimal(form.get("discount", "0"))
+    promotion_amount = discount
+
+    course_currency = normalize_currency(student.currency)
+
+    (
+        payment_currency,
+        exchange_enabled,
+        exchange_rate,
+        valid,
+        currency_error
+    ) = resolve_currency_settings(form, course_currency)
+
+    if not valid:
+        # The course itself is already flushed and fine - only
+        # the optional payment's currency settings were invalid,
+        # so only that part is reported as an error.
+        return course, currency_error
+
+    (discount_amount, total_after_discount) = calculate_discount(
+        total_amount, discount_type, discount, promotion_amount
+    )
+
+    converted_amount_paid = min(
+        convert_payment_to_course_currency(
+            amount_paid, payment_currency, course_currency,
+            exchange_enabled, exchange_rate
+        ),
+        total_after_discount
+    )
+
+    if total_amount > 0 or amount_paid > 0 or discount_amount > 0:
+
+        pending_amount = max(
+            total_after_discount - converted_amount_paid, Decimal("0")
+        )
+
+        create_payment_with_invoice_id(
+            student_id=student.id,
+            student_result_id=course.id,
+            payment_date=date.today(),
+            total_amount=total_amount,
+            discount_type=discount_type,
+            discount=(discount if discount_type == "percentage" else Decimal("0")),
+            promotion_amount=(promotion_amount if discount_type == "promotion" else Decimal("0")),
+            discount_amount=discount_amount,
+            total_after_discount=total_after_discount,
+            payment_currency=payment_currency,
+            exchange_enabled=exchange_enabled,
+            exchange_rate=exchange_rate,
+            amount_paid=amount_paid,
+            amount_received=converted_amount_paid,
+            current_receivable=total_after_discount,
+            pending_amount=pending_amount,
+            comment=form.get("payment_comment", "").strip(),
+            account=form.get("account", "").strip()
+        )
+
+        update_student_payment_status(student)
+
+    return course, None
+
+
 @main.route("/add-student", methods=["GET", "POST"])
 def add_student():
     """
-    Create a new student, optionally with their first payment
-    in the same submission. GET shows a blank form; POST
-    validates (duplicate ID, field lengths, currency/discount
-    settings), creates the student, and creates a payment
+    Create a new student, optionally with their first course
+    (and its teacher) and first payment, all in the same
+    submission. GET shows a blank form; POST validates
+    (duplicate ID, field lengths, currency/discount settings),
+    creates the student, creates the course only if both
+    course_name and course_id were given, and creates a payment
     record only if an amount was actually entered.
     """
     student_types = StudentType.query.order_by(StudentType.name).all()
+    teachers = Teacher.query.order_by(Teacher.name).all()
 
     if request.method == "POST":
 
@@ -832,7 +1016,8 @@ def add_student():
                 f"Student ID '{student_id}' already exists.",
                 request.form,
                 False,
-                None
+                None,
+                teachers
             )
 
         length_error = check_field_lengths(request.form)
@@ -843,7 +1028,8 @@ def add_student():
                 length_error,
                 request.form,
                 False,
-                None
+                None,
+                teachers
             )
 
         intake_date = parse_form_date(request.form, "intake_date")
@@ -856,7 +1042,8 @@ def add_student():
                 "Please select a student type.",
                 request.form,
                 False,
-                None
+                None,
+                teachers
             )
 
         currency = normalize_currency(request.form.get("currency", "MMK"))
@@ -889,8 +1076,56 @@ def add_student():
                 "Could not save this student - check that all fields are within a reasonable length.",
                 request.form,
                 False,
-                None
+                None,
+                teachers
             )
+
+        # ----------------------------------------------------
+        # OPTIONAL FIRST COURSE (+ ITS PAYMENT, IF ANY)
+        #
+        # Handled by the shared helper - also used by the
+        # dedicated Add Course page for existing students, so
+        # this logic only lives in one place.
+        # ----------------------------------------------------
+
+        course, course_error = create_course_with_optional_payment(
+            student, request.form
+        )
+
+        if course_error:
+            db.session.rollback()
+            return render_student_form(
+                student_types,
+                course_error,
+                request.form,
+                False,
+                None,
+                teachers
+            )
+
+        # A course was created (and its payment, if any, is
+        # already handled by the helper above) - nothing left
+        # to do here but commit.
+        if course is not None:
+
+            try:
+                db.session.commit()
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                return redirect(
+                    url_for(
+                        "main.add_student",
+                        error=f"Student could not be added: {str(e)}"
+                    )
+                )
+
+            return redirect(url_for("main.student_details", student_id=student.id))
+
+        # ----------------------------------------------------
+        # NO COURSE WAS GIVEN - a payment can still be recorded
+        # here, same as before, just left untagged to any
+        # specific course (the "General" bucket).
+        # ----------------------------------------------------
 
         payment_comment = request.form.get("payment_comment", "").strip()
         account = request.form.get("account", "").strip()
@@ -915,7 +1150,8 @@ def add_student():
                 error,
                 request.form,
                 False,
-                None
+                None,
+                teachers
             )
 
         (discount_amount, total_after_discount) = calculate_discount(
@@ -936,8 +1172,9 @@ def add_student():
                 total_after_discount - converted_amount_paid, Decimal("0")
             )
 
-            payment = create_payment_with_invoice_id(
+            create_payment_with_invoice_id(
                 student_id=student.id,
+                student_result_id=None,
                 payment_date=date.today(),
                 total_amount=total_amount,
                 discount_type=discount_type,
@@ -987,7 +1224,8 @@ def add_student():
             "exchange_rate": ""
         },
         False,
-        None
+        None,
+        teachers
     )
 
 
@@ -1208,11 +1446,22 @@ def edit_student(student_id):
 
 @main.route("/student/<int:student_id>/add-payment", methods=["POST"])
 def add_payment(student_id):
-    """Record an additional payment toward a student's existing course fee, converting to course currency and capping at what's still owed."""
+    """
+    Record an additional payment toward a student's course fee,
+    converting to course currency and capping at what's still
+    owed. If the student has more than one course, the payment
+    should be tagged to a specific one (student_result_id) so
+    its balance is tracked against THAT course's own total
+    rather than the student's combined total across every
+    course - an untagged payment falls back to the old,
+    combined-total behavior.
+    """
     student = get_student_for_update(student_id)
 
     payment_comment = request.form.get("payment_comment", "").strip()
     amount_paid = max(to_money(request.form.get("amount_paid", "0")), Decimal("0"))
+
+    student_result_id = request.form.get("student_result_id", type=int)
 
     try:
         payment_date = (
@@ -1227,7 +1476,31 @@ def add_payment(student_id):
             )
         )
 
-    payments = get_student_payments(student.id)
+    # --------------------------------------------------------
+    # SCOPE: one specific course, or the student overall
+    # --------------------------------------------------------
+
+    if student_result_id:
+
+        course = StudentResult.query.filter_by(
+            id=student_result_id,
+            student_id=student.id
+        ).first()
+
+        if course is None:
+            return redirect(
+                url_for(
+                    "main.student_details",
+                    student_id=student.id,
+                    error="That course doesn't belong to this student."
+                )
+            )
+
+        payments = get_course_payments(student_result_id)
+
+    else:
+
+        payments = get_student_payments(student.id)
 
     if not payments:
         return redirect(url_for("main.student_details", student_id=student.id))
@@ -1280,6 +1553,7 @@ def add_payment(student_id):
 
     payment = create_payment_with_invoice_id(
         student_id=student.id,
+        student_result_id=student_result_id,
         payment_date=payment_date,
         total_amount=total_after_discount,
         discount_type="none",
@@ -1298,7 +1572,10 @@ def add_payment(student_id):
         account=request.form.get("account", "").strip()
     )
 
-    rebuild_payment_balances(student.id, total_after_discount)
+    if student_result_id:
+        rebuild_course_payment_balances(student_result_id, total_after_discount)
+    else:
+        rebuild_payment_balances(student.id, total_after_discount)
 
     try:
         db.session.commit()
@@ -1338,50 +1615,74 @@ def delete_student(student_id):
     return redirect(url_for("main.dashboard"))
 
 
-@main.route("/student/<int:student_id>/add-course", methods=["POST"])
+@main.route(
+    "/student/<int:student_id>/add-course",
+    methods=["GET", "POST"]
+)
 def add_course(student_id):
-    """Enroll a student in an additional course (StudentResult row) - a student can be enrolled in more than one at once."""
+    """
+    Dedicated page for enrolling an EXISTING student in an
+    additional course - same fields and shape as Add Student's
+    Course Information + Payment Information sections (course
+    details, teacher, and an optional initial payment tagged
+    to it), just reached from that student's own profile
+    instead of at signup. Uses the same shared helper as
+    add_student() so the two stay in sync.
+    """
     student = Student.query.get_or_404(student_id)
+    teachers = Teacher.query.order_by(Teacher.name).all()
 
-    course_name = request.form.get("course_name", "").strip()
-    course_id = request.form.get("course_id", "").strip()
+    if request.method == "POST":
 
-    if not course_name or not course_id:
-        return redirect(url_for("main.student_details", student_id=student.id))
+        course, error = create_course_with_optional_payment(
+            student, request.form
+        )
 
-    start_date = parse_form_date(request.form, "start_date")
-    end_date = parse_form_date(request.form, "end_date")
-    result = request.form.get("result", "").strip()
-    collected = (request.form.get("collected", "no") == "yes")
-    published_date = date.today() if result else None
+        if error:
+            db.session.rollback()
+            return render_template(
+                "add_course.html",
+                student=student,
+                teachers=teachers,
+                error=error,
+                form_data=request.form
+            )
 
-    course = StudentResult(
-        student_id=student.id,
-        course_name=course_name,
-        course_id=course_id,
-        start_date=start_date,
-        end_date=end_date,
-        result=result or None,
-        published_date=published_date,
-        collected=collected
-    )
+        if course is None:
+            return render_template(
+                "add_course.html",
+                student=student,
+                teachers=teachers,
+                error="Course Name and Course ID are both required.",
+                form_data=request.form
+            )
 
-    db.session.add(course)
+        try:
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return render_template(
+                "add_course.html",
+                student=student,
+                teachers=teachers,
+                error=f"Could not save the course: {str(e)}",
+                form_data=request.form
+            )
 
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        db.session.rollback()
         return redirect(
             url_for(
                 "main.student_details",
                 student_id=student.id,
-                error=f"Could not add course, check the information and try again: {str(e)}"
+                success=1
             )
         )
 
-    return redirect(
-        url_for("main.student_details", student_id=student.id, success=1)
+    return render_template(
+        "add_course.html",
+        student=student,
+        teachers=teachers,
+        error=None,
+        form_data={}
     )
 
 
@@ -1633,6 +1934,142 @@ def student_details(student_id):
 
     payment_rows = build_payment_rows(payments)
 
+    # --------------------------------------------------------
+    # PAYMENT RECORD SECTIONS - one per course
+    #
+    # Every course only ever shows payments explicitly tagged
+    # to IT - no special-casing for "this student only has one
+    # course, so show everything." That fallback used to exist,
+    # but it meant an older untagged payment (from before this
+    # course even existed) could get silently absorbed into a
+    # brand new course just because it happened to be the
+    # student's only one - including one deliberately added
+    # with no payment at all. Any payment tagged to no course
+    # always collects into the separate General section below,
+    # regardless of how many courses the student has.
+    # --------------------------------------------------------
+
+    course_payment_summaries = []
+
+    for result in results:
+
+        course_payments = get_course_payments(result.id)
+
+        # Courses with no payment at all (e.g. added via the
+        # "No" option on Add Course) don't get a Payment Record
+        # Section - nothing to show yet, and an empty 0.00
+        # template was more clutter than useful.
+        if not course_payments:
+            continue
+
+        (
+            course_total,
+            course_received,
+            course_pending
+        ) = calculate_totals_for_payments(course_payments)
+
+        initial_course_payment = course_payments[0]
+
+        original_total_cost = to_decimal(
+            initial_course_payment.total_amount
+        )
+
+        discount_type = (
+            initial_course_payment.discount_type or "none"
+        )
+
+        if discount_type == "percentage":
+            discount_display = f"{to_decimal(initial_course_payment.discount)}%"
+        elif discount_type == "promotion":
+            discount_display = (
+                f"{to_decimal(initial_course_payment.promotion_amount):,.2f} "
+                f"{student.currency or 'MMK'}"
+            )
+        else:
+            discount_display = "None"
+
+        course_payment_summaries.append({
+            "result": result,
+            "total_payment": course_total,
+            "total_received": course_received,
+            "total_pending": course_pending,
+            "original_total_cost": original_total_cost,
+            "discount_type": discount_type,
+            "discount_display": discount_display,
+            "discount_amount": to_decimal(initial_course_payment.discount_amount),
+            "payment_rows": build_payment_rows(course_payments)
+        })
+
+    # Payments tagged to no course at all - always checked for,
+    # regardless of how many courses the student has (see the
+    # comment above for why this is no longer conditional on
+    # course count).
+    general_payment_summary = None
+
+    general_payments = [
+        payment for payment in payments
+        if payment.student_result_id is None
+    ]
+
+    if general_payments:
+
+        (
+            general_total,
+            general_received,
+            general_pending
+        ) = calculate_totals_for_payments(general_payments)
+
+        initial_general_payment = general_payments[0]
+
+        general_discount_type = (
+            initial_general_payment.discount_type or "none"
+        )
+
+        if general_discount_type == "percentage":
+            general_discount_display = f"{to_decimal(initial_general_payment.discount)}%"
+        elif general_discount_type == "promotion":
+            general_discount_display = (
+                f"{to_decimal(initial_general_payment.promotion_amount):,.2f} "
+                f"{student.currency or 'MMK'}"
+            )
+        else:
+            general_discount_display = "None"
+
+        general_payment_summary = {
+            "total_payment": general_total,
+            "total_received": general_received,
+            "total_pending": general_pending,
+            "original_total_cost": to_decimal(
+                initial_general_payment.total_amount
+            ),
+            "discount_type": general_discount_type,
+            "discount_display": general_discount_display,
+            "discount_amount": to_decimal(initial_general_payment.discount_amount),
+            "payment_rows": build_payment_rows(general_payments)
+        }
+
+    # Grand totals across every section (courses + General, if
+    # shown) - what the new top-level Total Summary displays.
+    grand_total_receivable = sum(
+        (summary["total_payment"] for summary in course_payment_summaries),
+        Decimal("0")
+    )
+
+    grand_total_received = sum(
+        (summary["total_received"] for summary in course_payment_summaries),
+        Decimal("0")
+    )
+
+    grand_total_pending = sum(
+        (summary["total_pending"] for summary in course_payment_summaries),
+        Decimal("0")
+    )
+
+    if general_payment_summary:
+        grand_total_receivable += general_payment_summary["total_payment"]
+        grand_total_received += general_payment_summary["total_received"]
+        grand_total_pending += general_payment_summary["total_pending"]
+
     edit_course_id = request.args.get("edit_course", type=int)
     edit_course = None
 
@@ -1652,6 +2089,11 @@ def student_details(student_id):
         results=results,
         payments=payments,
         payment_rows=payment_rows,
+        course_payment_summaries=course_payment_summaries,
+        general_payment_summary=general_payment_summary,
+        grand_total_receivable=grand_total_receivable,
+        grand_total_received=grand_total_received,
+        grand_total_pending=grand_total_pending,
         remarks=remarks,
         edit_course=edit_course,
         teachers=teachers,
@@ -1665,15 +2107,43 @@ def student_details(student_id):
 def edit_payment(payment_id):
     """
     Inline edit for one payment row on student_details.html -
-    date, amount, discount, comment, account. Has no currency
-    controls of its own, so it only touches currency settings
-    if the submitting form explicitly included them. Rebuilds
-    every payment's balance afterward since editing one
-    payment shifts all the running totals after it.
+    date, amount, discount, comment, account, and (new) which
+    course it's tagged to. Rebuilds balances for BOTH the old
+    and new course when reassigned, since moving a payment
+    out of one bucket and into another changes both.
     """
     payment = StudentPayment.query.get_or_404(payment_id)
     student = get_student_for_update(payment.student_id)
     course_currency = normalize_currency(student.currency)
+
+    # Captured before any changes below, so both the bucket
+    # this payment is LEAVING and the one it's ARRIVING at can
+    # be correctly rebuilt afterward.
+    previous_student_result_id = payment.student_result_id
+
+    if "student_result_id" in request.form:
+
+        new_student_result_id = request.form.get(
+            "student_result_id", type=int
+        )
+
+        if new_student_result_id:
+
+            new_course = StudentResult.query.filter_by(
+                id=new_student_result_id,
+                student_id=student.id
+            ).first()
+
+            if new_course is None:
+                return redirect(
+                    url_for(
+                        "main.student_details",
+                        student_id=student.id,
+                        error="That course doesn't belong to this student."
+                    )
+                )
+
+        payment.student_result_id = new_student_result_id
 
     payment.account = request.form.get("account", "").strip()
 
@@ -1765,7 +2235,22 @@ def edit_payment(payment_id):
     payment.amount_paid = amount_paid
     payment.amount_received = amount_received
 
-    rebuild_payment_balances(student.id, total_after_discount)
+    if payment.student_result_id:
+        rebuild_course_payment_balances(payment.student_result_id, total_after_discount)
+    else:
+        rebuild_payment_balances(student.id, total_after_discount)
+
+    # If this payment moved to a different bucket, the one it
+    # LEFT also needs rebuilding - its own total is re-derived
+    # from whatever remains there, not the total_after_discount
+    # above (which describes the payment's NEW bucket, not the
+    # old one it's no longer part of).
+    if previous_student_result_id != payment.student_result_id:
+
+        if previous_student_result_id:
+            rebuild_course_payment_balances(previous_student_result_id)
+        else:
+            rebuild_payment_balances(student.id)
 
     payment.comment = request.form.get("payment_comment", "").strip()
 
@@ -1794,10 +2279,14 @@ def summarize_amounts_by_currency(rows):
     return dict(totals)
 
 
-@main.route("/end-of-day")
-def end_of_day():
-    """Today's payments, grouped by account (Cash, KBZ-Bank, etc.) with per-currency totals per account and for the whole day - the printable cashier's report."""
-    report_date = date.today()
+def compute_end_of_day_totals(report_date):
+    """
+    Live computation of one day's account_groups/account_totals/
+    grand_totals from StudentPayment - shared by the End of Day
+    page (viewing an un-closed day) and close_end_of_day() (the
+    snapshot taken when closing one), so both always agree on
+    the numbers at the moment they're computed.
+    """
 
     payments = (
         StudentPayment.query
@@ -1843,12 +2332,145 @@ def end_of_day():
         row for rows in account_groups.values() for row in rows
     ])
 
+    return (account_groups, account_totals, grand_totals)
+
+
+@main.route("/end-of-day")
+def end_of_day():
+    """
+    Cashier's report for one day. The itemized transaction
+    list always shows live, current data - closing a day never
+    hides individual payments. Only the TOTALS differ: once a
+    day is closed, the totals shown are the frozen snapshot
+    (what was true AT CLOSING TIME) rather than recomputed
+    live, so a closed report's summary numbers don't silently
+    shift if a payment dated that day gets edited afterward.
+    """
+
+    report_date = (
+        parse_form_date(request.args, "date") or date.today()
+    )
+
+    (
+        account_groups,
+        live_account_totals,
+        live_grand_totals
+    ) = compute_end_of_day_totals(report_date)
+
+    closed_report = EndOfDayReport.query.filter_by(
+        date=report_date
+    ).first()
+
+    if closed_report:
+
+        account_totals = defaultdict(dict)
+
+        for line in closed_report.lines:
+            account_totals[line.account][line.currency] = line.amount
+
+        account_totals = dict(account_totals)
+
+        grand_totals = defaultdict(lambda: Decimal("0"))
+
+        for line in closed_report.lines:
+            grand_totals[line.currency] += line.amount
+
+        grand_totals = dict(grand_totals)
+
+    else:
+
+        account_totals = live_account_totals
+        grand_totals = live_grand_totals
+
     return render_template(
         "end_of_day.html",
+        is_closed=(closed_report is not None),
+        closed_report=closed_report,
         account_groups=account_groups,
         account_totals=account_totals,
         grand_totals=grand_totals,
         report_date=report_date
+    )
+
+
+@main.route(
+    "/end-of-day/close",
+    methods=["POST"]
+)
+def close_end_of_day():
+    """
+    Save a permanent snapshot of one day's totals. Closing a
+    day that's already closed overwrites the previous snapshot
+    (the confirm() on the button warns about this) rather than
+    keeping both - there's only ever one closing per date.
+    """
+
+    close_date = (
+        parse_form_date(request.form, "date") or date.today()
+    )
+
+    (
+        account_groups,
+        account_totals,
+        grand_totals
+    ) = compute_end_of_day_totals(close_date)
+
+    if not account_groups:
+        return redirect(
+            url_for(
+                "main.end_of_day",
+                date=close_date.strftime("%Y-%m-%d"),
+                error="No payments recorded for this day - nothing to close."
+            )
+        )
+
+    existing_report = EndOfDayReport.query.filter_by(
+        date=close_date
+    ).first()
+
+    if existing_report:
+        db.session.delete(existing_report)
+        db.session.flush()
+
+    report = EndOfDayReport(
+        date=close_date,
+        closed_by_id=current_user.id
+    )
+
+    db.session.add(report)
+    db.session.flush()
+
+    for account, totals_by_currency in account_totals.items():
+
+        for currency, amount in totals_by_currency.items():
+
+            db.session.add(
+                EndOfDayReportLine(
+                    report_id=report.id,
+                    account=account,
+                    currency=currency,
+                    amount=amount
+                )
+            )
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.end_of_day",
+                date=close_date.strftime("%Y-%m-%d"),
+                error=f"Could not close this day: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "main.end_of_day",
+            date=close_date.strftime("%Y-%m-%d"),
+            success="1"
+        )
     )
 
 
