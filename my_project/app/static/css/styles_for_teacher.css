@@ -1,4 +1,41 @@
 /* =========================================================
+           COLOR SYSTEM
+
+           Same palette as student_details.html, for a
+           consistent look across every page.
+           ========================================================= */
+
+        :root {
+
+            --color-primary: #4F46E5;
+            --color-primary-dark: #4338CA;
+            --color-primary-light: #EEF2FF;
+
+            --color-success: #10B981;
+            --color-success-dark: #047857;
+            --color-success-light: #D1FAE5;
+
+            --color-warning: #F59E0B;
+            --color-warning-dark: #92400E;
+            --color-warning-light: #FEF3C7;
+
+            --color-danger: #EF4444;
+            --color-danger-dark: #991B1B;
+            --color-danger-light: #FEE2E2;
+
+            --color-sidebar: #1E1B4B;
+            --color-sidebar-active: #4F46E5;
+
+            --color-accent-blue: #3B82F6;
+            --color-accent-purple: #8B5CF6;
+            --color-accent-teal: #14B8A6;
+            --color-accent-orange: #F97316;
+            --color-accent-pink: #EC4899;
+
+        }
+
+
+/* =========================================================
            GLOBAL
            ========================================================= */
 
@@ -19,7 +56,7 @@
         }
 
         :focus-visible {
-            outline: 2px solid #2563eb;
+            outline: 2px solid var(--color-primary);
             outline-offset: 2px;
         }
 
@@ -30,7 +67,7 @@
 
         .sidebar {
             width: 240px;
-            background: #17202a;
+            background: var(--color-sidebar);
             color: white;
             padding: 25px 15px;
         }
@@ -47,7 +84,7 @@
         .logo p {
             margin: 0;
             font-size: 13px;
-            color: #bbb;
+            color: #a5b4fc;
         }
 
         .navigation {
@@ -58,14 +95,18 @@
 
         .nav-link {
             text-decoration: none;
-            color: #ddd;
+            color: #c7d2fe;
             padding: 12px 15px;
             border-radius: 6px;
         }
 
-        .nav-link:hover,
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
         .nav-link.active {
-            background: #2c3e50;
+            background: var(--color-sidebar-active);
             color: white;
         }
 
@@ -216,31 +257,41 @@
         }
 
         .save-btn {
-            background: #2563eb;
+            background: var(--color-primary);
             color: white;
         }
 
         .save-btn:hover {
-            background: #1d4ed8;
+            background: var(--color-primary-dark);
         }
 
         .cancel-btn {
-            background: #ddd;
-            color: #222;
+            background: #e5e7eb;
+            color: #374151;
         }
 
         .cancel-btn:hover {
-            background: #ccc;
+            background: #d1d5db;
         }
 
         .action-btn {
-            background: #555;
+            background: var(--color-accent-teal);
             color: white;
             margin: 2px;
         }
 
         .action-btn:hover {
-            background: #333;
+            background: #0f9c8a;
+        }
+
+        .danger-btn {
+            background: var(--color-danger);
+            color: white;
+            margin: 2px;
+        }
+
+        .danger-btn:hover {
+            background: var(--color-danger-dark);
         }
 
         .form-actions {
@@ -256,9 +307,9 @@
            ========================================================= */
 
         .success-message {
-            background: #d8f5df;
-            color: #176b2c;
-            border: 1px solid #a9dfb5;
+            background: var(--color-success-light);
+            color: var(--color-success-dark);
+            border: 1px solid #a7f3d0;
             padding: 12px 15px;
             border-radius: 6px;
             margin-bottom: 20px;
@@ -266,9 +317,9 @@
         }
 
         .error-message {
-            background: #ffdada;
-            color: #8a1c1c;
-            border: 1px solid #efaaaa;
+            background: var(--color-danger-light);
+            color: var(--color-danger-dark);
+            border: 1px solid #fecaca;
             padding: 12px 15px;
             border-radius: 6px;
             margin-bottom: 20px;
@@ -290,6 +341,10 @@
         .add-teacher-form .form-group {
             flex: 1;
             min-width: 200px;
+        }
+
+        .add-teacher-form .form-group.full-width {
+            flex: 1 1 100%;
         }
 
 
@@ -456,18 +511,18 @@
             cursor: pointer;
         }
 
+        .attendance-low {
+            color: var(--color-danger);
+            font-weight: 700;
+        }
+
         .collected.yes {
-            color: green;
+            color: var(--color-success-dark);
             font-weight: 700;
         }
 
         .collected.no {
             color: #999;
-        }
-
-        .attendance-low {
-            color: #b91c1c;
-            font-weight: 700;
         }
 
 
@@ -552,7 +607,6 @@
                 padding: 12px 16px;
             }
         }
-
 
 
         /* =========================================================

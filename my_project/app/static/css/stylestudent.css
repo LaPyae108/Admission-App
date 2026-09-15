@@ -1,4 +1,47 @@
 /* =========================================================
+           COLOR SYSTEM
+
+           One place to change the palette everywhere it's
+           used. Sections get their own accent color specifically
+           so a page with several distinct cards (Student Info,
+           Course Records, Payment, Remarks...) reads as visually
+           separate blocks at a glance, not one long grey column.
+           ========================================================= */
+
+        :root {
+
+            --color-primary: #4F46E5;
+            --color-primary-dark: #4338CA;
+            --color-primary-light: #EEF2FF;
+
+            --color-success: #10B981;
+            --color-success-dark: #047857;
+            --color-success-light: #D1FAE5;
+
+            --color-warning: #F59E0B;
+            --color-warning-dark: #92400E;
+            --color-warning-light: #FEF3C7;
+
+            --color-danger: #EF4444;
+            --color-danger-dark: #991B1B;
+            --color-danger-light: #FEE2E2;
+
+            --color-sidebar: #1E1B4B;
+            --color-sidebar-active: #4F46E5;
+
+            /* Section accents - cycled across the page's
+               distinct form-section cards via .section-accent-*
+               so each one is visually distinguishable. */
+            --color-accent-blue: #3B82F6;
+            --color-accent-purple: #8B5CF6;
+            --color-accent-teal: #14B8A6;
+            --color-accent-orange: #F97316;
+            --color-accent-pink: #EC4899;
+
+        }
+
+
+/* =========================================================
            GLOBAL
            ========================================================= */
 
@@ -23,7 +66,7 @@
            every button, link, and nav item invisible to
            keyboard/screen-reader users when tabbed to. */
         :focus-visible {
-            outline: 2px solid #2563eb;
+            outline: 2px solid var(--color-primary);
             outline-offset: 2px;
         }
 
@@ -34,7 +77,7 @@
 
         .sidebar {
             width: 240px;
-            background: #17202a;
+            background: var(--color-sidebar);
             color: white;
             padding: 25px 15px;
         }
@@ -51,7 +94,7 @@
         .logo p {
             margin: 0;
             font-size: 13px;
-            color: #bbb;
+            color: #a5b4fc;
         }
 
         .navigation {
@@ -62,14 +105,18 @@
 
         .nav-link {
             text-decoration: none;
-            color: #ddd;
+            color: #c7d2fe;
             padding: 12px 15px;
             border-radius: 6px;
         }
 
-        .nav-link:hover,
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
         .nav-link.active {
-            background: #2c3e50;
+            background: var(--color-sidebar-active);
             color: white;
         }
 
@@ -148,6 +195,27 @@
             overflow-x: auto;
         }
 
+        /* A colored left border per section type - so Student
+           Information, Course Records, Payment, and Remarks
+           each read as a visually distinct block on a page that
+           otherwise has several similarly-shaped white cards
+           stacked on top of each other. */
+        .section-accent-blue {
+            border-left: 4px solid var(--color-accent-blue);
+        }
+
+        .section-accent-purple {
+            border-left: 4px solid var(--color-accent-purple);
+        }
+
+        .section-accent-teal {
+            border-left: 4px solid var(--color-accent-teal);
+        }
+
+        .section-accent-orange {
+            border-left: 4px solid var(--color-accent-orange);
+        }
+
         /* The payment record cards no longer scroll sideways as
            a strip (each course shows one at a time, full width -
            see .course-payment-viewport below), but the section
@@ -211,7 +279,7 @@
         select:focus,
         textarea:focus {
             outline: none;
-            border-color: #555;
+            border-color: var(--color-primary);
         }
 
         /* Amount Paid fields specifically - the native spinner
@@ -256,41 +324,51 @@
         }
 
         .save-btn {
-            background: #222;
+            background: var(--color-primary);
             color: white;
         }
 
         .save-btn:hover {
-            background: #000;
+            background: var(--color-primary-dark);
         }
 
         .cancel-btn {
-            background: #ddd;
-            color: #222;
+            background: #e5e7eb;
+            color: #374151;
         }
 
         .cancel-btn:hover {
-            background: #ccc;
+            background: #d1d5db;
         }
 
         .action-btn {
-            background: #555;
+            background: var(--color-accent-teal);
             color: white;
             margin: 2px;
         }
 
         .action-btn:hover {
-            background: #333;
+            background: #0f9c8a;
         }
 
         .print-btn {
-            background: #333;
+            background: #374151;
             color: white;
             margin: 2px;
         }
 
         .print-btn:hover {
-            background: #000;
+            background: #1f2937;
+        }
+
+        .danger-btn {
+            background: var(--color-danger);
+            color: white;
+            margin: 2px;
+        }
+
+        .danger-btn:hover {
+            background: var(--color-danger-dark);
         }
 
         .form-actions {
@@ -306,9 +384,9 @@
            ========================================================= */
 
         .success-message {
-            background: #d8f5df;
-            color: #176b2c;
-            border: 1px solid #a9dfb5;
+            background: var(--color-success-light);
+            color: var(--color-success-dark);
+            border: 1px solid #a7f3d0;
             padding: 12px 15px;
             border-radius: 6px;
             margin-bottom: 20px;
@@ -316,9 +394,9 @@
         }
 
         .error-message {
-            background: #ffdada;
-            color: #8a1c1c;
-            border: 1px solid #efaaaa;
+            background: var(--color-danger-light);
+            color: var(--color-danger-dark);
+            border: 1px solid #fecaca;
             padding: 12px 15px;
             border-radius: 6px;
             margin-bottom: 20px;
@@ -366,12 +444,13 @@
         }
 
         .student-table th {
-            background: #f1f1f1;
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
             font-weight: 700;
         }
 
         .student-table tfoot th {
-            background: #e8e8e8;
+            background: #e0e7ff;
         }
 
 
@@ -453,6 +532,7 @@
 
         .payment-summary-card {
             border: 1px solid #ddd;
+            border-top: 3px solid var(--color-primary);
             border-radius: 7px;
             padding: 18px;
             background: #fafafa;
@@ -467,6 +547,7 @@
 
         .payment-summary-card strong {
             font-size: 22px;
+            color: var(--color-primary-dark);
         }
 
 
@@ -483,6 +564,7 @@
 
         .discount-card {
             border: 1px solid #ddd;
+            border-top: 3px solid var(--color-accent-purple);
             border-radius: 7px;
             padding: 18px;
             background: #fafafa;
@@ -497,6 +579,7 @@
 
         .discount-card strong {
             font-size: 18px;
+            color: #6D28D9;
         }
 
 
@@ -532,7 +615,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            border: 1px solid #ddd;
+            border: 2px solid var(--color-primary);
             background: white;
             font-size: 20px;
             line-height: 1;
@@ -540,12 +623,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #374151;
+            color: var(--color-primary);
         }
 
         .strip-nav-arrow:hover:not(:disabled) {
-            background: #f4f6f8;
-            border-color: #bbb;
+            background: var(--color-primary);
+            color: white;
         }
 
         .strip-nav-arrow:disabled {
@@ -590,6 +673,7 @@
 
         .course-payment-mini-card {
             border: 1px solid #ddd;
+            border-top: 3px solid var(--color-accent-teal);
             border-radius: 7px;
             padding: 16px;
             background: #fafafa;
@@ -604,6 +688,7 @@
 
         .course-payment-mini-card strong {
             font-size: 20px;
+            color: var(--color-success-dark);
         }
 
         .course-payment-subform {
@@ -654,22 +739,22 @@
         }
 
         .payment.paid {
-            background: #d8f5df;
-            color: #176b2c;
+            background: var(--color-success-light);
+            color: var(--color-success-dark);
         }
 
         .payment.partial {
-            background: #fff0c2;
-            color: #775b00;
+            background: var(--color-warning-light);
+            color: var(--color-warning-dark);
         }
 
         .payment.unpaid {
-            background: #ffdada;
-            color: #8a1c1c;
+            background: var(--color-danger-light);
+            color: var(--color-danger-dark);
         }
 
         .attendance-low {
-            color: #b91c1c;
+            color: var(--color-danger);
             font-weight: 700;
         }
 
@@ -686,7 +771,7 @@
         }
 
         .collected.yes {
-            color: green;
+            color: var(--color-success-dark);
             font-weight: 700;
         }
 

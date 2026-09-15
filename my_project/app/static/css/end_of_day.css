@@ -8,15 +8,15 @@
 
 :root {
 
-    --color-accent: #2563eb;
-    --color-accent-hover: #1d4ed8;
-    --color-accent-soft: #eff6ff;
+    --color-accent: #4F46E5;
+    --color-accent-hover: #4338CA;
+    --color-accent-soft: #EEF2FF;
 
-    /* Same dark navy as the dashboard's sidebar - used here
-       for the grand-total banner, tying the two pages'
-       "dark accent" together instead of end_of_day.html
+    /* Same deep indigo as the dashboard/other pages' sidebar -
+       used here for the grand-total banner, tying this report
+       to the rest of the app's "dark accent" instead of
        inventing its own near-black (#111827). */
-    --color-dark: #102a43;
+    --color-dark: #1E1B4B;
 
     --color-bg: #f5f7fb;
     --color-surface: #ffffff;

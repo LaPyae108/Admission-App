@@ -8,15 +8,15 @@
 :root {
 
     /* Brand / accent */
-    --color-accent: #2563eb;
-    --color-accent-hover: #1d4ed8;
-    --color-accent-soft: #eff6ff;
+    --color-accent: #4F46E5;
+    --color-accent-hover: #4338CA;
+    --color-accent-soft: #EEF2FF;
 
     /* Sidebar */
-    --color-sidebar-bg: #102a43;
-    --color-sidebar-hover: #1d4263;
-    --color-sidebar-muted: #a9bbd0;
-    --color-sidebar-text: #cbd5e1;
+    --color-sidebar-bg: #1E1B4B;
+    --color-sidebar-hover: rgba(255, 255, 255, 0.1);
+    --color-sidebar-muted: #a5b4fc;
+    --color-sidebar-text: #c7d2fe;
 
     /* Surface / background */
     --color-bg: #f5f7fb;
@@ -33,13 +33,13 @@
     --color-text-disabled: #a0aec0;
 
     /* Status colors */
-    --color-warning-bg: #fff7d6;
-    --color-warning-text: #946200;
-    --color-success-bg: #dcfce7;
-    --color-success-text: #15803d;
-    --color-danger-bg: #fee2e2;
-    --color-danger-text: #b91c1c;
-    --color-danger-border: #f5a3a3;
+    --color-warning-bg: #FEF3C7;
+    --color-warning-text: #92400E;
+    --color-success-bg: #D1FAE5;
+    --color-success-text: #047857;
+    --color-danger-bg: #FEE2E2;
+    --color-danger-text: #991B1B;
+    --color-danger-border: #fecaca;
     --color-info-bg: #dbeafe;
     --color-info-text: #1d4ed8;
 
@@ -543,9 +543,9 @@ textarea {
 }
 
 .payment.partial {
-    background-color: var(--color-info-bg);
+    background-color: var(--color-warning-bg);
 
-    color: var(--color-info-text);
+    color: var(--color-warning-text);
 }
 
 .payment.unpaid {
@@ -583,6 +583,20 @@ textarea {
     background-color: var(--color-accent-soft);
 
     border-color: var(--color-accent);
+}
+
+.danger-btn {
+    background-color: transparent;
+
+    border: 1px solid var(--color-danger-border);
+
+    color: var(--color-danger-text);
+}
+
+.danger-btn:hover {
+    background-color: var(--color-danger-bg);
+
+    border-color: var(--color-danger-text);
 }
 
 .action-btn:active {
