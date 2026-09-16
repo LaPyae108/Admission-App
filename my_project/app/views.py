@@ -856,8 +856,7 @@ def dashboard():
     students = pagination.items
     student_types = StudentType.query.order_by(StudentType.name).all()
 
-    return render_template(
-        "dashboard.html",
+    template_context = dict(
         students=students,
         student_types=student_types,
         search=search,
@@ -866,6 +865,15 @@ def dashboard():
         selected_type=selected_type,
         pagination=pagination
     )
+
+    # The live search JS fetches with this header set so it can
+    # swap in just the table + pagination fragment - no full
+    # page reload, so the search box never loses focus and the
+    # page never visibly flashes while someone is typing.
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return render_template("_dashboard_results.html", **template_context)
+
+    return render_template("dashboard.html", **template_context)
 
 
 def create_course_with_optional_payment(student, form):
@@ -2704,6 +2712,56 @@ def course_info(course_id):
         selected_date=selected_date,
         attendance_rate=attendance_rate,
         is_teacher_view=current_user.is_teacher()
+    )
+
+
+@main.route(
+    "/course/<path:course_id>/update-dates",
+    methods=["POST"]
+)
+@admin_required
+def update_course_dates(course_id):
+    """
+    Set a course's Start Date and End Date for EVERY student
+    enrolled in it, not just one - a course has one start and
+    end date, not a different one per student, same reasoning
+    as assign_teacher() just above. Admin-only: this silently
+    overwrites whatever individual dates each enrollment had
+    before, so it's a bulk action worth restricting.
+    """
+    start_date = parse_form_date(request.form, "start_date")
+    end_date = parse_form_date(request.form, "end_date")
+
+    if start_date and end_date and end_date < start_date:
+        return redirect(
+            url_for(
+                "main.course_info",
+                course_id=course_id,
+                error="End Date can't be before Start Date."
+            )
+        )
+
+    StudentResult.query.filter_by(course_id=course_id).update(
+        {
+            "start_date": start_date,
+            "end_date": end_date
+        }
+    )
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return redirect(
+            url_for(
+                "main.course_info",
+                course_id=course_id,
+                error=f"Could not update the course dates: {str(e)}"
+            )
+        )
+
+    return redirect(
+        url_for("main.course_info", course_id=course_id, success=1)
     )
 
 

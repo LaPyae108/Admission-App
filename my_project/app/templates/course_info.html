@@ -190,47 +190,157 @@
 
 
             <!-- =================================================
+                 MESSAGES
+                 ================================================= -->
+
+            {% if request.args.get("success") %}
+
+                <div class="success-message">
+                    Saved.
+                </div>
+
+            {% endif %}
+
+            {% if request.args.get("error") %}
+
+                <div class="error-message">
+                    {{ request.args.get("error") }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 COURSE DATES (admin only - editable)
+                 ================================================= -->
+
+            {% if current_user.is_admin() %}
+
+                <div class="form-section section-accent-blue">
+
+                    <div class="form-section-header">
+
+                        <h3>
+                            Course Dates
+                        </h3>
+
+                        <p>
+                            Updates every student enrolled in
+                            this course, not just one - there's
+                            one Start/End Date per course, not
+                            per student.
+                        </p>
+
+                    </div>
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'main.update_course_dates',
+                            course_id=course_id
+                        ) }}"
+                        onsubmit="return confirm('Update the Start/End Date for every student enrolled in this course?');"
+                    >
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="start_date">
+                                    Start Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="start_date"
+                                    name="start_date"
+                                    value="{% if start_date %}{{ start_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="end_date">
+                                    End Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="end_date"
+                                    name="end_date"
+                                    value="{% if end_date %}{{ end_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="save-btn"
+                            >
+                                Update Dates for Every Student
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
                  COURSE SUMMARY
                  ================================================= -->
 
             <div class="course-info-summary">
 
-                <div class="course-info-card">
+                {% if not current_user.is_admin() %}
 
-                    <span>
-                        Start Date
-                    </span>
+                    <div class="course-info-card">
 
-                    <strong>
+                        <span>
+                            Start Date
+                        </span>
 
-                        {% if start_date %}
-                            {{ start_date.strftime("%d %b %Y") }}
-                        {% else %}
-                            -
-                        {% endif %}
+                        <strong>
 
-                    </strong>
+                            {% if start_date %}
+                                {{ start_date.strftime("%d %b %Y") }}
+                            {% else %}
+                                -
+                            {% endif %}
 
-                </div>
+                        </strong>
+
+                    </div>
 
 
-                <div class="course-info-card">
+                    <div class="course-info-card">
 
-                    <span>
-                        End Date
-                    </span>
+                        <span>
+                            End Date
+                        </span>
 
-                    <strong>
+                        <strong>
 
-                        {% if end_date %}
-                            {{ end_date.strftime("%d %b %Y") }}
-                        {% else %}
-                            -
-                        {% endif %}
+                            {% if end_date %}
+                                {{ end_date.strftime("%d %b %Y") }}
+                            {% else %}
+                                -
+                            {% endif %}
 
-                    </strong>
+                        </strong>
 
-                </div>
+                    </div>
+
+                {% endif %}
 
 
                 <div class="course-info-card">
