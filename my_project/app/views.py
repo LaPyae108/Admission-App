@@ -930,7 +930,18 @@ def create_course_with_optional_payment(student, form):
 
     discount_type = form.get("discount_type", "none").strip().lower()
     discount = to_decimal(form.get("discount", "0"))
-    promotion_amount = discount
+
+    # Two different forms feed this helper with two different
+    # shapes: Add Student has a separate promotion_amount field
+    # from its percentage discount field, while Add Course uses
+    # one combined "discount" field for both cases (labeled
+    # "Discount (%) / Promotion Amount"). Prefer the dedicated
+    # field when it's actually present in the submission -
+    # otherwise the combined field IS the promotion amount.
+    if "promotion_amount" in form:
+        promotion_amount = to_decimal(form.get("promotion_amount", "0"))
+    else:
+        promotion_amount = discount
 
     course_currency = normalize_currency(student.currency)
 
