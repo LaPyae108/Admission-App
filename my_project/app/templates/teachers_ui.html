@@ -16,7 +16,7 @@
     >
 
     <title>
-        Teachers' UI
+        Teachers and Courses
     </title>
 
 </head>
@@ -56,13 +56,6 @@
                     Dashboard
                 </a>
 
-                <a
-                    href="{{ url_for('main.dashboard') }}"
-                    class="nav-link"
-                >
-                    Students
-                </a>
-
             {% endif %}
 
             <a
@@ -72,7 +65,7 @@
                 {% if is_teacher_view %}
                     My Courses
                 {% else %}
-                    Teachers
+                    Teachers And Courses
                 {% endif %}
             </a>
 

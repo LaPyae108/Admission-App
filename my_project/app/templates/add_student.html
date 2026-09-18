@@ -237,20 +237,32 @@
                      STUDENT INFORMATION
                      ================================================= -->
 
-                <div class="form-section">
+                <div class="form-section section-accent-blue" data-section-key="student-info">
 
                     <div class="form-section-header">
 
-                        <h3>
-                            Student Information
-                        </h3>
+                        <div class="form-section-header-text">
 
-                        <p>
-                            Enter the student's basic information.
-                        </p>
+                            <h3>
+                                Student Information
+                            </h3>
+
+                            <p>
+                                Enter the student's basic information.
+                            </p>
+
+                        </div>
+
+                        <span class="section-toggle-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
 
                     </div>
 
+
+                    <div class="form-section-body">
 
                     <div class="form-grid">
 
@@ -351,7 +363,7 @@
                         <div class="form-group">
 
                             <label for="father_name">
-                                Guardian Name
+                                Father Name
                             </label>
 
                             <input
@@ -459,7 +471,7 @@
                         <div class="form-group">
 
                             <label for="intake_date">
-                                Admission Date
+                                Intake Date
                             </label>
 
                             <input
@@ -470,6 +482,8 @@
                             >
 
                         </div>
+
+                    </div>
 
                     </div>
 
@@ -493,22 +507,34 @@
 
                 {% if not edit_mode %}
 
-                <div class="form-section">
+                <div class="form-section section-accent-purple" data-section-key="course-info">
 
                     <div class="form-section-header">
 
-                        <h3>
-                            Course Information (optional)
-                        </h3>
+                        <div class="form-section-header-text">
 
-                        <p>
-                            Enroll the student in their first
-                            course now, or leave blank and add one
-                            later from their profile.
-                        </p>
+                            <h3>
+                                Course Information (optional)
+                            </h3>
+
+                            <p>
+                                Enroll the student in their first
+                                course now, or leave blank and add one
+                                later from their profile.
+                            </p>
+
+                        </div>
+
+                        <span class="section-toggle-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
 
                     </div>
 
+
+                    <div class="form-section-body">
 
                     <div class="form-grid">
 
@@ -648,6 +674,8 @@
 
                     </div>
 
+                    </div>
+
                 </div>
 
                 {% endif %}
@@ -657,22 +685,34 @@
                      PAYMENT INFORMATION
                      ================================================= -->
 
-                <div class="form-section">
+                <div class="form-section section-accent-teal" data-section-key="payment-info">
 
                     <div class="form-section-header">
 
-                        <h3>
-                            Payment Information
-                        </h3>
+                        <div class="form-section-header-text">
 
-                        <p>
-                            Set the course fee, apply a promotion
-                            or percentage discount, and record
-                            the initial payment.
-                        </p>
+                            <h3>
+                                Payment Information
+                            </h3>
+
+                            <p>
+                                Set the course fee, apply a promotion
+                                or percentage discount, and record
+                                the initial payment.
+                            </p>
+
+                        </div>
+
+                        <span class="section-toggle-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
 
                     </div>
 
+
+                    <div class="form-section-body">
 
                     {% if edit_mode and latest_payment %}
 
@@ -1304,6 +1344,8 @@
 
                     </div>
 
+                    </div>
+
                 </div>
 
 
@@ -1362,6 +1404,86 @@
      ========================================================= -->
 
 <script>
+
+/* =========================================================
+   COLLAPSIBLE SECTIONS
+
+   Same behavior and storage key as student_details.html - a
+   section collapsed on one page stays collapsed on the other
+   too, since it's a standing preference about what someone
+   wants to see by default, not specific to one page.
+   ========================================================= */
+
+const SECTION_STORAGE_KEY = "collapsedSections";
+
+function getCollapsedSections() {
+
+    try {
+        return JSON.parse(localStorage.getItem(SECTION_STORAGE_KEY)) || {};
+    } catch (error) {
+        return {};
+    }
+
+}
+
+function setSectionCollapsed(sectionKey, collapsed) {
+
+    const collapsedSections = getCollapsedSections();
+
+    if (collapsed) {
+        collapsedSections[sectionKey] = true;
+    } else {
+        delete collapsedSections[sectionKey];
+    }
+
+    try {
+        localStorage.setItem(SECTION_STORAGE_KEY, JSON.stringify(collapsedSections));
+    } catch (error) {
+        // Storage full or disabled - the toggle still works for
+        // this page view, it just won't be remembered next time.
+    }
+
+}
+
+function applySectionState(section, collapsed) {
+
+    const header = section.querySelector(".form-section-header");
+    const body = section.querySelector(".form-section-body");
+
+    if (!header || !body) {
+        return;
+    }
+
+    header.classList.toggle("collapsed", collapsed);
+    body.classList.toggle("collapsed", collapsed);
+
+}
+
+document.querySelectorAll(".form-section[data-section-key]").forEach(function (section) {
+
+    const sectionKey = section.dataset.sectionKey;
+    const collapsedSections = getCollapsedSections();
+
+    applySectionState(section, Boolean(collapsedSections[sectionKey]));
+
+    const header = section.querySelector(".form-section-header");
+
+    if (!header) {
+        return;
+    }
+
+    header.addEventListener("click", function () {
+
+        const body = section.querySelector(".form-section-body");
+        const nowCollapsed = !body.classList.contains("collapsed");
+
+        applySectionState(section, nowCollapsed);
+        setSectionCollapsed(sectionKey, nowCollapsed);
+
+    });
+
+});
+
 
 /* =========================================================
    ELEMENTS
@@ -1669,6 +1791,15 @@ function updateDiscountFields() {
 
 /* =========================================================
    CONVERT PAYMENT TO COURSE CURRENCY
+
+   Mirrors convert_payment_to_course_currency() in views.py -
+   this JS copy exists purely to give an instant live preview
+   as someone types, without a server round-trip. The Python
+   version is what actually gets saved and is authoritative;
+   this one is never trusted on its own (the server re-does
+   this calculation and validates it independently on submit).
+   If the conversion rules ever change, update BOTH - they're
+   two implementations of the same rule, not two rules.
    ========================================================= */
 
 function convertPaymentToCourseCurrency(
@@ -1743,7 +1874,13 @@ function convertPaymentToCourseCurrency(
     }
 
 
-    return payment;
+    // Falls through here only if course/paymentCurrencyValue
+    // is something other than "USD"/"MMK" - shouldn't happen
+    // since the dropdown only offers those two, but matches
+    // convert_payment_to_course_currency() in views.py by
+    // returning 0 (not the unconverted amount) rather than
+    // guessing at a conversion that was never defined.
+    return 0;
 
 }
 
@@ -1780,6 +1917,10 @@ function calculatePayment(commitAmountPaid) {
      *
      * Discount is calculated FIRST,
      * before currency conversion.
+     *
+     * Mirrors calculate_discount() in views.py - same live-
+     * preview-vs-authoritative relationship as the currency
+     * conversion above. Update both if this logic changes.
      */
 
     let discountValue = 0;

@@ -151,7 +151,7 @@
 
         .topbar p {
             margin: 0;
-            color: #777;
+            color: #52606d;
         }
 
         .content {
@@ -178,7 +178,7 @@
 
         .page-header p {
             margin: 0;
-            color: #777;
+            color: #52606d;
         }
 
 
@@ -190,7 +190,7 @@
             background: white;
             border: 1px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 34px;
             padding: 25px;
             overflow-x: auto;
         }
@@ -199,21 +199,44 @@
            Information, Course Records, Payment, and Remarks
            each read as a visually distinct block on a page that
            otherwise has several similarly-shaped white cards
-           stacked on top of each other. */
+           stacked on top of each other. Widened from 4px and
+           paired with a matching tint on the header (below) so
+           each section is identifiable even at a glance while
+           scrolling fast, not just on close inspection. */
         .section-accent-blue {
-            border-left: 4px solid var(--color-accent-blue);
+            border-left: 6px solid var(--color-accent-blue);
         }
 
         .section-accent-purple {
-            border-left: 4px solid var(--color-accent-purple);
+            border-left: 6px solid var(--color-accent-purple);
         }
 
         .section-accent-teal {
-            border-left: 4px solid var(--color-accent-teal);
+            border-left: 6px solid var(--color-accent-teal);
         }
 
         .section-accent-orange {
-            border-left: 4px solid var(--color-accent-orange);
+            border-left: 6px solid var(--color-accent-orange);
+        }
+
+        .section-accent-blue .form-section-header {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .section-accent-purple .form-section-header {
+            background: #f5f3ff;
+            border-color: #ddd6fe;
+        }
+
+        .section-accent-teal .form-section-header {
+            background: #f0fdfa;
+            border-color: #99f6e4;
+        }
+
+        .section-accent-orange .form-section-header {
+            background: #fff7ed;
+            border-color: #fed7aa;
         }
 
         /* The payment record cards no longer scroll sideways as
@@ -226,17 +249,80 @@
             overflow-x: visible;
         }
 
+        /* A tinted, rounded header block (see the accent-specific
+           backgrounds above) makes the START of a new section
+           unmistakable while scrolling - previously just plain
+           white blending into the section body below it. Kept
+           fully inset (its own border-radius, no negative
+           margins) rather than bleeding to the section's edges,
+           since .form-section's overflow-x: auto can't reliably
+           be trusted to clip a negative-margined child to match
+           the parent's rounded corners. */
         .form-section-header {
-            margin-bottom: 25px;
+            margin: -25px -25px 25px -25px;
+            padding: 18px 25px;
+            border-bottom: 1px solid #eee;
+            border-radius: 7px 7px 0 0;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .form-section-header:hover {
+            filter: brightness(0.97);
+        }
+
+        .form-section-header-text {
+            flex: 1;
+            min-width: 0;
         }
 
         .form-section-header h3 {
             margin: 0 0 5px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #1f2937;
         }
 
         .form-section-header p {
             margin: 0;
-            color: #777;
+            color: #52606d;
+        }
+
+        /* Collapsed state removes the bottom margin/border too,
+           so a collapsed header sits flush as one thin bar
+           instead of leaving an empty gap where the body used
+           to be. */
+        .form-section-header.collapsed {
+            margin-bottom: -25px;
+            border-bottom: none;
+            border-radius: 7px;
+        }
+
+        .section-toggle-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            color: #52606d;
+        }
+
+        .form-section-header.collapsed .section-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .form-section-body {
+            overflow: hidden;
+        }
+
+        .form-section-body.collapsed {
+            display: none;
         }
 
 
@@ -540,7 +626,7 @@
 
         .payment-summary-card span {
             display: block;
-            color: #777;
+            color: #52606d;
             font-size: 14px;
             margin-bottom: 8px;
         }
@@ -548,6 +634,121 @@
         .payment-summary-card strong {
             font-size: 22px;
             color: var(--color-primary-dark);
+        }
+
+
+        /* =========================================================
+           ADD STUDENT - INFO BOX, PAYMENT BLOCKS, CALCULATION
+           SUMMARY (shared here so add_student.html can use the
+           same vibrant palette as every other page)
+           ========================================================= */
+
+        .info-box {
+            background: var(--color-primary-light);
+            border: 1px solid #c7d2fe;
+            border-left: 4px solid var(--color-primary);
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #3730a3;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--color-primary-dark);
+        }
+
+        .payment-block {
+            border: 1px solid #ddd;
+            border-top: 3px solid var(--color-accent-teal);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .payment-block-title {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: #0f766e;
+        }
+
+        .payment-block-description {
+            font-size: 13px;
+            color: #52606d;
+            margin-bottom: 14px;
+        }
+
+        .discount-fields {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* Promotion Amount and Discount Percentage - only one
+           shows at a time, toggled by updateDiscountFields() in
+           the page's own script adding/removing .visible based
+           on the selected Discount Type. Hidden by default so
+           nothing appears until a discount type is chosen. */
+        .discount-field {
+            display: none;
+        }
+
+        .discount-field.visible {
+            display: block;
+        }
+
+        .payment-summary-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 14px;
+            color: var(--color-primary-dark);
+        }
+
+        .payment-calculation-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .calculation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .calculation-item span {
+            color: #52606d;
+        }
+
+        .calculation-item.final {
+            border-bottom: none;
+            border-top: 2px solid var(--color-primary);
+            margin-top: 4px;
+            padding-top: 14px;
+            font-size: 16px;
+        }
+
+        .calculation-item.final strong {
+            color: var(--color-primary-dark);
+            font-size: 20px;
+        }
+
+        .calculation-item.pending strong {
+            color: var(--color-warning-dark);
+        }
+
+        .calculation-note {
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+            margin-top: 8px;
         }
 
 
@@ -572,7 +773,7 @@
 
         .discount-card span {
             display: block;
-            color: #777;
+            color: #52606d;
             font-size: 14px;
             margin-bottom: 8px;
         }
@@ -639,7 +840,7 @@
         .strip-nav-indicator {
             flex: 0 0 auto;
             font-size: 13px;
-            color: #777;
+            color: #52606d;
             min-width: 48px;
             text-align: center;
         }
@@ -648,7 +849,7 @@
             width: 100%;
             border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 18px;
+            padding: 24px;
             background: white;
         }
 
@@ -663,8 +864,8 @@
         .course-payment-mini-summary {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .course-payment-mini-summary--four {
@@ -681,7 +882,7 @@
 
         .course-payment-mini-card span {
             display: block;
-            color: #777;
+            color: #52606d;
             font-size: 14px;
             margin-bottom: 6px;
         }

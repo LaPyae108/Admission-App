@@ -239,20 +239,32 @@
                  STUDENT INFORMATION
                  ================================================= -->
 
-            <div class="form-section section-accent-blue">
+            <div class="form-section section-accent-blue" data-section-key="student-info">
 
                 <div class="form-section-header">
 
-                    <h3>
-                        Student Information
-                    </h3>
+                    <div class="form-section-header-text">
 
-                    <p>
-                        Student's personal and admission information.
-                    </p>
+                        <h3>
+                            Student Information
+                        </h3>
+
+                        <p>
+                            Student's personal and admission information.
+                        </p>
+
+                    </div>
+
+                    <span class="section-toggle-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
 
                 </div>
 
+
+                <div class="form-section-body">
 
                 {% if request.args.get("edit_student") %}
 
@@ -693,6 +705,8 @@
 
                 {% endif %}
 
+                </div>
+
             </div>
 
 
@@ -700,14 +714,14 @@
                  COURSE RECORDS
                  ================================================= -->
 
-            <div class="form-section section-accent-purple">
+            <div class="form-section section-accent-purple" data-section-key="course-records">
 
                 <div
                     class="form-section-header"
-                    style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px;"
+                    style="align-items:flex-start;"
                 >
 
-                    <div>
+                    <div class="form-section-header-text">
 
                         <h3>
                             Course Records
@@ -726,12 +740,21 @@
                         ) }}"
                         class="action-btn"
                         style="white-space:nowrap;"
+                        onclick="event.stopPropagation();"
                     >
                         + Add Course
                     </a>
 
+                    <span class="section-toggle-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
                 </div>
 
+
+                <div class="form-section-body">
 
                 <!-- =================================================
                      COURSE TABLE
@@ -1111,6 +1134,8 @@
 
                 {% endif %}
 
+                </div>
+
             </div>
 
 
@@ -1125,20 +1150,32 @@
                  payment-record-section below, courses + General
                  ================================================= -->
 
-            <div class="form-section section-accent-teal">
+            <div class="form-section section-accent-teal" data-section-key="total-summary">
 
                 <div class="form-section-header">
 
-                    <h3>
-                        Total Summary
-                    </h3>
+                    <div class="form-section-header-text">
 
-                    <p>
-                        Combined across every course's payment
-                        record section below.
-                    </p>
+                        <h3>
+                            Total Summary
+                        </h3>
+
+                        <p>
+                            Combined across every course's payment
+                            record section below.
+                        </p>
+
+                    </div>
+
+                    <span class="section-toggle-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
 
                 </div>
+
+                <div class="form-section-body">
 
                 <div class="payment-summary">
 
@@ -1183,6 +1220,8 @@
 
                 </div>
 
+                </div>
+
             </div>
 
 
@@ -1193,21 +1232,33 @@
                  without the page growing endlessly wide.
                  ================================================= -->
 
-            <div class="form-section form-section-payment-strip section-accent-teal">
+            <div class="form-section form-section-payment-strip section-accent-teal" data-section-key="payment-sections">
 
                 <div class="form-section-header">
 
-                    <h3>
-                        Payment Record Sections
-                    </h3>
+                    <div class="form-section-header-text">
 
-                    <p>
-                        Scroll sideways to see every course. Each
-                        section adds a payment for that course only.
-                    </p>
+                        <h3>
+                            Payment Record Sections
+                        </h3>
+
+                        <p>
+                            Scroll sideways to see every course. Each
+                            section adds a payment for that course only.
+                        </p>
+
+                    </div>
+
+                    <span class="section-toggle-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
 
                 </div>
 
+
+                <div class="form-section-body">
 
                 <div class="course-payment-strip-wrapper">
 
@@ -2115,6 +2166,8 @@
 
                 </div>
 
+                </div>
+
             </div>
 
 
@@ -2123,16 +2176,28 @@
                  REMARKS
                  ================================================= -->
 
-            <div class="form-section section-accent-orange">
+            <div class="form-section section-accent-orange" data-section-key="remarks">
 
                 <div class="form-section-header">
 
-                    <h3>
-                        Remarks
-                    </h3>
+                    <div class="form-section-header-text">
+
+                        <h3>
+                            Remarks
+                        </h3>
+
+                    </div>
+
+                    <span class="section-toggle-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
 
                 </div>
 
+
+                <div class="form-section-body">
 
                 <form
                     method="POST"
@@ -2224,6 +2289,8 @@
 
                 {% endif %}
 
+                </div>
+
             </div>
 
         </section>
@@ -2239,6 +2306,89 @@
      ============================================================= -->
 
 <script>
+
+
+    /* =========================================================
+       COLLAPSIBLE SECTIONS
+
+       Clicking a section header toggles its body open/closed.
+       State persists in localStorage per section key, shared
+       across every student's page - collapsing "Remarks" once
+       keeps it collapsed the next time any student is opened,
+       since that's a standing preference about what someone
+       wants to see, not something specific to one student.
+       ========================================================= */
+
+    const SECTION_STORAGE_KEY = "collapsedSections";
+
+    function getCollapsedSections() {
+
+        try {
+            return JSON.parse(localStorage.getItem(SECTION_STORAGE_KEY)) || {};
+        } catch (error) {
+            return {};
+        }
+
+    }
+
+    function setSectionCollapsed(sectionKey, collapsed) {
+
+        const collapsedSections = getCollapsedSections();
+
+        if (collapsed) {
+            collapsedSections[sectionKey] = true;
+        } else {
+            delete collapsedSections[sectionKey];
+        }
+
+        try {
+            localStorage.setItem(SECTION_STORAGE_KEY, JSON.stringify(collapsedSections));
+        } catch (error) {
+            // Storage full or disabled - the toggle still works
+            // for this page view, it just won't be remembered
+            // next time. Not worth interrupting anyone over.
+        }
+
+    }
+
+    function applySectionState(section, collapsed) {
+
+        const header = section.querySelector(".form-section-header");
+        const body = section.querySelector(".form-section-body");
+
+        if (!header || !body) {
+            return;
+        }
+
+        header.classList.toggle("collapsed", collapsed);
+        body.classList.toggle("collapsed", collapsed);
+
+    }
+
+    document.querySelectorAll(".form-section[data-section-key]").forEach(function (section) {
+
+        const sectionKey = section.dataset.sectionKey;
+        const collapsedSections = getCollapsedSections();
+
+        applySectionState(section, Boolean(collapsedSections[sectionKey]));
+
+        const header = section.querySelector(".form-section-header");
+
+        if (!header) {
+            return;
+        }
+
+        header.addEventListener("click", function () {
+
+            const body = section.querySelector(".form-section-body");
+            const nowCollapsed = !body.classList.contains("collapsed");
+
+            applySectionState(section, nowCollapsed);
+            setSectionCollapsed(sectionKey, nowCollapsed);
+
+        });
+
+    });
 
 
     /* =========================================================
