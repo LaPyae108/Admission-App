@@ -232,20 +232,32 @@
                      COURSE INFORMATION
                      ================================================= -->
 
-                <div class="form-section">
+                <div class="form-section section-accent-blue" data-section-key="add-course-info">
 
                     <div class="form-section-header">
 
-                        <h3>
-                            Course Information
-                        </h3>
+                        <div class="form-section-header-text">
 
-                        <p>
-                            Course Name and Course ID are required.
-                        </p>
+                            <h3>
+                                Course Information
+                            </h3>
+
+                            <p>
+                                Course Name and Course ID are required.
+                            </p>
+
+                        </div>
+
+                        <span class="section-toggle-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
 
                     </div>
 
+
+                    <div class="form-section-body">
 
                     <div class="form-grid">
 
@@ -277,10 +289,15 @@
                                 type="text"
                                 id="course_id"
                                 name="course_id"
-                                placeholder="Course ID"
+                                placeholder="e.g. CUL(09/26)"
                                 value="{{ form_data.get('course_id', '') }}"
                                 required
                             >
+
+                            <small>
+                                Saved as all caps with no spaces,
+                                regardless of how it's typed here.
+                            </small>
 
                         </div>
 
@@ -387,6 +404,8 @@
 
                     </div>
 
+                    </div>
+
                 </div>
 
 
@@ -394,23 +413,35 @@
                      INITIAL PAYMENT (optional)
                      ================================================= -->
 
-                <div class="form-section">
+                <div class="form-section section-accent-teal" data-section-key="add-course-payment">
 
                     <div class="form-section-header">
 
-                        <h3>
-                            Initial Payment
-                        </h3>
+                        <div class="form-section-header-text">
 
-                        <p>
-                            Add a payment for this course now, or
-                            skip it - one can still be added later
-                            from its own section on the student's
-                            profile.
-                        </p>
+                            <h3>
+                                Initial Payment
+                            </h3>
+
+                            <p>
+                                Add a payment for this course now, or
+                                skip it - one can still be added later
+                                from its own section on the student's
+                                profile.
+                            </p>
+
+                        </div>
+
+                        <span class="section-toggle-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
 
                     </div>
 
+
+                    <div class="form-section-body">
 
                     <div class="form-grid">
 
@@ -505,6 +536,22 @@
 
                         <div class="form-group">
 
+                            <label>
+                                Total After Discount
+                            </label>
+
+                            <input
+                                type="text"
+                                id="total_after_discount"
+                                value="{{ student.currency or 'MMK' }} 0.00"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
                             <label for="amount_paid">
                                 Amount Paid Now
                             </label>
@@ -532,27 +579,64 @@
                                 id="payment_currency"
                                 name="payment_currency"
                             >
-                                <option value="MMK">MMK</option>
-                                <option value="USD">USD</option>
+                                <option value="{{ student.currency or 'MMK' }}" selected>
+                                    {{ student.currency or 'MMK' }} (this student's currency)
+                                </option>
+                                <option value="{{ 'MMK' if (student.currency or 'MMK') == 'USD' else 'USD' }}">
+                                    {{ 'MMK' if (student.currency or 'MMK') == 'USD' else 'USD' }}
+                                </option>
                             </select>
+
+                        </div>
+
+
+                        <div
+                            class="form-group"
+                            id="exchange_rate_field"
+                            style="display:none;"
+                        >
+
+                            <label for="exchange_rate">
+                                Exchange Rate
+                            </label>
+
+                            <div class="exchange-rate-input">
+
+                                <span class="exchange-prefix">1 USD =</span>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    id="exchange_rate"
+                                    name="exchange_rate"
+                                    placeholder="Enter MMK rate"
+                                    value="{{ form_data.get('exchange_rate', '') }}"
+                                >
+
+                                <span class="exchange-suffix">MMK</span>
+
+                            </div>
+
+                            <small>
+                                Required when payment and course
+                                currencies are different.
+                            </small>
 
                         </div>
 
 
                         <div class="form-group">
 
-                            <label for="exchange_rate">
-                                Exchange Rate
+                            <label>
+                                Pending
                             </label>
 
                             <input
-                                type="number"
-                                step="0.0001"
-                                min="0"
-                                id="exchange_rate"
-                                name="exchange_rate"
-                                placeholder="Only if paying in a different currency"
-                                value="{{ form_data.get('exchange_rate', '') }}"
+                                type="text"
+                                id="pending_amount"
+                                value="{{ student.currency or 'MMK' }} 0.00"
+                                readonly
                             >
 
                         </div>
@@ -594,7 +678,10 @@
 
                     </div>
 
+                    </div>
+
                 </div>
+
 
 
                 <div class="form-actions">
@@ -629,13 +716,75 @@
 
 <script>
 
-    // The payment fields are DISABLED (not just hidden) when
-    // "No" is selected - a disabled field is left out of the
-    // form submission entirely, so toggling back to "No" after
-    // typing something in can't accidentally submit a stray
-    // payment. No server-side change needed for this: the
-    // backend already only creates a payment when it actually
-    // receives non-zero amounts.
+    /* =========================================================
+       COLLAPSIBLE SECTIONS - same pattern/storage key as
+       student_details.html and add_student.html.
+       ========================================================= */
+
+    const SECTION_STORAGE_KEY = "collapsedSections";
+
+    function getCollapsedSections() {
+        try {
+            return JSON.parse(localStorage.getItem(SECTION_STORAGE_KEY)) || {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    function setSectionCollapsed(sectionKey, collapsed) {
+        const collapsedSections = getCollapsedSections();
+        if (collapsed) {
+            collapsedSections[sectionKey] = true;
+        } else {
+            delete collapsedSections[sectionKey];
+        }
+        try {
+            localStorage.setItem(SECTION_STORAGE_KEY, JSON.stringify(collapsedSections));
+        } catch (error) {
+            // Not worth interrupting anyone over a storage failure.
+        }
+    }
+
+    function applySectionState(section, collapsed) {
+        const header = section.querySelector(".form-section-header");
+        const body = section.querySelector(".form-section-body");
+        if (!header || !body) {
+            return;
+        }
+        header.classList.toggle("collapsed", collapsed);
+        body.classList.toggle("collapsed", collapsed);
+    }
+
+    document.querySelectorAll(".form-section[data-section-key]").forEach(function (section) {
+        const sectionKey = section.dataset.sectionKey;
+        const collapsedSections = getCollapsedSections();
+        applySectionState(section, Boolean(collapsedSections[sectionKey]));
+
+        const header = section.querySelector(".form-section-header");
+        if (!header) {
+            return;
+        }
+
+        header.addEventListener("click", function () {
+            const body = section.querySelector(".form-section-body");
+            const nowCollapsed = !body.classList.contains("collapsed");
+            applySectionState(section, nowCollapsed);
+            setSectionCollapsed(sectionKey, nowCollapsed);
+        });
+    });
+
+
+    /* =========================================================
+       INCLUDE A PAYMENT? TOGGLE
+
+       Payment fields are DISABLED (not just hidden) when "No"
+       is selected - a disabled field is left out of the form
+       submission entirely, so toggling back to "No" after
+       typing something in can't accidentally submit a stray
+       payment. No server-side change needed for this: the
+       backend already only creates a payment when it actually
+       receives non-zero amounts.
+       ========================================================= */
 
     function togglePaymentFields() {
 
@@ -661,7 +810,151 @@
                 field.disabled = !showFields;
             });
 
+        if (showFields) {
+            calculatePayment();
+        }
+
     }
+
+
+    /* =========================================================
+       PAYMENT CALCULATION
+
+       Mirrors calculate_discount() and
+       convert_payment_to_course_currency() in views.py - this
+       is a live preview only, the server recomputes and
+       validates everything independently on submit. Update
+       both together if this logic changes.
+
+       Deliberately simpler than add_student.html's version:
+       one combined Discount field (not separate Promotion/
+       Percentage inputs) and no separate summary card grid -
+       Total After Discount and Pending are shown inline as
+       part of the same form instead. Course currency is fixed
+       to this student's existing currency, not a dropdown.
+       ========================================================= */
+
+    const COURSE_CURRENCY = "{{ student.currency or 'MMK' }}";
+
+    const totalAmount = document.getElementById("total_amount");
+    const discountType = document.getElementById("discount_type");
+    const discount = document.getElementById("discount");
+    const totalAfterDiscount = document.getElementById("total_after_discount");
+    const amountPaid = document.getElementById("amount_paid");
+    const pendingAmount = document.getElementById("pending_amount");
+
+    const paymentCurrency = document.getElementById("payment_currency");
+    const exchangeRateField = document.getElementById("exchange_rate_field");
+    const exchangeRateInput = document.getElementById("exchange_rate");
+
+
+    function getPaymentCurrency() {
+        return paymentCurrency ? paymentCurrency.value : COURSE_CURRENCY;
+    }
+
+    function formatMoney(value) {
+        return COURSE_CURRENCY + " " + Number(value || 0).toLocaleString(
+            "en-US",
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+        );
+    }
+
+    function updateExchangeRateField() {
+
+        if (!paymentCurrency || !exchangeRateField) {
+            return;
+        }
+
+        const differentCurrency = paymentCurrency.value !== COURSE_CURRENCY;
+
+        exchangeRateField.style.display = differentCurrency ? "flex" : "none";
+
+        if (exchangeRateInput) {
+            exchangeRateInput.required = differentCurrency;
+        }
+
+        calculatePayment();
+
+    }
+
+    function convertToCourseCurrency(amount, paymentCurrencyValue, rate) {
+
+        if (paymentCurrencyValue === COURSE_CURRENCY) {
+            return amount;
+        }
+
+        if (rate <= 0) {
+            return 0;
+        }
+
+        if (COURSE_CURRENCY === "USD" && paymentCurrencyValue === "MMK") {
+            return amount / rate;
+        }
+
+        if (COURSE_CURRENCY === "MMK" && paymentCurrencyValue === "USD") {
+            return amount * rate;
+        }
+
+        return 0;
+
+    }
+
+    function calculatePayment() {
+
+        if (!totalAmount) {
+            return;
+        }
+
+        const total = Math.max(parseFloat(totalAmount.value) || 0, 0);
+        const type = discountType ? discountType.value : "none";
+        const discountValue = Math.max(parseFloat(discount ? discount.value : 0) || 0, 0);
+
+        let discountAmount = 0;
+
+        if (type === "promotion") {
+            discountAmount = Math.min(discountValue, total);
+        } else if (type === "percentage") {
+            discountAmount = total * Math.min(discountValue, 100) / 100;
+        }
+
+        const finalTotal = Math.max(total - discountAmount, 0);
+
+        const paid = Math.max(parseFloat(amountPaid.value) || 0, 0);
+        const payment = getPaymentCurrency();
+        const rate = Math.max(parseFloat(exchangeRateInput ? exchangeRateInput.value : 0) || 0, 0);
+
+        const paidInCourseCurrency = convertToCourseCurrency(paid, payment, rate);
+        const pending = Math.max(finalTotal - paidInCourseCurrency, 0);
+
+        totalAfterDiscount.value = formatMoney(finalTotal);
+        pendingAmount.value = formatMoney(pending);
+
+    }
+
+
+    if (paymentCurrency) {
+        paymentCurrency.addEventListener("change", updateExchangeRateField);
+    }
+
+    [totalAmount, discountType, discount, amountPaid, exchangeRateInput].forEach(function (field) {
+        if (field) {
+            field.addEventListener("input", calculatePayment);
+            field.addEventListener("change", calculatePayment);
+        }
+    });
+
+
+    /* Stop scroll-wheel from silently changing number inputs -
+       same fix applied everywhere else in the app. */
+    document.addEventListener("wheel", function (event) {
+        if (
+            event.target.tagName === "INPUT" &&
+            event.target.type === "number" &&
+            document.activeElement === event.target
+        ) {
+            event.target.blur();
+        }
+    }, { passive: true });
 
 
     togglePaymentFields();

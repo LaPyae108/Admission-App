@@ -46,9 +46,13 @@ main = Blueprint("main", __name__)
 
 
 # ============================================================
-# Start
-# Before Request the fucntion check if the user is authentic 
-# or not (for example checks username and password)
+# LOGIN REQUIRED, BY DEFAULT, FOR EVERYTHING ON THIS BLUEPRINT
+#
+# Rather than adding @login_required to every single route
+# (20+ of them, and easy to forget on a new one later), this
+# runs before every request to this blueprint and blocks
+# anyone who isn't logged in - except the login page itself,
+# which obviously can't require being logged in first.
 # ============================================================
 
 @main.before_request
@@ -69,20 +73,41 @@ def require_login():
 
 # ============================================================
 # ADMIN-ONLY ROUTES
-# Indentify the admin user before any functions and block anyone who is not admin
+#
+# Applied on top of the login check above, for actions that
+# should be restricted to admins specifically - currently just
+# deletions. A logged-in "staff" user gets a 403 if they hit
+# one of these directly.
 # ============================================================
 
 def admin_required(view_function):
+
     @wraps(view_function)
     def wrapped(*args, **kwargs):
+
         if not current_user.is_admin():
             abort(403)
+
         return view_function(*args, **kwargs)
+
     return wrapped
-    
+
+
 # ============================================================
 # TEACHER ACCOUNTS ARE FULLY SANDBOXED
-# TEACHER uSERS cANNOT aCCESS TO OTHER PAGES THAN THE LISTED ONES BELOW
+#
+# A "teacher" role login can ONLY reach the endpoints listed
+# here - everything else (the Dashboard, student profiles,
+# payments, admin-wide Attendance overview, and so on) is
+# blocked outright. This is a whitelist, not a blocklist, on
+# purpose: a new route added later is blocked for teachers by
+# default, until someone deliberately adds it here.
+#
+# Being on this list only proves the ENDPOINT is teacher-safe
+# in general - it does NOT prove a specific course belongs to
+# THIS teacher. That check happens separately, inside
+# course_info() and take_attendance() themselves, since it
+# needs to look at which course_id was actually requested.
 # ============================================================
 
 TEACHER_ALLOWED_ENDPOINTS = {
@@ -94,7 +119,7 @@ TEACHER_ALLOWED_ENDPOINTS = {
     "main.room_assign",
 }
 
-#Checks if the Teacher users' access point 
+
 @main.before_request
 def restrict_teacher_access():
 
@@ -107,9 +132,9 @@ def restrict_teacher_access():
     ):
         abort(403)
 
-#convert any value to a Decimal, 
-# returning 0 instead of raising if it's missing or not a valid number.
+
 def to_decimal(value):
+    """Safely convert any value to a Decimal, returning 0 instead of raising if it's missing or not a valid number."""
     if value is None:
         return Decimal("0")
     try:
@@ -117,51 +142,70 @@ def to_decimal(value):
     except Exception:
         return Decimal("0")
 
-#Convert to Decimal and round to exactly 2 decimal places 
+
 def to_money(value):
+    """Convert to Decimal and round to exactly 2 decimal places - for actual money amounts only, not exchange rates (4 decimals) or percentages."""
     return to_decimal(value).quantize(
         Decimal("0.01"),
         rounding=ROUND_HALF_UP
     )
 
-#Currency Indentifier
+
 def normalize_currency(value, default="MMK"):
-    #Forces the currency to String and Turn the input into Upperletter with white spaces removed
+    """Force a currency value to be either 'MMK' or 'USD', falling back to default for anything else (missing, blank, typo)."""
     currency = (
         str(value or default)
         .strip()
         .upper()
     )
-    #Indentifies the currency and set default
     if currency not in ("MMK", "USD"):
         return default
     return currency
 
 
-#Read the input from the form as in Boolean value0
-def parse_bool_flag(form, field_name, default="no"):
-    value = form.get(field_name, default)
-    if isinstance(value, bool):
-        return value
-    return (form.get(field_name, default).strip().lower() in ("yes", "true", "1", "on"))
+def normalize_course_id(value):
+    """
+    Force a course_id into one consistent format - uppercase,
+    no spaces anywhere (not just leading/trailing), e.g.
+    "cul (09 / 26)" becomes "CUL(09/26)". course_id is used to
+    MATCH the same course across students, room bookings, and
+    attendance - if the same course could be typed with
+    different casing or spacing each time, those would silently
+    become different courses instead of matching up.
+    """
+    return (
+        str(value or "")
+        .strip()
+        .upper()
+        .replace(" ", "")
+    )
 
-#Set the date into year/month/day format
+
+def parse_bool_flag(form, field_name, default="no"):
+    """Read a yes/no style form field as a real bool. Accepts 'yes', 'true', '1', 'on' (case-insensitive) as true."""
+    return (
+        form.get(field_name, default)
+        .strip()
+        .lower()
+        in ("yes", "true", "1", "on")
+    )
+
+
 def parse_form_date(form, field_name):
+    """Parse a 'YYYY-MM-DD' form/query-string field into a date, or None if it's empty. Raises ValueError if it's present but not a valid date."""
     raw_value = form.get(field_name, "")
     if raw_value:
         raw_value = raw_value.strip()
     if not raw_value:
         return None
-    try:return datetime.strptime(
-            raw_value,
-            "%Y-%m-%d"
-        ).date()
-    
-    except ValueError:
-        return None
-    
-#Checks if the student_id is alreay used when adding the student
+    return datetime.strptime(
+        raw_value,
+        "%Y-%m-%d"
+    ).date()
+
+
 def student_id_taken(student_id, exclude_student_id=None):
+    """Check whether a student_id is already used by a DIFFERENT student. Pass exclude_student_id when editing a student, so it doesn't flag itself."""
     query = Student.query.filter(
         Student.student_id == student_id
     )
@@ -169,10 +213,19 @@ def student_id_taken(student_id, exclude_student_id=None):
         query = query.filter(
             Student.id != exclude_student_id
         )
-    return query.first() is not None # returns True if the Id is used and False else
+    return query.first() is not None
 
-#Lccks the student record by id and follows Atomicity rules
+
 def get_student_for_update(student_id):
+    """
+    Load a student and LOCK their row for the rest of this
+    transaction (SELECT ... FOR UPDATE). Any other request that
+    also locks the SAME student's row through this helper will
+    wait until this one commits or rolls back, instead of both
+    racing to read/write that student's payment balances at
+    the same time. Requests for a DIFFERENT student are never
+    affected - the lock is per-row, not per-table.
+    """
     student = (
         Student.query
         .filter_by(id=student_id)
@@ -183,13 +236,25 @@ def get_student_for_update(student_id):
         abort(404)
     return student
 
-# Discount Fucntion
+
 def calculate_discount(
     total_amount,
     discount_type,
     discount,
     promotion_amount
 ):
+    """
+    Apply a discount BEFORE any currency conversion happens.
+    "percentage" takes discount as a % of total_amount.
+    "promotion" takes promotion_amount as a fixed cash amount
+    (capped at total_amount, so it can never go negative).
+    Returns (discount_amount, total_after_discount).
+
+    Mirrored in add_student.html's calculatePayment() JS for
+    an instant live preview while typing - this function is
+    what's actually saved and authoritative. Update both if
+    this logic changes.
+    """
     total_amount = max(to_decimal(total_amount), Decimal("0"))
     discount_type = (discount_type or "percentage").lower().strip()
     discount = max(to_decimal(discount), Decimal("0"))
@@ -207,13 +272,19 @@ def calculate_discount(
 
     return (discount_amount, total_after_discount)
 
-#Exchange rate logic
+
 def validate_currency_payment(
     payment_currency,
     course_currency,
     exchange_enabled,
     exchange_rate
 ):
+    """
+    Check that a payment's currency setup makes sense. Same
+    currency needs nothing extra. Different currencies need
+    exchange_enabled=True and a positive exchange_rate.
+    Returns (True, None) if valid, or (False, "reason").
+    """
     payment_currency = normalize_currency(payment_currency)
     course_currency = normalize_currency(course_currency)
 
@@ -314,6 +385,14 @@ def convert_payment_to_course_currency(
     (meaning 1 USD = exchange_rate MMK): MMK->USD divides,
     USD->MMK multiplies. Returns 0 if exchange isn't properly
     set up, rather than guessing.
+
+    Mirrored in add_student.html's convertPaymentToCourseCurrency()
+    JS, which recomputes this same rule client-side purely for
+    an instant live preview while typing - THIS function is
+    what's actually saved and authoritative (the server always
+    re-validates and recomputes independently of whatever the
+    client showed). If this logic ever changes, update the JS
+    copy too - they're two implementations of one rule.
     """
     amount_paid = max(to_decimal(amount_paid), Decimal("0"))
     payment_currency = normalize_currency(payment_currency)
@@ -847,7 +926,7 @@ def create_course_with_optional_payment(student, form):
     """
 
     course_name = form.get("course_name", "").strip()
-    course_id_value = form.get("course_id", "").strip()
+    course_id_value = normalize_course_id(form.get("course_id", ""))
 
     if not (course_name and course_id_value):
         return None, None
@@ -1664,7 +1743,7 @@ def edit_course(course_id):
     student_id = course.student_id
 
     course.course_name = request.form.get("course_name", "").strip()
-    course.course_id = request.form.get("course_id", "").strip()
+    course.course_id = normalize_course_id(request.form.get("course_id", ""))
     course.start_date = parse_form_date(request.form, "start_date")
     course.end_date = parse_form_date(request.form, "end_date")
 
@@ -2767,10 +2846,15 @@ def assign_teacher(course_id):
 
     return redirect(url_for("main.teachers_ui"))
 
-# Save the whole class's attendance for one date on submit and resubmit updates the current one
+
 @main.route("/course/<path:course_id>/take-attendance", methods=["POST"])
 def take_attendance(course_id):
-    
+    """
+    Save the whole class's attendance for one date in one
+    submission. Re-marking the same student/date updates the
+    existing record rather than duplicating it (see the unique
+    constraint on Attendance).
+    """
     attendance_date = parse_form_date(request.form, "date")
 
     if not attendance_date:
@@ -2831,8 +2915,14 @@ def take_attendance(course_id):
         )
     )
 
-#Summary of the present, late and absence on the course card
+
 def get_attendance_overview(target_date):
+    """
+    Present/absent/late/unmarked counts for EVERY course, for
+    one given date - the numbers behind the Attendance overview
+    page's course cards, so staff can see at a glance which
+    courses still need attendance taken.
+    """
     courses = get_course_summaries()
 
     enrollments_by_course = {}
@@ -2868,10 +2958,10 @@ def get_attendance_overview(target_date):
 
     return courses
 
-#Admin-wide attendance dashboard for a chosen date .
+
 @main.route("/attendance")
 def attendance_overview():
-    
+    """Admin-wide attendance dashboard for a chosen date (?date=YYYY-MM-DD, defaults to today) - every course, at a glance."""
     selected_date = (
         parse_form_date(request.args, "date") or date.today()
     )
@@ -2886,7 +2976,7 @@ def attendance_overview():
 
 
 # ============================================================
-# ADD ROOM or Create Room
+# ADD ROOM
 # ============================================================
 
 @main.route(
@@ -2894,6 +2984,7 @@ def attendance_overview():
     methods=["GET", "POST"]
 )
 def add_room():
+    """Create a new teaching room. A dedicated page, same shape as add_student.html, even though a room has far fewer fields."""
 
     if request.method == "POST":
 
@@ -2949,11 +3040,27 @@ def add_room():
 
 
 # ============================================================
-# ROOM ASSIGN Fliter By the User Roles
+# ROOM ASSIGN
+#
+# Which room each course is using on a given day. course_id is
+# free text (see RoomAssignment's own comment in models.py),
+# so "assigning a room" just means creating a row that links a
+# room_id + course_id + date together - it's not a real FK to
+# a Course table, because there isn't one.
 # ============================================================
 
 @main.route("/room-assign")
 def room_assign():
+    """
+    Whiteboard-style room schedule: a plain list of actual
+    bookings for the selected date, not a pre-filled grid - a
+    room with nothing written for it just doesn't appear, same
+    as a real whiteboard only shows what's been written on it.
+    Staff/admin can add, edit, and delete bookings inline.
+    Teachers get a simpler personal list - just their own
+    course(s)' bookings for the day (see is_teacher_view below).
+    """
+
     selected_date = (
         parse_form_date(request.args, "date") or date.today()
     )
@@ -3041,9 +3148,15 @@ def room_assign():
         is_teacher_view=False
     )
 
-#THis Function allows the user to see live updates on the booking system
+
 @main.route("/room-assign/data")
 def room_assign_data():
+    """
+    JSON snapshot of the whiteboard for a given date - polled
+    by room_assign.html every ~10 seconds so everyone viewing
+    the page sees someone else's changes without refreshing.
+    Same underlying data as room_assign() itself, just as JSON.
+    """
 
     selected_date = (
         parse_form_date(request.args, "date") or date.today()
@@ -3093,12 +3206,14 @@ def room_assign_data():
 
     return jsonify(bookings=bookings_data)
 
-#Add Room
+
 @main.route(
     "/room-assign/add",
     methods=["POST"]
 )
 def add_room_booking():
+    """Write a new entry on the whiteboard - a room, a free-text time period, and a course, for one date."""
+
     room_id = request.form.get("room_id", type=int)
     period = request.form.get("period", "").strip()
     course_id = request.form.get("course_id", "").strip()
@@ -3151,12 +3266,13 @@ def add_room_booking():
         )
     )
 
-#UPDATE Booking# 
+
 @main.route(
     "/room-assign/<int:booking_id>/edit",
     methods=["POST"]
 )
 def edit_room_booking(booking_id):
+    """Update an existing whiteboard entry's time period and/or course - like erasing and rewriting a line, in place."""
 
     booking = RoomAssignment.query.get_or_404(booking_id)
 
@@ -3206,12 +3322,14 @@ def edit_room_booking(booking_id):
         )
     )
 
-#Erase Booking Room.
+
 @main.route(
     "/room-assign/<int:booking_id>/delete",
     methods=["POST"]
 )
 def delete_room_booking(booking_id):
+    """Erase a whiteboard entry entirely."""
+
     booking = RoomAssignment.query.get_or_404(booking_id)
 
     selected_date = booking.date
@@ -3241,6 +3359,12 @@ def delete_room_booking(booking_id):
 
 # ============================================================
 # SETTINGS
+#
+# Currently just student-type management - the only piece of
+# reference data in the app with no other page to manage it
+# from (unlike Teachers or Rooms, which each have their own
+# page). Admin-only, unlike Add Teacher/Add Room which any
+# logged-in staff can use.
 # ============================================================
 
 @main.route("/settings")
@@ -3255,13 +3379,15 @@ def settings():
         student_types=student_types
     )
 
-#Create Admin
+
 @main.route(
     "/student-types/add",
     methods=["POST"]
 )
 @admin_required
 def add_student_type():
+    """Create a new student type. Admin only."""
+
     name = request.form.get("name", "").strip()
 
     if not name:
