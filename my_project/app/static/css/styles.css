@@ -7,47 +7,63 @@
 
 :root {
 
-    /* Brand / accent */
-    --color-accent: #4F46E5;
-    --color-accent-hover: #4338CA;
-    --color-accent-soft: #EEF2FF;
+    /* Brand / accent - warm gold/amber leads now, the "yellow"
+       half of the blue-and-yellow identity, instead of the
+       cool indigo that used to be the only accent. */
+    --color-accent: #D97706;
+    --color-accent-hover: #B45309;
+    --color-accent-soft: #FEF3E2;
 
-    /* Sidebar */
-    --color-sidebar-bg: #1E1B4B;
+    /* Sidebar - keeps the "blue" half of the identity, just
+       warmed from a cold indigo-purple to a softer warm navy
+       with brown undertones, closer to a welcoming dusk-blue
+       than a corporate near-black. */
+    --color-sidebar-bg: #a7b9c7;
     --color-sidebar-hover: rgba(255, 255, 255, 0.1);
-    --color-sidebar-muted: #a5b4fc;
-    --color-sidebar-text: #c7d2fe;
+    --color-sidebar-muted: #b8c2d4;
+    --color-sidebar-text: #d9e0ea;
 
-    /* Surface / background */
-    --color-bg: #f5f7fb;
-    --color-surface: #ffffff;
-    --color-border: #e3e8ef;
-    --color-border-soft: #edf0f4;
-    --color-border-input: #d9e0e8;
+    /* Surface / background - warm cream/ivory instead of cool
+       slate-blue-tinted grays. */
+    --color-bg: #FAF7F2;
+    --color-surface: #F5EFE4;
+    --color-border: #E8DFD0;
+    --color-border-soft: #F0E9DC;
+    --color-border-input: #D9CFBC;
 
-    /* Text */
-    --color-text: #172033;
-    --color-text-muted: #718096;
-    --color-text-subtle: #64748b;
-    --color-text-body: #374151;
-    --color-text-disabled: #a0aec0;
+    /* Text - warm charcoal-brown instead of cool slate-blue,
+       including the table text specifically asked about. */
+    --color-text: #2D2620;
+    --color-text-muted: #8B7F6E;
+    --color-text-subtle: #6B5F4F;
+    --color-text-body: #4A4236;
+    --color-text-disabled: #B0A492;
 
-    /* Status colors */
+    /* Status colors - kept close to their original meaning
+       (green=success, red=danger stay recognizable), but
+       nudged warmer where it didn't compromise clarity. */
     --color-warning-bg: #FEF3C7;
     --color-warning-text: #92400E;
-    --color-success-bg: #D1FAE5;
-    --color-success-text: #047857;
-    --color-danger-bg: #FEE2E2;
-    --color-danger-text: #991B1B;
-    --color-danger-border: #fecaca;
-    --color-info-bg: #dbeafe;
-    --color-info-text: #1d4ed8;
+    --color-success-bg: #E4F3D9;
+    --color-success-text: #3F6B1F;
+    --color-danger-bg: #FBE5DE;
+    --color-danger-text: #A0401F;
+    --color-danger-border: #F0C4B0;
+    --color-info-bg: #FEF3E2;
+    --color-info-text: #B45309;
 
     /* Shape / motion */
-    --radius-sm: 6px;
-    --radius-md: 7px;
-    --radius-lg: 9px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
     --radius-pill: 20px;
+
+    /* Soft warm-toned shadow - used on cards/surfaces instead
+       of (or alongside) flat borders, so things read as gently
+       lifted rather than sharply outlined. Warmed from a
+       typical cool black shadow toward this palette's browns. */
+    --shadow-soft: 0 2px 8px rgba(120, 90, 50, 0.08);
+    --shadow-card: 0 4px 16px rgba(120, 90, 50, 0.10);
     --transition: 0.2s ease;
 
     /* Layout */
@@ -87,18 +103,15 @@ body {
    original file only had this on the search box, leaving
    every button/link with no visible focus state for keyboard
    and screen-reader users. */
-a,
-button,
-input,
-select,
-textarea {
-    font: inherit;
-}
 
-:focus-visible {
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
 }
+
 
 
 /* =========================================================
@@ -119,7 +132,7 @@ textarea {
     width: var(--sidebar-width);
     min-height: 100vh;
     background-color: var(--color-sidebar-bg);
-    color: white;
+    color: rgb(250, 247, 220);
     padding: 25px 15px;
 
     position: fixed;
@@ -128,6 +141,12 @@ textarea {
     bottom: 0;
 
     overflow-y: auto;
+
+    /* A soft shadow instead of a flat, hard edge against the
+       content - a small touch, but it's the difference between
+       the sidebar feeling like a wall and feeling like it's
+       gently resting next to the page. */
+    box-shadow: 2px 0 12px rgba(45, 59, 82, 0.15);
 }
 
 .logo {
@@ -204,7 +223,7 @@ textarea {
 
     background-color: var(--color-surface);
 
-    border-bottom: 1px solid #e5e9f0;
+    border-bottom: 1px solid #EFE7D8;
 
     padding: 0 35px;
 
@@ -236,7 +255,7 @@ textarea {
 
     background-color: var(--color-bg);
 
-    border: 1px solid #e1e6ee;
+    border: 1px solid #E8DFD0;
 
     border-radius: var(--radius-md);
 
@@ -295,15 +314,18 @@ textarea {
 
     cursor: pointer;
 
-    transition: background-color var(--transition), transform 0.1s ease;
+    transition: background-color var(--transition), transform 0.1s ease, box-shadow var(--transition);
 }
 
 .add-student-btn:hover {
     background-color: var(--color-accent-hover);
+    box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+    transform: translateY(-1px);
 }
 
 .add-student-btn:active {
     transform: translateY(1px);
+    box-shadow: none;
 }
 
 
@@ -321,7 +343,9 @@ textarea {
 
     border-radius: var(--radius-lg);
 
-    padding: 15px;
+    box-shadow: var(--shadow-soft);
+
+    padding: 18px;
 
     margin-bottom: 20px;
 }
@@ -389,7 +413,10 @@ textarea {
 
     border-radius: var(--radius-lg);
 
+    box-shadow: var(--shadow-card);
+
     overflow-x: auto;
+
 }
 
 /* Thin, unobtrusive scrollbar for the horizontally-scrolling
@@ -419,7 +446,7 @@ textarea {
 /* Table Header */
 
 .student-table thead {
-    background-color: #f8fafc;
+    background-color: #FAF5EC;
 }
 
 .student-table th {
@@ -437,7 +464,7 @@ textarea {
 
     letter-spacing: 0.3px;
 
-    border-bottom: 1px solid #e5e9f0;
+    border-bottom: 1px solid #EFE7D8;
 
     white-space: nowrap;
 }
@@ -446,7 +473,7 @@ textarea {
 /* Table Body */
 
 .student-table td {
-    padding: 16px;
+    padding: 18px 16px;
 
     border-bottom: 1px solid var(--color-border-soft);
 
@@ -460,7 +487,7 @@ textarea {
 }
 
 .student-table tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: #FAF5EC;
 }
 
 .student-table tbody tr:last-child td {
@@ -564,7 +591,7 @@ textarea {
 
     background-color: white;
 
-    border: 1px solid #d8dee8;
+    border: 1px solid #E8DFD0;
 
     border-radius: var(--radius-sm);
 
@@ -640,11 +667,11 @@ textarea {
 
     background-color: white;
 
-    border: 1px solid #dce2ea;
+    border: 1px solid #E0D6C4;
 
     border-radius: var(--radius-sm);
 
-    color: #475569;
+    color: #5A5040;
 
     cursor: pointer;
 
@@ -652,7 +679,7 @@ textarea {
 }
 
 .pagination button:hover:not(:disabled) {
-    background-color: #f1f5f9;
+    background-color: #F2EBDD;
 }
 
 .pagination button:disabled {
@@ -676,8 +703,8 @@ textarea {
 
 .form-error,
 .error-message {
-    background: #ffe5e5;
-    color: #b42318;
+    background: var(--color-danger-bg);
+    color: var(--color-danger-text);
     border: 1px solid var(--color-danger-border);
     padding: 12px 16px;
     border-radius: var(--radius-sm);
@@ -687,11 +714,14 @@ textarea {
 
 /* Added alongside .form-error for symmetry - other pages in
    this app already use "success-message" for confirmations,
-   so this is here in case the dashboard needs the same. */
+   so this is here in case the dashboard needs the same. Now
+   references the same success tokens used elsewhere instead
+   of its own separately-hardcoded green, so there's one
+   source of truth for what "success" looks like. */
 .success-message {
-    background: #ecfdf3;
-    color: #15803d;
-    border: 1px solid #a6e9c3;
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+    border: 1px solid #C3E0AE;
     padding: 12px 16px;
     border-radius: var(--radius-sm);
     margin-bottom: 20px;

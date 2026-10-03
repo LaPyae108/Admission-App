@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star International College Myanmar — Admissions, Programs &amp; Campus Life</title>
+<meta name="description" content="Star International College Myanmar is a welcoming school in Yangon offering primary, secondary, English language, IT and university-foundation programs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styleindex.css') }}">
+</head>
+<body style="--brand-logo: url('{{ url_for('static', filename='image/star-logo.png') }}');">
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#top" aria-label="Star International College Myanmar — home">
+      <img class="brand-logo" src="{{ url_for('static', filename='image/star-logo.png') }}" alt="Star International College Myanmar logo" width="42" height="42">
+      <span class="brand-text">
+        <span class="brand-name">Star International College</span>
+        <span class="brand-sub">MYANMAR</span>
+      </span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle-label" id="nav-toggle-label" aria-hidden="false">
+      <span class="visually-hidden">Open menu</span>
+      <span class="nav-toggle-icon" aria-hidden="true"></span>
+    </label>
+
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#programs">Programs</a></li>
+        <li><a href="#why-us">Why Us</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#admissions">Admissions</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a class="btn btn-primary btn-nav" href="#admissions">Apply Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <!-- HERO -->
+  <section id="top" class="hero" aria-labelledby="hero-heading">
+    <div class="hero-decor" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow eyebrow-on-dark">Admissions Open — 2026 / 2027</p>
+        <h1 id="hero-heading">Where every student's story begins to shine.</h1>
+        <p class="hero-lead">A warm, welcoming college in the heart of Myanmar — combining rigorous academics, caring teachers, and a community where students are known by name, not by number.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#admissions">Apply for Admission</a>
+          <a class="btn btn-outline" href="#programs">Explore Programs</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card">
+          <div class="hero-card-art">
+            <img src="{{ url_for('static', filename='image/Tr_Soe_speaking.jpg') }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:1px;">
+          </div>
+          <div class="hero-card-stats">
+            <div>
+              <span class="stat-number">1,200+</span>
+              <span class="stat-label">Students enrolled</span>
+            </div>
+            <div>
+              <span class="stat-number stat-number-gold">18</span>
+              <span class="stat-label">Years of teaching</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-strip" aria-label="Star International College Myanmar at a glance">
+    <div class="container stats-grid">
+      <div class="stat-block">
+        <span class="stat-number">1,200+</span>
+        <span class="stat-label">Active Students</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number stat-number-gold">65+</span>
+        <span class="stat-label">Dedicated Teachers</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">12</span>
+        <span class="stat-label">Academic Programs</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number stat-number-gold">18</span>
+        <span class="stat-label">Years in Myanmar</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about" aria-labelledby="about-heading">
+    <div class="container about-inner">
+      <div class="about-visual" aria-hidden="true">
+        <div class="about-art">
+          <img src="{{ url_for('static', filename='image/gettig_the_call.jpg') }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:3px;">
+        </div>
+        <div class="about-badge">
+          <span>
+            <strong>Fully Accredited</strong>
+            <small>Ministry-recognized curriculum</small>
+          </span>
+        </div>
+      </div>
+      <div class="about-copy">
+        <p class="eyebrow">About Our College</p>
+        <h2 id="about-heading">A community built on care, curiosity, and character.</h2>
+        <p>Star International College Myanmar brings together a focused campus culture and a rigorous academic program. From early foundation years through university-preparatory studies, our teachers know every student's name, strengths, and goals.</p>
+        <p>We believe learning happens best in a place that feels like home — so we've built small classes, personal mentorship, and a genuinely welcoming environment for every family who joins us.</p>
+        <ul class="pill-list">
+          <li><span class="dot dot-gold" aria-hidden="true"></span>Small class sizes</li>
+          <li><span class="dot dot-purple" aria-hidden="true"></span>Bilingual instruction</li>
+          <li><span class="dot dot-gold" aria-hidden="true"></span>University pathway support</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section id="programs" class="programs" aria-labelledby="programs-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Academic Programs</p>
+        <h2 id="programs-heading">Programs designed for every stage of learning</h2>
+        <p>From foundation years to university preparation, find the path that fits your child.</p>
+      </div>
+      <ul class="card-grid" role="list">
+        <li class="card">
+          <h3>Primary Education</h3>
+          <p>A joyful foundation in literacy, numeracy, and curiosity for ages 5–10, taught by nurturing homeroom teachers.</p>
+        </li>
+        <li class="card">
+          <h3>Secondary Education</h3>
+          <p>A full academic curriculum for grades 6–10 that builds critical thinking alongside strong subject mastery.</p>
+        </li>
+        <li class="card">
+          <h3>English Language Program</h3>
+          <p>Intensive spoken and written English coursework, including exam preparation for IELTS and Cambridge tests.</p>
+        </li>
+        <li class="card">
+          <h3>IT &amp; Computer Studies</h3>
+          <p>Hands-on training in office software, coding fundamentals, and digital literacy for the modern workplace.</p>
+        </li>
+        <li class="card">
+          <h3>Business &amp; Accounting</h3>
+          <p>Practical grounding in commerce, bookkeeping, and entrepreneurship for students aiming at business careers.</p>
+        </li>
+        <li class="card">
+          <h3>University Foundation</h3>
+          <p>A bridging year of advanced coursework and counseling to prepare graduates for university admission abroad or at home.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section id="why-us" class="why-us" aria-labelledby="why-us-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Why Families Choose Us</p>
+        <h2 id="why-us-heading">A place where students feel truly seen</h2>
+      </div>
+      <ul class="feature-grid" role="list">
+        <li class="feature">
+          <h3>Experienced Teachers</h3>
+          <p>Qualified educators who mentor students well beyond the classroom.</p>
+        </li>
+        <li class="feature">
+          <h3>Modern Facilities</h3>
+          <p>Bright classrooms, a computer lab, and a library built for focused study.</p>
+        </li>
+        <li class="feature">
+          <h3>Small Class Sizes</h3>
+          <p>Every student gets individual attention and regular progress check-ins.</p>
+        </li>
+        <li class="feature">
+          <h3>Holistic Development</h3>
+          <p>Clubs, sports, and mentorship that build confidence alongside academics.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- GALLERY (slideshow) -->
+  <section id="gallery" class="gallery" aria-labelledby="gallery-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Campus Life</p>
+        <h2 id="gallery-heading">Moments from our college community</h2>
+        <p>A look at graduation day, student life, and the people who make Star International College Myanmar feel like home.</p>
+      </div>
+
+      <div class="slideshow" id="campus-slideshow" role="region" aria-roledescription="carousel" aria-label="Campus life photos">
+        <div class="slideshow-track" id="slideshow-track">
+
+          <div class="slide" role="group" aria-roledescription="slide" aria-label="1 of 5">
+            <img src="{{ url_for('static', filename='image/group_photo1.jpg') }}" alt="Graduates, faculty, and families on stage at the 36th Graduation Ceremony of Star International College">
+            <p class="slide-caption">36th Graduation Ceremony — graduates, faculty, and families on stage</p>
+          </div>
+
+          <div class="slide" role="group" aria-roledescription="slide" aria-label="2 of 5">
+            <img src="{{ url_for('static', filename='image/group_photo2.jpg') }}" alt="College leadership and faculty on stage during the 36th Graduation Ceremony">
+            <p class="slide-caption">College leadership and faculty on stage</p>
+          </div>
+
+          <div class="slide" role="group" aria-roledescription="slide" aria-label="3 of 5">
+            <img src="{{ url_for('static', filename='image/three_students.jpg') }}" alt="Graduating students in sashes seated together at the ceremony">
+            <p class="slide-caption">Graduating students, ready to take the stage</p>
+          </div>
+
+          <div class="slide" role="group" aria-roledescription="slide" aria-label="4 of 5">
+            <img src="{{ url_for('static', filename='image/why_she_looking.jpg') }}" alt="Graduates in caps and gowns taking photos during the ceremony">
+            <p class="slide-caption">Caps, gowns, and memories to keep</p>
+          </div>
+
+          <div class="slide" role="group" aria-roledescription="slide" aria-label="5 of 5">
+            <img src="{{ url_for('static', filename='image/group_photo3.jpg') }}" alt="Students and staff outside the college building during the Maritime English Proficiency Test">
+            <p class="slide-caption">Students and staff at the Maritime English Proficiency Test</p>
+          </div>
+
+        </div>
+
+        <button type="button" class="slide-arrow slide-prev" id="slide-prev" aria-label="Previous photo">&#8249;</button>
+        <button type="button" class="slide-arrow slide-next" id="slide-next" aria-label="Next photo">&#8250;</button>
+
+        <div class="slide-dots" id="slide-dots" role="tablist" aria-label="Choose a photo">
+          <button type="button" class="slide-dot" role="tab" aria-selected="true" aria-controls="slideshow-track" aria-label="Photo 1 of 5" data-index="0"></button>
+          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 2 of 5" data-index="1"></button>
+          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 3 of 5" data-index="2"></button>
+          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 4 of 5" data-index="3"></button>
+          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 5 of 5" data-index="4"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" aria-labelledby="testimonial-heading">
+    <div class="container testimonial-inner">
+      <h2 id="testimonial-heading" class="visually-hidden">A parent's testimonial</h2>
+      <blockquote>
+        <p>"My daughter looks forward to school every single day. The teachers know her by name and truly care about how she's doing — not just her grades."</p>
+        <footer>
+          <cite>Daw Hnin Yadanar</cite> — Parent, Grade 4
+        </footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ADMISSIONS -->
+  <section id="admissions" class="admissions" aria-labelledby="admissions-heading">
+    <div class="admissions-decor" aria-hidden="true"></div>
+    <div class="container admissions-inner">
+      <h2 id="admissions-heading">Ready to join our school community?</h2>
+      <p>Applications for the 2026–2027 academic year are open now. Book a campus visit or start your application online today.</p>
+      <div class="hero-actions admissions-actions">
+        <a class="btn btn-primary" href="#contact">Start Application</a>
+        <a class="btn btn-outline" href="#contact">Schedule a Visit</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER / CONTACT -->
+<footer id="contact" class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-about">
+      <div class="brand brand-footer">
+        <span class="brand-name brand-name-footer">Star International College</span>
+      </div>
+      <p>A warm, welcoming college in Myanmar dedicated to academic excellence and personal growth for every student.</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Quick links">
+      <h2>Quick Links</h2>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#programs">Programs</a></li>
+        <li><a href="#why-us">Why Us</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#admissions">Admissions</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-programs">
+      <h2>Programs</h2>
+      <ul>
+        <li>Primary Education</li>
+        <li>Secondary Education</li>
+        <li>English Program</li>
+        <li>University Foundation</li>
+      </ul>
+    </div>
+
+    <div class="footer-contact">
+      <h2>Contact</h2>
+      <address>
+        <p>No. 123, Pyay Road, Yangon, Myanmar</p>
+        <p><a href="tel:+959123456789">+95 9 123 456 789</a></p>
+        <p><a href="mailto:info@starcollege.edu.mm">info@starcollege.edu.mm</a></p>
+      </address>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p>&copy; 2026 Star International College Myanmar. All rights reserved.</p>
+      <p>Built with care, for our students.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var slideshow = document.getElementById("campus-slideshow");
+  if (!slideshow) return;
+
+  var track = document.getElementById("slideshow-track");
+  var slides = Array.prototype.slice.call(track.children);
+  var prevBtn = document.getElementById("slide-prev");
+  var nextBtn = document.getElementById("slide-next");
+  var dots = Array.prototype.slice.call(document.querySelectorAll("#slide-dots .slide-dot"));
+  var current = 0;
+  var total = slides.length;
+  var AUTO_DELAY = 6000;
+  var timer = null;
+
+  var prefersReducedMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function goTo(index) {
+    current = (index + total) % total;
+    track.style.transform = "translateX(-" + (current * 100) + "%)";
+    dots.forEach(function (dot, i) {
+      var isActive = i === current;
+      dot.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+    slides.forEach(function (slide, i) {
+      slide.setAttribute("aria-hidden", i === current ? "false" : "true");
+    });
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  function startAuto() {
+    if (prefersReducedMotion) return;
+    stopAuto();
+    timer = window.setInterval(next, AUTO_DELAY);
+  }
+
+  function stopAuto() {
+    if (timer) {
+      window.clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  nextBtn.addEventListener("click", function () {
+    next();
+    startAuto();
+  });
+
+  prevBtn.addEventListener("click", function () {
+    prev();
+    startAuto();
+  });
+
+  dots.forEach(function (dot, i) {
+    dot.addEventListener("click", function () {
+      goTo(i);
+      startAuto();
+    });
+  });
+
+  slideshow.addEventListener("mouseenter", stopAuto);
+  slideshow.addEventListener("mouseleave", startAuto);
+  slideshow.addEventListener("focusin", stopAuto);
+  slideshow.addEventListener("focusout", startAuto);
+
+  goTo(0);
+  startAuto();
+})();
+</script>
+
+</body>
+</html>

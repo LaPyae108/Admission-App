@@ -51,6 +51,12 @@
                 Dashboard
             </a>
             <a
+                href="{{ url_for('main.index') }}"
+                class="nav-link active"
+            >
+                To the Website
+            </a>
+            <a
                 href="{{url_for('main.end_of_day')}}"
                 class="nav-link"
             >
@@ -339,10 +345,6 @@
                             </th>
 
                             <th>
-                                Phone Number
-                            </th>
-
-                            <th>
                                 Student ID
                             </th>
 
@@ -355,11 +357,11 @@
                             </th>
 
                             <th>
-                                Admission Date
+                                Phone Number
                             </th>
 
                             <th>
-                                Status
+                                Admission Date
                             </th>
 
                             <th>
@@ -407,16 +409,6 @@
 
                             </td>
 
-
-
-                            <!-- PHONE -->
-
-                            <td>
-                                {{ student.phone_number or "-" }}
-                            </td>
-
-
-
                             <!-- STUDENT ID -->
 
                             <td>
@@ -459,6 +451,12 @@
                                 {{ student.nrc or "-" }}
                             </td>
 
+                            <!-- PHONE -->
+
+                            <td>
+                                {{ student.phone_number or "-" }}
+                            </td>
+
 
 
                             <!-- ADMISSION DATE -->
@@ -466,21 +464,6 @@
                             <td>
                                 {{ student.intake_date or "-" }}
                             </td>
-
-
-
-                            <!-- STATUS -->
-
-                            <td>
-
-                                <span
-                                    class="status {{ student.status }}"
-                                >
-                                    {{ student.status }}
-                                </span>
-
-                            </td>
-
 
 
                             <!-- PAYMENT -->

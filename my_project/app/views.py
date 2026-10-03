@@ -754,7 +754,10 @@ def render_student_form(student_types, error, form_data, edit_mode, student, tea
         teachers=(teachers or [])
     )
 
-
+@main.route("/index")
+def index():
+    return render_template("index.html")
+        
 # ============================================================
 # LOGIN
 # ============================================================
