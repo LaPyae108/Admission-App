@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Star International College Myanmar — Admissions, Programs &amp; Campus Life</title>
-<meta name="description" content="Star International College Myanmar is a welcoming school in Yangon offering primary, secondary, English language, IT and university-foundation programs.">
+<title>Star University Myanmar — Hospitality School in Yangon</title>
+<meta name="description" content="Star University (Star International College) is a hospitality and tourism school in Yangon, Myanmar, offering an MBA and Bachelor in Hospitality Management and a Diploma in Food Preparation &amp; Culinary Arts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styleindex.css') }}">
+<script>document.documentElement.className+=" js";</script>
 </head>
 <body style="--brand-logo: url('{{ url_for('static', filename='image/star-logo.png') }}');">
 
@@ -32,8 +33,8 @@
 
     <nav class="main-nav" aria-label="Primary">
       <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#programs">Programs</a></li>
+        <li><a href="{{ url_for('main.about') }}">About</a></li>
+        <li><a href="{{url_for('main.programs')}}">Programs</a></li>
         <li><a href="#why-us">Why Us</a></li>
         <li><a href="#gallery">Gallery</a></li>
         <li><a href="#admissions">Admissions</a></li>
@@ -48,14 +49,23 @@
 
   <!-- HERO -->
   <section id="top" class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg-logo">
+        <img src="{{ url_for('static', filename='image/star-logo.png') }}" alt="">
+      </div>
+      <img src="{{ url_for('static', filename='image/group_photo1.jpg') }}" alt="">
+      <img src="{{ url_for('static', filename='image/group_photo2.jpg') }}" alt="">
+      <img src="{{ url_for('static', filename='image/three_students.jpg') }}" alt="">
+      <img src="{{ url_for('static', filename='image/group_photo3.jpg') }}" alt="">
+      <img src="{{ url_for('static', filename='image/why_she_looking.jpg') }}" alt="">
+    </div>
     <div class="hero-decor" aria-hidden="true"></div>
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="eyebrow eyebrow-on-dark">Admissions Open — 2026 / 2027</p>
-        <h1 id="hero-heading">Where every student's story begins to shine.</h1>
-        <p class="hero-lead">A warm, welcoming college in the heart of Myanmar — combining rigorous academics, caring teachers, and a community where students are known by name, not by number.</p>
+        <h1 id="hero-heading">Star Leading to Success!</h1>
+        <p class="hero-lead">Star University is one of the leading hospitality schools in Myanmar, preparing students for careers in hotels, tourism and culinary arts since 2005.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#admissions">Apply for Admission</a>
           <a class="btn btn-outline" href="#programs">Explore Programs</a>
         </div>
       </div>
@@ -66,12 +76,12 @@
           </div>
           <div class="hero-card-stats">
             <div>
-              <span class="stat-number">1,200+</span>
-              <span class="stat-label">Students enrolled</span>
+              <span class="stat-number">55,678</span>
+              <span class="stat-label">Graduates since 2005</span>
             </div>
             <div>
-              <span class="stat-number stat-number-gold">18</span>
-              <span class="stat-label">Years of teaching</span>
+              <span class="stat-number stat-number-gold">2,400</span>
+              <span class="stat-label">New students each year</span>
             </div>
           </div>
         </div>
@@ -83,20 +93,20 @@
   <section class="stats-strip" aria-label="Star International College Myanmar at a glance">
     <div class="container stats-grid">
       <div class="stat-block">
-        <span class="stat-number">1,200+</span>
-        <span class="stat-label">Active Students</span>
+        <span class="stat-number">55,678</span>
+        <span class="stat-label">Total students graduated</span>
       </div>
       <div class="stat-block">
-        <span class="stat-number stat-number-gold">65+</span>
-        <span class="stat-label">Dedicated Teachers</span>
+        <span class="stat-number stat-number-gold">35,218</span>
+        <span class="stat-label">Graduates working in hospitality</span>
       </div>
       <div class="stat-block">
-        <span class="stat-number">12</span>
-        <span class="stat-label">Academic Programs</span>
+        <span class="stat-number">16,707</span>
+        <span class="stat-label">Graduates in managerial roles or above</span>
       </div>
       <div class="stat-block">
-        <span class="stat-number stat-number-gold">18</span>
-        <span class="stat-label">Years in Myanmar</span>
+        <span class="stat-number stat-number-gold">2,400</span>
+        <span class="stat-label">Students join each year</span>
       </div>
     </div>
   </section>
@@ -111,19 +121,20 @@
         <div class="about-badge">
           <span>
             <strong>Fully Accredited</strong>
-            <small>Ministry-recognized curriculum</small>
+            <small>Ministry of Hotel and Tourism, MTF &amp; NSSA</small>
           </span>
         </div>
       </div>
       <div class="about-copy">
         <p class="eyebrow">About Our College</p>
-        <h2 id="about-heading">A community built on care, curiosity, and character.</h2>
-        <p>Star International College Myanmar brings together a focused campus culture and a rigorous academic program. From early foundation years through university-preparatory studies, our teachers know every student's name, strengths, and goals.</p>
-        <p>We believe learning happens best in a place that feels like home — so we've built small classes, personal mentorship, and a genuinely welcoming environment for every family who joins us.</p>
+        <h2 id="about-heading">Star University</h2>
+        <p>Star University (Star International College, formerly Star Resources Academy) was established in May 2005 for the young generation who aspire to build a career in the hospitality and tourism industry.</p>
+        <p>Our University has grown tremendously in the last decade and we have proudly received accreditation from the Ministry of Hotel and Tourism, Myanmar Tourism Federation (MTF) as well as the National Skill Standard Authority (NSSA) for intensive courses in hotel and tourism industry.</p>
+
         <ul class="pill-list">
-          <li><span class="dot dot-gold" aria-hidden="true"></span>Small class sizes</li>
-          <li><span class="dot dot-purple" aria-hidden="true"></span>Bilingual instruction</li>
-          <li><span class="dot dot-gold" aria-hidden="true"></span>University pathway support</li>
+          <li><span class="dot dot-gold" aria-hidden="true"></span>Hotel &amp; tourism specialists</li>
+          <li><span class="dot dot-purple" aria-hidden="true"></span>Industry exposure</li>
+          <li><span class="dot dot-gold" aria-hidden="true"></span>Real-world assignments</li>
         </ul>
       </div>
     </div>
@@ -134,33 +145,24 @@
     <div class="container">
       <div class="section-intro">
         <p class="eyebrow">Academic Programs</p>
-        <h2 id="programs-heading">Programs designed for every stage of learning</h2>
-        <p>From foundation years to university preparation, find the path that fits your child.</p>
+        <h2 id="programs-heading">Programs built for the hospitality industry</h2>
+        <p>From professional management to the professional kitchen, find the path to your career.</p>
       </div>
       <ul class="card-grid" role="list">
         <li class="card">
-          <h3>Primary Education</h3>
-          <p>A joyful foundation in literacy, numeracy, and curiosity for ages 5–10, taught by nurturing homeroom teachers.</p>
+          <span class="card-tag">Postgraduate</span>
+          <h3>M.B.A in Hospitality Management</h3>
+          <p>Our MBA programs are designed for professional managers and executives, with the goal of improving and sharpening the industry's managerial skills and interpersonal abilities.</p>
         </li>
         <li class="card">
-          <h3>Secondary Education</h3>
-          <p>A full academic curriculum for grades 6–10 that builds critical thinking alongside strong subject mastery.</p>
+          <span class="card-tag">Undergraduate</span>
+          <h3>Bachelor in Hospitality Management</h3>
+          <p>This degree combines practical experience, industry exposure, and real-world assignments to lay the foundation for a successful global career.</p>
         </li>
         <li class="card">
-          <h3>English Language Program</h3>
-          <p>Intensive spoken and written English coursework, including exam preparation for IELTS and Cambridge tests.</p>
-        </li>
-        <li class="card">
-          <h3>IT &amp; Computer Studies</h3>
-          <p>Hands-on training in office software, coding fundamentals, and digital literacy for the modern workplace.</p>
-        </li>
-        <li class="card">
-          <h3>Business &amp; Accounting</h3>
-          <p>Practical grounding in commerce, bookkeeping, and entrepreneurship for students aiming at business careers.</p>
-        </li>
-        <li class="card">
-          <h3>University Foundation</h3>
-          <p>A bridging year of advanced coursework and counseling to prepare graduates for university admission abroad or at home.</p>
+          <span class="card-tag">Diploma</span>
+          <h3>Diploma in Food Preparation & Culinary Arts</h3>
+          <p>This program is designed for catering professionals, these globally recognized qualifications focus on food preparation and patisserie skills to launch a successful kitchen career.</p>
         </li>
       </ul>
     </div>
@@ -170,25 +172,25 @@
   <section id="why-us" class="why-us" aria-labelledby="why-us-heading">
     <div class="container">
       <div class="section-intro">
-        <p class="eyebrow">Why Families Choose Us</p>
-        <h2 id="why-us-heading">A place where students feel truly seen</h2>
+        <p class="eyebrow">Why Choose Us</p>
+        <h2 id="why-us-heading">Recognized by Myanmar's tourism authorities</h2>
       </div>
       <ul class="feature-grid" role="list">
         <li class="feature">
-          <h3>Experienced Teachers</h3>
-          <p>Qualified educators who mentor students well beyond the classroom.</p>
+          <h3>Ministry of Hotel and Tourism</h3>
+          <p>Accredited for intensive courses in the hotel and tourism industry.</p>
         </li>
         <li class="feature">
-          <h3>Modern Facilities</h3>
-          <p>Bright classrooms, a computer lab, and a library built for focused study.</p>
+          <h3>Myanmar Tourism Federation</h3>
+          <p>Accredited by MTF, the national body for Myanmar's tourism sector.</p>
         </li>
         <li class="feature">
-          <h3>Small Class Sizes</h3>
-          <p>Every student gets individual attention and regular progress check-ins.</p>
+          <h3>National Skill Standard Authority</h3>
+          <p>Accredited by NSSA for skills-based hospitality training.</p>
         </li>
         <li class="feature">
-          <h3>Holistic Development</h3>
-          <p>Clubs, sports, and mentorship that build confidence alongside academics.</p>
+          <h3>Proven graduate outcomes</h3>
+          <p>35,218 graduates work in hospitality, and 16,707 hold managerial roles or above.</p>
         </li>
       </ul>
     </div>
@@ -208,27 +210,27 @@
 
           <div class="slide" role="group" aria-roledescription="slide" aria-label="1 of 5">
             <img src="{{ url_for('static', filename='image/group_photo1.jpg') }}" alt="Graduates, faculty, and families on stage at the 36th Graduation Ceremony of Star International College">
-            <p class="slide-caption">36th Graduation Ceremony — graduates, faculty, and families on stage</p>
+            <p class="slide-caption"></p>
           </div>
 
           <div class="slide" role="group" aria-roledescription="slide" aria-label="2 of 5">
             <img src="{{ url_for('static', filename='image/group_photo2.jpg') }}" alt="College leadership and faculty on stage during the 36th Graduation Ceremony">
-            <p class="slide-caption">College leadership and faculty on stage</p>
+            <p class="slide-caption"></p>
           </div>
 
           <div class="slide" role="group" aria-roledescription="slide" aria-label="3 of 5">
             <img src="{{ url_for('static', filename='image/three_students.jpg') }}" alt="Graduating students in sashes seated together at the ceremony">
-            <p class="slide-caption">Graduating students, ready to take the stage</p>
+            <p class="slide-caption"></p>
           </div>
 
           <div class="slide" role="group" aria-roledescription="slide" aria-label="4 of 5">
             <img src="{{ url_for('static', filename='image/why_she_looking.jpg') }}" alt="Graduates in caps and gowns taking photos during the ceremony">
-            <p class="slide-caption">Caps, gowns, and memories to keep</p>
+            <p class="slide-caption"></p>
           </div>
 
           <div class="slide" role="group" aria-roledescription="slide" aria-label="5 of 5">
             <img src="{{ url_for('static', filename='image/group_photo3.jpg') }}" alt="Students and staff outside the college building during the Maritime English Proficiency Test">
-            <p class="slide-caption">Students and staff at the Maritime English Proficiency Test</p>
+            <p class="slide-caption"></p>
           </div>
 
         </div>
@@ -247,16 +249,34 @@
     </div>
   </section>
 
-  <!-- TESTIMONIAL -->
-  <section class="testimonial" aria-labelledby="testimonial-heading">
-    <div class="container testimonial-inner">
-      <h2 id="testimonial-heading" class="visually-hidden">A parent's testimonial</h2>
-      <blockquote>
-        <p>"My daughter looks forward to school every single day. The teachers know her by name and truly care about how she's doing — not just her grades."</p>
-        <footer>
-          <cite>Daw Hnin Yadanar</cite> — Parent, Grade 4
-        </footer>
-      </blockquote>
+  <!-- PARTNERS -->
+  <section class="partners" aria-labelledby="partners-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Accreditation &amp; Partnerships</p>
+        <h2 id="partners-heading">Recognized by the organizations that matter</h2>
+        <p>Our programs are accredited and supported by leading industry and education bodies in Myanmar and abroad.</p>
+      </div>
+      <ul class="partners-grid" role="list">
+        <li class="partner-logo">
+          <img src="{{ url_for('static', filename='image/mthrda-logo.jpg') }}" alt="Myanmar Tourism Human Resources Development Association (MTHRDA)">
+        </li>
+        <li class="partner-logo">
+          <img src="{{ url_for('static', filename='image/myanmar-tourism-federation-logo.jpg') }}" alt="Myanmar Tourism Federation">
+        </li>
+        <li class="partner-logo">
+          <img src="{{ url_for('static', filename='image/london-school-logo.jpg') }}" alt="London School of Business & Finance">
+        </li>
+        <li class="partner-logo">
+          <img src="{{ url_for('static', filename='image/city-guides-logo.jpg') }}" alt="City & Guilds Approved Centre">
+        </li>
+        <li class="partner-logo">
+          <img src="{{ url_for('static', filename='image/lincoln-logo.jpg') }}" alt="Lincoln University College">
+        </li>
+        <li class="partner-logo">
+          <img src="{{ url_for('static', filename='image/dpfa-logo.jpg') }}" alt="Department of Marine Administration, Myanmar">
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -282,7 +302,7 @@
       <div class="brand brand-footer">
         <span class="brand-name brand-name-footer">Star International College</span>
       </div>
-      <p>A warm, welcoming college in Myanmar dedicated to academic excellence and personal growth for every student.</p>
+      <p>Star University, a hospitality school in Yangon, Myanmar, established in 2005.</p>
     </div>
 
     <nav class="footer-nav" aria-label="Quick links">
@@ -299,26 +319,31 @@
     <div class="footer-programs">
       <h2>Programs</h2>
       <ul>
-        <li>Primary Education</li>
-        <li>Secondary Education</li>
-        <li>English Program</li>
-        <li>University Foundation</li>
+        <li>MBA in Hospitality Management</li>
+        <li>Bachelor in Hospitality Management</li>
+        <li>Diploma in Food Preparation &amp; Culinary Arts</li>
       </ul>
     </div>
 
     <div class="footer-contact">
       <h2>Contact</h2>
       <address>
-        <p>No. 123, Pyay Road, Yangon, Myanmar</p>
-        <p><a href="tel:+959123456789">+95 9 123 456 789</a></p>
-        <p><a href="mailto:info@starcollege.edu.mm">info@starcollege.edu.mm</a></p>
+        <p>No. 252 A, U Wisara Road, corner of Dhammazedi Road, Kamaryut Township, Yangon</p>
+        <p><a href="tel:+959797004988">(+95) 09 79 700 4988</a><br>
+           <a href="tel:+959797004989">(+95) 09 79 700 4989</a><br>
+           <a href="tel:+95950020302">(+95) 09 50 20 302</a></p>
+        <p>Student services: 9:00 AM to 6:00 PM</p>
+        <p><a href="mailto:info@staruniversity.edu.mm">info@staruniversity.edu.mm</a></p>
+        <p><a href="https://facebook.com/staruniversity.edu" rel="noopener">Facebook</a> ·
+           <a href="https://youtube.com/@StarResourcesAcademy" rel="noopener">YouTube</a> ·
+           <a href="https://t.me/staruniversitymyanmar" rel="noopener">Telegram</a></p>
       </address>
     </div>
   </div>
 
   <div class="footer-bottom">
     <div class="container footer-bottom-inner">
-      <p>&copy; 2026 Star International College Myanmar. All rights reserved.</p>
+      <p>&copy; 2026 Star University Myanmar. All rights reserved.</p>
       <p>Built with care, for our students.</p>
     </div>
   </div>
@@ -396,6 +421,49 @@
 
   goTo(0);
   startAuto();
+})();
+</script>
+
+
+<script>
+(function () {
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) {
+    document.documentElement.className = document.documentElement.className.replace(" js", "");
+    return;
+  }
+
+  // [selector, effect, stagger?]
+  var targets = [
+    ["section:not(.programs) > .container > .section-intro", "reveal-up"],
+    [".about-visual", "reveal-pop"],
+    [".about-copy", "reveal-up"],
+    [".slideshow", "reveal-pop"],
+    [".admissions-inner", "reveal-up"]
+  ];
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      io.unobserve(el);
+      el.classList.add("is-visible");
+      // Drop the reveal classes afterwards so normal hover styles take over.
+      window.setTimeout(function () {
+        el.classList.remove("reveal", "reveal-up", "reveal-pop", "is-visible");
+        el.style.transitionDelay = "";
+      }, 1400);
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
+
+  targets.forEach(function (t) {
+    Array.prototype.forEach.call(document.querySelectorAll(t[0]), function (el, i) {
+      el.classList.add("reveal", t[1]);
+      if (t[2]) el.style.transitionDelay = (i % 6) * 90 + "ms";
+      io.observe(el);
+    });
+  });
 })();
 </script>
 

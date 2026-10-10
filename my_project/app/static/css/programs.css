@@ -1,0 +1,102 @@
+/* ==========================================================
+   Programs page — loaded after styleindex.css and about.css
+   (about.css supplies the page title, breadcrumb and .img-slot)
+   ========================================================== */
+
+.img-slot-card { aspect-ratio: 16 / 10; border-radius: 0; border-width: 0 0 2px; }
+
+/* Jump links between program types */
+.program-jump {
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 69px;
+  z-index: 50;
+}
+
+.program-jump ul {
+  display: flex;
+  gap: 8px;
+  padding: 14px 0;
+  overflow-x: auto;
+}
+
+.program-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.program-jump a span {
+  font-size: 12px;
+  color: var(--brass-deep);
+  background: var(--brass-soft);
+  border-radius: 100px;
+  padding: 1px 8px;
+}
+
+.program-jump a:hover { border-color: var(--brass); color: var(--teal-deep); }
+
+/* Program groups */
+.program-section { padding: 72px 0 24px; scroll-margin-top: 130px; }
+.program-section:last-of-type { padding-bottom: 72px; }
+
+.program-section-title {
+  font-size: clamp(26px, 3vw, 34px);
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.program-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 24px;
+}
+
+.program-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--transition);
+}
+
+.program-card:hover { border-color: var(--brass); }
+
+.program-card > img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+
+.program-body { padding: 20px 22px 24px; }
+.program-body h3 { font-size: 18px; margin-bottom: 14px; }
+
+.program-body dl { margin: 0; }
+.program-body dl div { margin-bottom: 8px; }
+.program-body dt { font-size: 12px; font-weight: 600; color: var(--brass-deep); }
+.program-body dd { margin: 0; font-size: 14.5px; color: var(--ink); }
+
+/* Closing help band */
+.program-help {
+  background: var(--teal-soft);
+  text-align: center;
+  padding: 72px 0;
+}
+.program-help h2 { color: var(--ink); font-size: clamp(26px, 3vw, 36px); }
+.program-help p { color: var(--text-body); margin-bottom: 26px; }
+
+@media (max-width: 900px) {
+  .program-jump { top: 0; position: static; }
+}
+
+@media (max-width: 600px) {
+  .program-section { padding-top: 52px; }
+  .program-grid { grid-template-columns: 1fr; }
+}

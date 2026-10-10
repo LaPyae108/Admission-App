@@ -1,0 +1,245 @@
+/* ==========================================================
+   About Us page — loaded after styleindex.css, reuses its tokens
+   ========================================================== */
+
+/* Active nav item */
+.main-nav a[aria-current="page"] {
+  color: var(--teal);
+  box-shadow: 0 2px 0 var(--brass);
+}
+
+/* Blank image slots: replace each one with the <img> shown in the
+   comment beside it. The slot keeps the layout the same size. */
+.img-slot {
+  width: 100%;
+  background: var(--teal-soft);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
+}
+
+.img-slot-wide { aspect-ratio: 4 / 3; }
+.img-slot-portrait { aspect-ratio: 4 / 5; }
+.img-slot-logo { aspect-ratio: 16 / 9; background: var(--white); }
+
+.split-media img,
+.staff-card > img {
+  width: 100%;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+.split-media { margin: 0; }
+
+/* Page title */
+.page-hero {
+  background: var(--teal-deep);
+  padding: 64px 0 72px;
+  color: rgba(255,255,255,.8);
+}
+
+.page-hero h1 {
+  color: var(--white);
+  font-size: clamp(36px, 5vw, 60px);
+  margin-bottom: 14px;
+}
+
+.page-hero p { max-width: 560px; font-size: 18px; margin: 0; }
+
+.breadcrumb ol {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.breadcrumb li + li::before { content: "/"; margin-right: 10px; opacity: .5; }
+.breadcrumb a { color: rgba(255,255,255,.85); }
+.breadcrumb a:hover { color: var(--brass); }
+.breadcrumb [aria-current] { color: var(--white); font-weight: 600; }
+
+/* Generic block */
+.about-block { padding: 96px 0; }
+
+.split {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.split-reverse .split-copy { order: 2; }
+.split-reverse .split-media { order: 1; }
+
+.split-copy h2 { font-size: clamp(28px, 3.4vw, 40px); }
+
+.check-list { margin-top: 18px; }
+.check-list li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.check-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .6em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brass);
+}
+
+/* Graduates statistic */
+.about-stat {
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 56px 0;
+  text-align: center;
+}
+
+.about-stat-number {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(48px, 7vw, 84px);
+  line-height: 1;
+  color: var(--teal-deep);
+  margin: 0 0 10px;
+}
+
+.about-stat-label { font-size: 18px; margin: 0; }
+
+/* Mission and vision */
+.mission {
+  background: var(--teal-soft);
+  padding: 96px 0;
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.mission-grid li {
+  background: var(--white);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--radius-md);
+  padding: 24px 26px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.vision {
+  margin: 0;
+  background: var(--teal-deep);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.vision figcaption {
+  color: var(--brass);
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.vision blockquote { margin: 0 auto; max-width: 760px; }
+.vision p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(22px, 2.8vw, 32px);
+  line-height: 1.3;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Team */
+.team {
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 96px 0;
+}
+
+.staff-group-title {
+  font-size: 22px;
+  margin: 48px 0 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-intro + .staff-group-title { margin-top: 0; }
+
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 28px 22px;
+}
+
+.staff-card h4 {
+  font-size: 16px;
+  margin: 12px 0 2px;
+}
+
+.staff-card p {
+  font-size: 13.5px;
+  margin: 0;
+}
+
+/* Quote */
+.quote-band {
+  background: var(--teal-deep);
+  padding: 88px 0;
+  text-align: center;
+}
+
+.quote-band blockquote { margin: 0 auto 32px; max-width: 760px; }
+.quote-band blockquote p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(24px, 3.4vw, 40px);
+  line-height: 1.25;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+.quote-band footer { color: rgba(255,255,255,.65); font-size: 15px; }
+
+/* Partners */
+.client-grid { grid-template-columns: repeat(6, 1fr); }
+
+.client {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+}
+
+.client span {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .split { grid-template-columns: 1fr; gap: 36px; }
+  .split-reverse .split-copy, .split-reverse .split-media { order: initial; }
+  .mission-grid { grid-template-columns: repeat(2, 1fr); }
+  .client-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .about-block, .mission, .team { padding: 64px 0; }
+  .page-hero { padding: 44px 0 52px; }
+  .mission-grid { grid-template-columns: 1fr; }
+  .vision { padding: 36px 22px; }
+  .staff-grid { grid-template-columns: repeat(2, 1fr); }
+  .client-grid { grid-template-columns: repeat(2, 1fr); }
+}

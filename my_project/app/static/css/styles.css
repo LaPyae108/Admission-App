@@ -3,68 +3,76 @@
    Centralizing colors/spacing here instead of repeating hex
    codes throughout the file - change a value once, it updates
    everywhere it's used.
+
+   Recolored to match the public website's sapphire-blue /
+   yellow / white identity: sapphire blue carries the primary
+   actions and the sidebar, yellow/gold is the secondary accent
+   (warnings, the active-nav stripe), and surfaces go back to
+   clean white/cool-gray instead of warm cream.
 ========================================================= */
 
 :root {
 
-    /* Brand / accent - warm gold/amber leads now, the "yellow"
-       half of the blue-and-yellow identity, instead of the
-       cool indigo that used to be the only accent. */
-    --color-accent: #D97706;
-    --color-accent-hover: #B45309;
-    --color-accent-soft: #FEF3E2;
+    /* Brand / accent - sapphire blue leads, the "blue" half of
+       the site's blue-and-yellow identity. */
+    --color-accent: #1557B0;
+    --color-accent-hover: #0B3D91;
+    --color-accent-soft: #DCE9FF;
 
-    /* Sidebar - keeps the "blue" half of the identity, just
-       warmed from a cold indigo-purple to a softer warm navy
-       with brown undertones, closer to a welcoming dusk-blue
-       than a corporate near-black. */
-    --color-sidebar-bg: #a7b9c7;
+    /* Secondary accent - the "yellow" half of the identity,
+       used sparingly (active-nav stripe, warning status). */
+    --color-gold: #F4C400;
+    --color-gold-deep: #D9A900;
+    --color-gold-soft: #FFF6BF;
+
+    /* Sidebar - solid sapphire, the site's dark/brand band. */
+    --color-sidebar-bg: #0B3D91;
     --color-sidebar-hover: rgba(255, 255, 255, 0.1);
-    --color-sidebar-muted: #b8c2d4;
-    --color-sidebar-text: #d9e0ea;
+    --color-sidebar-muted: #B8C8DC;
+    --color-sidebar-text: #DCE9FF;
 
-    /* Surface / background - warm cream/ivory instead of cool
-       slate-blue-tinted grays. */
-    --color-bg: #FAF7F2;
-    --color-surface: #F5EFE4;
-    --color-border: #E8DFD0;
-    --color-border-soft: #F0E9DC;
-    --color-border-input: #D9CFBC;
+    /* Surface / background - white and cool light-blue grays,
+       instead of warm cream/ivory. */
+    --color-bg: #FFFFFF;
+    --color-surface: #F7F9FC;
+    --color-border: #D7E0EA;
+    --color-border-soft: #E7EDF5;
+    --color-border-input: #C9D6E5;
 
-    /* Text - warm charcoal-brown instead of cool slate-blue,
+    /* Text - cool slate-blue instead of warm charcoal-brown,
        including the table text specifically asked about. */
-    --color-text: #2D2620;
-    --color-text-muted: #8B7F6E;
-    --color-text-subtle: #6B5F4F;
-    --color-text-body: #4A4236;
-    --color-text-disabled: #B0A492;
+    --color-text: #16304A;
+    --color-text-muted: #5B6F82;
+    --color-text-subtle: #44586E;
+    --color-text-body: #5B6F82;
+    --color-text-disabled: #AEB9C7;
 
     /* Status colors - kept close to their original meaning
-       (green=success, red=danger stay recognizable), but
-       nudged warmer where it didn't compromise clarity. */
-    --color-warning-bg: #FEF3C7;
-    --color-warning-text: #92400E;
-    --color-success-bg: #E4F3D9;
-    --color-success-text: #3F6B1F;
-    --color-danger-bg: #FBE5DE;
-    --color-danger-text: #A0401F;
-    --color-danger-border: #F0C4B0;
-    --color-info-bg: #FEF3E2;
-    --color-info-text: #B45309;
+       (green=success, red=danger stay recognizable), nudged
+       toward cooler, bluer undertones to match the palette;
+       warning now runs on the site's yellow/gold. */
+    --color-warning-bg: #FFF6BF;
+    --color-warning-text: #8A6D00;
+    --color-success-bg: #DCEEDB;
+    --color-success-text: #1F6B3F;
+    --color-danger-bg: #FBE1E1;
+    --color-danger-text: #A4231F;
+    --color-danger-border: #F0B8B8;
+    --color-info-bg: #DCE9FF;
+    --color-info-text: #0B3D91;
 
-    /* Shape / motion */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-pill: 20px;
+    /* Shape / motion - sharp, small corners instead of soft
+       rounded ones, matching the website's "sharp/modern"
+       variant. */
+    --radius-sm: 2px;
+    --radius-md: 3px;
+    --radius-lg: 4px;
+    --radius-pill: 3px;
 
-    /* Soft warm-toned shadow - used on cards/surfaces instead
-       of (or alongside) flat borders, so things read as gently
-       lifted rather than sharply outlined. Warmed from a
-       typical cool black shadow toward this palette's browns. */
-    --shadow-soft: 0 2px 8px rgba(120, 90, 50, 0.08);
-    --shadow-card: 0 4px 16px rgba(120, 90, 50, 0.10);
-    --transition: 0.2s ease;
+    /* Cool sapphire-toned shadow instead of a warm brown one. */
+    --shadow-soft: 0 2px 8px rgba(21, 87, 176, 0.08);
+    --shadow-card: 0 4px 16px rgba(21, 87, 176, 0.12);
+    --transition: 0.18s ease;
 
     /* Layout */
     --sidebar-width: 240px;
@@ -99,10 +107,7 @@ body {
     line-height: 1.5;
 }
 
-/* Consistent, visible keyboard focus everywhere - the
-   original file only had this on the search box, leaving
-   every button/link with no visible focus state for keyboard
-   and screen-reader users. */
+/* Consistent, visible keyboard focus everywhere. */
 
 button:focus-visible,
 input:focus-visible,
@@ -132,7 +137,7 @@ textarea:focus-visible {
     width: var(--sidebar-width);
     min-height: 100vh;
     background-color: var(--color-sidebar-bg);
-    color: rgb(250, 247, 220);
+    color: white;
     padding: 25px 15px;
 
     position: fixed;
@@ -146,7 +151,7 @@ textarea:focus-visible {
        content - a small touch, but it's the difference between
        the sidebar feeling like a wall and feeling like it's
        gently resting next to the page. */
-    box-shadow: 2px 0 12px rgba(45, 59, 82, 0.15);
+    box-shadow: 2px 0 12px rgba(11, 61, 145, 0.18);
 }
 
 .logo {
@@ -183,8 +188,9 @@ textarea:focus-visible {
     text-decoration: none;
 
     border-radius: var(--radius-md);
+    border-left: 3px solid transparent;
 
-    transition: background-color var(--transition), color var(--transition);
+    transition: background-color var(--transition), color var(--transition), border-color var(--transition);
 }
 
 .nav-link:hover {
@@ -193,8 +199,9 @@ textarea:focus-visible {
 }
 
 .nav-link.active {
-    background-color: var(--color-accent);
+    background-color: rgba(255, 255, 255, 0.14);
     color: white;
+    border-left-color: var(--color-gold);
 }
 
 .nav-link:focus-visible {
@@ -223,7 +230,7 @@ textarea:focus-visible {
 
     background-color: var(--color-surface);
 
-    border-bottom: 1px solid #EFE7D8;
+    border-bottom: 1px solid var(--color-border-soft);
 
     padding: 0 35px;
 
@@ -255,7 +262,7 @@ textarea:focus-visible {
 
     background-color: var(--color-bg);
 
-    border: 1px solid #E8DFD0;
+    border: 1px solid var(--color-border);
 
     border-radius: var(--radius-md);
 
@@ -319,7 +326,7 @@ textarea:focus-visible {
 
 .add-student-btn:hover {
     background-color: var(--color-accent-hover);
-    box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+    box-shadow: 0 4px 12px rgba(11, 61, 145, 0.3);
     transform: translateY(-1px);
 }
 
@@ -446,7 +453,7 @@ textarea:focus-visible {
 /* Table Header */
 
 .student-table thead {
-    background-color: #FAF5EC;
+    background-color: #EEF4FB;
 }
 
 .student-table th {
@@ -464,7 +471,7 @@ textarea:focus-visible {
 
     letter-spacing: 0.3px;
 
-    border-bottom: 1px solid #EFE7D8;
+    border-bottom: 1px solid var(--color-border-soft);
 
     white-space: nowrap;
 }
@@ -487,7 +494,7 @@ textarea:focus-visible {
 }
 
 .student-table tbody tr:hover {
-    background-color: #FAF5EC;
+    background-color: #EEF4FB;
 }
 
 .student-table tbody tr:last-child td {
@@ -591,7 +598,7 @@ textarea:focus-visible {
 
     background-color: white;
 
-    border: 1px solid #E8DFD0;
+    border: 1px solid var(--color-border);
 
     border-radius: var(--radius-sm);
 
@@ -667,11 +674,11 @@ textarea:focus-visible {
 
     background-color: white;
 
-    border: 1px solid #E0D6C4;
+    border: 1px solid var(--color-border-input);
 
     border-radius: var(--radius-sm);
 
-    color: #5A5040;
+    color: var(--color-text-subtle);
 
     cursor: pointer;
 
@@ -679,7 +686,7 @@ textarea:focus-visible {
 }
 
 .pagination button:hover:not(:disabled) {
-    background-color: #F2EBDD;
+    background-color: #E7EFFA;
 }
 
 .pagination button:disabled {
@@ -712,16 +719,14 @@ textarea:focus-visible {
     font-weight: 500;
 }
 
-/* Added alongside .form-error for symmetry - other pages in
-   this app already use "success-message" for confirmations,
-   so this is here in case the dashboard needs the same. Now
-   references the same success tokens used elsewhere instead
-   of its own separately-hardcoded green, so there's one
-   source of truth for what "success" looks like. */
+/* Added alongside .form-error for symmetry - references the
+   same success tokens used elsewhere instead of its own
+   separately-hardcoded color, so there's one source of truth
+   for what "success" looks like. */
 .success-message {
     background: var(--color-success-bg);
     color: var(--color-success-text);
-    border: 1px solid #C3E0AE;
+    border: 1px solid #B9DCC0;
     padding: 12px 16px;
     border-radius: var(--radius-sm);
     margin-bottom: 20px;

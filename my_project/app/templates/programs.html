@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Programs — Star University Myanmar</title>
+<meta name="description" content="Browse all Star University programs in Yangon: degrees, diplomas, certificates and short courses in hospitality, tourism and culinary arts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styleindex.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about-us.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/programs.css') }}">
+</head>
+<body style="--brand-logo: url('{{ url_for('static', filename='image/star-logo.png') }}');">
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="{{ url_for('main.index') }}" aria-label="Star International College Myanmar — home">
+      <img class="brand-logo" src="{{ url_for('static', filename='image/star-logo.png') }}" alt="Star International College Myanmar logo" width="42" height="42">
+      <span class="brand-text">
+        <span class="brand-name">Star International College</span>
+        <span class="brand-sub">MYANMAR</span>
+      </span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle-label" id="nav-toggle-label" aria-hidden="false">
+      <span class="visually-hidden">Open menu</span>
+      <span class="nav-toggle-icon" aria-hidden="true"></span>
+    </label>
+
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="{{ url_for('main.about') }}">About</a></li>
+        <li><a href="{{ url_for('main.programs') }}" aria-current="page">Programs</a></li>
+        <li><a href="{{ url_for('main.index') }}#why-us">Why Us</a></li>
+        <li><a href="{{ url_for('main.index') }}#gallery">Gallery</a></li>
+        <li><a href="{{ url_for('main.index') }}#admissions">Admissions</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a class="btn btn-primary btn-nav" href="{{ url_for('main.index') }}#admissions">Apply Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="{{ url_for('main.index') }}">Home</a></li>
+          <li aria-current="page">Our Programs</li>
+        </ol>
+      </nav>
+      <h1 id="page-title">Our Programs</h1>
+      <p>Choose from 22 specialized programs in hotel management, tourism, culinary arts and more.</p>
+    </div>
+  </section>
+
+  <nav class="program-jump" aria-label="Program types">
+    <div class="container">
+      <ul><li><a href="#degrees">Degree and foundation programs <span>3</span></a></li><li><a href="#diplomas">Diplomas <span>4</span></a></li><li><a href="#certificates">Certificates <span>6</span></a></li><li><a href="#short-courses">Short courses <span>9</span></a></li></ul>
+    </div>
+  </nav>
+
+  <section id="degrees" class="program-section" aria-labelledby="degrees-heading">
+    <div class="container">
+      <h2 id="degrees-heading" class="program-section-title">Degree and foundation programs</h2>
+      <ul class="program-grid" role="list">
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/m-b-a-in-hospitality-management.jpg') }}" alt="M.B.A in Hospitality Management"> -->
+          <div class="program-body">
+            <h3>M.B.A in Hospitality Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Lincoln University College</dd></div>
+              <div><dt>Duration</dt><dd>18 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/bachelor-in-hospitality-management.jpg') }}" alt="Bachelor in Hospitality Management"> -->
+          <div class="program-body">
+            <h3>Bachelor in Hospitality Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Lincoln University College</dd></div>
+              <div><dt>Duration</dt><dd>24 months study + 24 months on-the-job training</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/foundation-in-business-computing.jpg') }}" alt="Foundation in Business &amp; Computing"> -->
+          <div class="program-body">
+            <h3>Foundation in Business &amp; Computing</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Lincoln University College</dd></div>
+              <div><dt>Duration</dt><dd>12 months</dd></div>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="diplomas" class="program-section" aria-labelledby="diplomas-heading">
+    <div class="container">
+      <h2 id="diplomas-heading" class="program-section-title">Diplomas</h2>
+      <ul class="program-grid" role="list">
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-in-international-hospitality-management.jpg') }}" alt="Diploma in International Hospitality Management"> -->
+          <div class="program-body">
+            <h3>Diploma in International Hospitality Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>LSBF: London School of Business and Finance</dd></div>
+              <div><dt>Duration</dt><dd>15 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-in-hospitality-management.jpg') }}" alt="Diploma in Hospitality Management"> -->
+          <div class="program-body">
+            <h3>Diploma in Hospitality Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>12 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-of-tourism-management-inclusive-business.jpg') }}" alt="Diploma of Tourism Management (Inclusive Business)"> -->
+          <div class="program-body">
+            <h3>Diploma of Tourism Management (Inclusive Business)</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University</dd></div>
+              <div><dt>Duration</dt><dd>15 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-in-food-preparation-culinary-art.jpg') }}" alt="Diploma in Food Preparation &amp; Culinary Art"> -->
+          <div class="program-body">
+            <h3>Diploma in Food Preparation &amp; Culinary Art</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>City &amp; Guilds (UK)</dd></div>
+              <div><dt>Duration</dt><dd>9 months</dd></div>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="certificates" class="program-section" aria-labelledby="certificates-heading">
+    <div class="container">
+      <h2 id="certificates-heading" class="program-section-title">Certificates</h2>
+      <ul class="program-grid" role="list">
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-tourism-management.jpg') }}" alt="Certificate in Tourism Management"> -->
+          <div class="program-body">
+            <h3>Certificate in Tourism Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>4 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-hospitality-sales-and-marketing-management.jpg') }}" alt="Certificate in Hospitality Sales and Marketing Management"> -->
+          <div class="program-body">
+            <h3>Certificate in Hospitality Sales and Marketing Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-hospitality-human-resources-management.jpg') }}" alt="Certificate in Hospitality Human Resources Management"> -->
+          <div class="program-body">
+            <h3>Certificate in Hospitality Human Resources Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>4 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-front-office-management.jpg') }}" alt="Certificate in Front Office Management"> -->
+          <div class="program-body">
+            <h3>Certificate in Front Office Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>5 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-food-and-beverage-management.jpg') }}" alt="Certificate in Food and Beverage Management"> -->
+          <div class="program-body">
+            <h3>Certificate in Food and Beverage Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>4 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-housekeeping-management.jpg') }}" alt="Certificate in Housekeeping Management"> -->
+          <div class="program-body">
+            <h3>Certificate in Housekeeping Management</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>4 months</dd></div>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="short-courses" class="program-section" aria-labelledby="short-courses-heading">
+    <div class="container">
+      <h2 id="short-courses-heading" class="program-section-title">Short courses</h2>
+      <ul class="program-grid" role="list">
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/front-office-operation-opera-course.jpg') }}" alt="Front Office Operation &amp; Opera Course"> -->
+          <div class="program-body">
+            <h3>Front Office Operation &amp; Opera Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/food-beverage-service-course.jpg') }}" alt="Food &amp; Beverage Service Course"> -->
+          <div class="program-body">
+            <h3>Food &amp; Beverage Service Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/housekeeping-operation-course.jpg') }}" alt="Housekeeping Operation Course"> -->
+          <div class="program-body">
+            <h3>Housekeeping Operation Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/bartending-mixology-course.jpg') }}" alt="Bartending &amp; Mixology Course"> -->
+          <div class="program-body">
+            <h3>Bartending &amp; Mixology Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/barista-course.jpg') }}" alt="Barista Course"> -->
+          <div class="program-body">
+            <h3>Barista Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>2 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/international-bakery-pastry-course.jpg') }}" alt="International Bakery &amp; Pastry Course"> -->
+          <div class="program-body">
+            <h3>International Bakery &amp; Pastry Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/international-culinary-course.jpg') }}" alt="International Culinary Course"> -->
+          <div class="program-body">
+            <h3>International Culinary Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>3 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/ship-s-cook-training-course.jpg') }}" alt="Ship&#39;s Cook Training Course"> -->
+          <div class="program-body">
+            <h3>Ship&#39;s Cook Training Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Department of Maritime Association Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>1.5 months</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="program-card">
+          <div class="img-slot img-slot-card" aria-hidden="true"></div>
+          <!-- <img src="{{ url_for('static', filename='image/programs/asian-culinary-course.jpg') }}" alt="Asian Culinary Course"> -->
+          <div class="program-body">
+            <h3>Asian Culinary Course</h3>
+            <dl>
+              <div><dt>Awarded by</dt><dd>Star University Myanmar</dd></div>
+              <div><dt>Duration</dt><dd>6 weeks</dd></div>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="program-help" aria-labelledby="help-heading">
+    <div class="container">
+      <h2 id="help-heading">Questions about a program?</h2>
+      <p>Call or email our student services team, open 9:00 AM to 6:00 PM.</p>
+      <a class="btn btn-primary" href="#contact">Contact us</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER / CONTACT -->
+<footer id="contact" class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-about">
+      <div class="brand brand-footer">
+        <span class="brand-name brand-name-footer">Star International College</span>
+      </div>
+      <p>Star University, a hospitality school in Yangon, Myanmar, established in 2005.</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Quick links">
+      <h2>Quick Links</h2>
+      <ul>
+        <li><a href="{{ url_for('main.about') }}">About Us</a></li>
+        <li><a href="{{ url_for('main.programs') }}">Programs</a></li>
+        <li><a href="{{ url_for('main.index') }}#why-us">Why Us</a></li>
+        <li><a href="{{ url_for('main.index') }}#gallery">Gallery</a></li>
+        <li><a href="{{ url_for('main.index') }}#admissions">Admissions</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-programs">
+      <h2>Programs</h2>
+      <ul>
+        <li>MBA in Hospitality Management</li>
+        <li>Bachelor in Hospitality Management</li>
+        <li>Diploma in Food Preparation &amp; Culinary Arts</li>
+      </ul>
+    </div>
+
+    <div class="footer-contact">
+      <h2>Contact</h2>
+      <address>
+        <p>No. 252 A, U Wisara Road, corner of Dhammazedi Road, Kamaryut Township, Yangon</p>
+        <p><a href="tel:+959797004988">(+95) 09 79 700 4988</a><br>
+           <a href="tel:+959797004989">(+95) 09 79 700 4989</a><br>
+           <a href="tel:+95950020302">(+95) 09 50 20 302</a></p>
+        <p>Student services: 9:00 AM to 6:00 PM</p>
+        <p><a href="mailto:info@staruniversity.edu.mm">info@staruniversity.edu.mm</a></p>
+        <p><a href="https://facebook.com/staruniversity.edu" rel="noopener">Facebook</a> ·
+           <a href="https://youtube.com/@StarResourcesAcademy" rel="noopener">YouTube</a> ·
+           <a href="https://t.me/staruniversitymyanmar" rel="noopener">Telegram</a></p>
+      </address>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p>&copy; 2026 Star University Myanmar. All rights reserved.</p>
+      <p>Built with care, for our students.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
