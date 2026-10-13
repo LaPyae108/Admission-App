@@ -36,7 +36,7 @@
       <ul>
         <li><a href="{{ url_for('main.about') }}">About</a></li>
         <li><a href="{{ url_for('main.programs') }}" aria-current="page">Programs</a></li>
-        <li><a href="{{ url_for('main.index') }}#why-us">Why Us</a></li>
+        <li><a href="{{ url_for('main.services') }}">Services</a></li>
         <li><a href="{{ url_for('main.index') }}#gallery">Gallery</a></li>
         <li><a href="{{ url_for('main.index') }}#admissions">Admissions</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -72,8 +72,7 @@
       <h2 id="degrees-heading" class="program-section-title">Degree and foundation programs</h2>
       <ul class="program-grid" role="list">
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/m-b-a-in-hospitality-management.jpg') }}" alt="M.B.A in Hospitality Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/mba-in-hospitality-management.jpg') }}" alt="M.B.A in Hospitality Management">
           <div class="program-body">
             <h3>M.B.A in Hospitality Management</h3>
             <dl>
@@ -83,24 +82,12 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/bachelor-in-hospitality-management.jpg') }}" alt="Bachelor in Hospitality Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/bachelor-in-hospitality-management.jpg') }}" alt="Bachelor in Hospitality Management">
           <div class="program-body">
             <h3>Bachelor in Hospitality Management</h3>
             <dl>
               <div><dt>Awarded by</dt><dd>Lincoln University College</dd></div>
               <div><dt>Duration</dt><dd>24 months study + 24 months on-the-job training</dd></div>
-            </dl>
-          </div>
-        </li>
-        <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/foundation-in-business-computing.jpg') }}" alt="Foundation in Business &amp; Computing"> -->
-          <div class="program-body">
-            <h3>Foundation in Business &amp; Computing</h3>
-            <dl>
-              <div><dt>Awarded by</dt><dd>Lincoln University College</dd></div>
-              <div><dt>Duration</dt><dd>12 months</dd></div>
             </dl>
           </div>
         </li>
@@ -113,8 +100,7 @@
       <h2 id="diplomas-heading" class="program-section-title">Diplomas</h2>
       <ul class="program-grid" role="list">
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-in-international-hospitality-management.jpg') }}" alt="Diploma in International Hospitality Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/dipolma-in-internation-hospitality-management-480x320.jpg') }}" alt="Diploma in International Hospitality Management">
           <div class="program-body">
             <h3>Diploma in International Hospitality Management</h3>
             <dl>
@@ -124,8 +110,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-in-hospitality-management.jpg') }}" alt="Diploma in Hospitality Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/diploma-in-hospitality-management-480x320.jpg') }}" alt="Diploma in Hospitality Management">
           <div class="program-body">
             <h3>Diploma in Hospitality Management</h3>
             <dl>
@@ -135,8 +120,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-of-tourism-management-inclusive-business.jpg') }}" alt="Diploma of Tourism Management (Inclusive Business)"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/diploma-in-hospitality-management-480x320.jpg') }}" alt="Diploma of Tourism Management (Inclusive Business)">
           <div class="program-body">
             <h3>Diploma of Tourism Management (Inclusive Business)</h3>
             <dl>
@@ -146,8 +130,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/diploma-in-food-preparation-culinary-art.jpg') }}" alt="Diploma in Food Preparation &amp; Culinary Art"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/diploma-in-food-preparation-and-culinary-art-480x320.jpg') }}" alt="Diploma in Food Preparation &amp; Culinary Art">
           <div class="program-body">
             <h3>Diploma in Food Preparation &amp; Culinary Art</h3>
             <dl>
@@ -165,8 +148,7 @@
       <h2 id="certificates-heading" class="program-section-title">Certificates</h2>
       <ul class="program-grid" role="list">
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-tourism-management.jpg') }}" alt="Certificate in Tourism Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/certificate-in-tourism-management-480x320.jpg') }}" alt="Certificate in Tourism Management">
           <div class="program-body">
             <h3>Certificate in Tourism Management</h3>
             <dl>
@@ -176,8 +158,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-hospitality-sales-and-marketing-management.jpg') }}" alt="Certificate in Hospitality Sales and Marketing Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/hospitality-business-management-480x320.jpg') }}" alt="Certificate in Hospitality Sales and Marketing Management">
           <div class="program-body">
             <h3>Certificate in Hospitality Sales and Marketing Management</h3>
             <dl>
@@ -187,8 +168,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-hospitality-human-resources-management.jpg') }}" alt="Certificate in Hospitality Human Resources Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/certificate-in-hospitality-human-resources-management-480x320.jpg') }}" alt="Certificate in Hospitality Human Resources Management">
           <div class="program-body">
             <h3>Certificate in Hospitality Human Resources Management</h3>
             <dl>
@@ -198,8 +178,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-front-office-management.jpg') }}" alt="Certificate in Front Office Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/cerfificate-in-front-office-management-480x321.jpg') }}" alt="Certificate in Front Office Management">
           <div class="program-body">
             <h3>Certificate in Front Office Management</h3>
             <dl>
@@ -209,8 +188,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-food-and-beverage-management.jpg') }}" alt="Certificate in Food and Beverage Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/cerfificate-in-food-and-beverage-management-480x320.jpg') }}" alt="Certificate in Food and Beverage Management">
           <div class="program-body">
             <h3>Certificate in Food and Beverage Management</h3>
             <dl>
@@ -220,8 +198,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/certificate-in-housekeeping-management.jpg') }}" alt="Certificate in Housekeeping Management"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/cerfificate-in-food-and-beverage-management-480x320.jpg') }}" alt="Certificate in Housekeeping Management">
           <div class="program-body">
             <h3>Certificate in Housekeeping Management</h3>
             <dl>
@@ -239,8 +216,7 @@
       <h2 id="short-courses-heading" class="program-section-title">Short courses</h2>
       <ul class="program-grid" role="list">
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/front-office-operation-opera-course.jpg') }}" alt="Front Office Operation &amp; Opera Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/front-office-operation-and-opera-course-480x320.jpg') }}" alt="Front Office Operation &amp; Opera Course">
           <div class="program-body">
             <h3>Front Office Operation &amp; Opera Course</h3>
             <dl>
@@ -250,8 +226,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/food-beverage-service-course.jpg') }}" alt="Food &amp; Beverage Service Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/food-beverage-service-course-480x320.jpg') }}" alt="Food &amp; Beverage Service Course">
           <div class="program-body">
             <h3>Food &amp; Beverage Service Course</h3>
             <dl>
@@ -261,8 +236,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/housekeeping-operation-course.jpg') }}" alt="Housekeeping Operation Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/star-university-img-01-480x320.jpg') }}" alt="Housekeeping Operation Course">
           <div class="program-body">
             <h3>Housekeeping Operation Course</h3>
             <dl>
@@ -272,8 +246,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/bartending-mixology-course.jpg') }}" alt="Bartending &amp; Mixology Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/bartending-mixology-course-480x320.jpg') }}" alt="Bartending &amp; Mixology Course">
           <div class="program-body">
             <h3>Bartending &amp; Mixology Course</h3>
             <dl>
@@ -283,8 +256,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/barista-course.jpg') }}" alt="Barista Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/barista-course_2025-480x320.png') }}" alt="Barista Course">
           <div class="program-body">
             <h3>Barista Course</h3>
             <dl>
@@ -294,8 +266,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/international-bakery-pastry-course.jpg') }}" alt="International Bakery &amp; Pastry Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/international-bakery-pastry-course_2025-480x320.png') }}" alt="International Bakery &amp; Pastry Course">
           <div class="program-body">
             <h3>International Bakery &amp; Pastry Course</h3>
             <dl>
@@ -305,8 +276,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/international-culinary-course.jpg') }}" alt="International Culinary Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/international-culinary-course-480x320.jpg') }}" alt="International Culinary Course">
           <div class="program-body">
             <h3>International Culinary Course</h3>
             <dl>
@@ -316,8 +286,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/ship-s-cook-training-course.jpg') }}" alt="Ship&#39;s Cook Training Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/ships-cook-training-course-480x320.jpg') }}" alt="Ship&#39;s Cook Training Course">
           <div class="program-body">
             <h3>Ship&#39;s Cook Training Course</h3>
             <dl>
@@ -327,8 +296,7 @@
           </div>
         </li>
         <li class="program-card">
-          <div class="img-slot img-slot-card" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/programs/asian-culinary-course.jpg') }}" alt="Asian Culinary Course"> -->
+          <img loading="lazy" src="{{ url_for('static', filename='image/Asian-Culinary-course_2025-480x320.png') }}" alt="Asian Culinary Course">
           <div class="program-body">
             <h3>Asian Culinary Course</h3>
             <dl>
@@ -366,7 +334,7 @@
       <ul>
         <li><a href="{{ url_for('main.about') }}">About Us</a></li>
         <li><a href="{{ url_for('main.programs') }}">Programs</a></li>
-        <li><a href="{{ url_for('main.index') }}#why-us">Why Us</a></li>
+        <li><a href="{{ url_for('main.services') }}">Services</a></li>
         <li><a href="{{ url_for('main.index') }}#gallery">Gallery</a></li>
         <li><a href="{{ url_for('main.index') }}#admissions">Admissions</a></li>
       </ul>

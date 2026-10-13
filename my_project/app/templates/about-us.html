@@ -35,7 +35,7 @@
       <ul>
         <li><a href="{{ url_for('main.about') }}" aria-current="page">About</a></li>
         <li><a href="{{ url_for('main.index') }}#programs">Programs</a></li>
-        <li><a href="{{ url_for('main.index') }}#why-us">Why Us</a></li>
+        <li><a href="{{ url_for('main.services') }}">Services</a></li>
         <li><a href="{{ url_for('main.index') }}#gallery">Gallery</a></li>
         <li><a href="{{ url_for('main.index') }}#admissions">Admissions</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -71,8 +71,7 @@
         <p>Our programs pair practical instruction with on-the-job training at companies across Myanmar. Courses are developed with the support of our industry partners, so students learn skills they can apply straight away in the hotel and hospitality sectors.</p>
       </div>
       <figure class="split-media">
-        <div class="img-slot img-slot-wide" role="img" aria-label="Image to be added: students in training"></div>
-        <!-- <img src="{{ url_for('static', filename='image/about-offer.jpg') }}" alt="Students in hands-on hospitality training"> -->
+        <img src="{{ url_for('static', filename='image/bachelor-in-hospitality-management.jpg') }}" alt="Star students working in a computer lab" loading="lazy">
       </figure>
     </div>
   </section>
@@ -100,8 +99,7 @@
         </ul>
       </div>
       <figure class="split-media">
-        <div class="img-slot img-slot-wide" role="img" aria-label="Image to be added: the college campus"></div>
-        <!-- <img src="{{ url_for('static', filename='image/about-history.jpg') }}" alt="Star International College campus"> -->
+        <img src="{{ url_for('static', filename='image/certificate-in-tourism-management-480x320.jpg') }}" alt="Star International College students and staff gathered outside a heritage building" loading="lazy">
       </figure>
     </div>
   </section>
@@ -129,6 +127,24 @@
           <p>To be a recognized leader and pioneer in vocational, higher education and research in the Hospitality and Tourism industry.</p>
         </blockquote>
       </figure>
+    </div>
+  </section>
+
+  <!-- LIFE AT STAR -->
+  <section class="about-block life" aria-labelledby="life-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Life at Star</p>
+        <h2 id="life-heading">Learning by doing, every day</h2>
+      </div>
+      <div class="life-slideshow" id="life-slideshow" role="region" aria-label="Life at Star photos">
+        <ul class="life-track" role="list">
+          <li class="life-slide"><img src="{{ url_for('static', filename='image/certificate-in-hospitality-human-resources-management-480x320.jpg') }}" alt="Students taking notes in class" loading="lazy"></li>
+          <li class="life-slide"><img src="{{ url_for('static', filename='image/international-culinary-course-480x320.jpg') }}" alt="Culinary students with their finished cakes" loading="lazy"></li>
+          <li class="life-slide"><img src="{{ url_for('static', filename='image/bartending-mixology-course-480x320.jpg') }}" alt="Students practising bar service" loading="lazy"></li>
+          <li class="life-slide"><img src="{{ url_for('static', filename='image/diploma-in-food-preparation-and-culinary-art-480x320.jpg') }}" alt="Culinary students presenting plated dishes" loading="lazy"></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -171,38 +187,32 @@
       <h3 class="staff-group-title">Leadership and administration</h3>
       <ul class="staff-grid" role="list">
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-nay-yi-aung.jpg') }}" alt="Daw Nay Yi Aung"> -->
+          <img src="{{ url_for('static', filename='image/staff/Daw-Nay-Yi-Aung.png') }}" alt="Daw Nay Yi Aung">
           <h4>Daw Nay Yi Aung</h4>
           <p>Founder / President</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-soe-soe-moe.jpg') }}" alt="Daw Soe Soe Moe"> -->
+          <img src="{{ url_for('static', filename='image/staff/Soe-Soe-Moe.png') }}" alt="Daw Soe Soe Moe">
           <h4>Daw Soe Soe Moe</h4>
           <p>Director of Academics</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/than-than-si.jpg') }}" alt="Than Than Si"> -->
+          <img src="{{ url_for('static', filename='image/staff/Than-Than-Si.png') }}" alt="Than Than Si">
           <h4>Than Than Si</h4>
           <p>Director of Administration and Operation</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/professor-dr-daw-myo-myo-myat.jpg') }}" alt="Professor Dr. Daw Myo Myo Myat"> -->
+          <img src="{{ url_for('static', filename='image/staff/Daw-Myo-Myo-Myat.png') }}" alt="Professor Dr. Daw Myo Myo Myat">
           <h4>Professor Dr. Daw Myo Myo Myat</h4>
           <p>Principal</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/professor-dr-daw-ohn-mar-ohn.jpg') }}" alt="Professor Dr. Daw Ohn Mar Ohn"> -->
+          <img src="{{ url_for('static', filename='image/staff/Dr-Ohn.png') }}" alt="Professor Dr. Daw Ohn Mar Ohn">
           <h4>Professor Dr. Daw Ohn Mar Ohn</h4>
           <p>Vice Principal</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/dr-u-win-tint.jpg') }}" alt="Dr. U Win Tint"> -->
+          <img src="{{ url_for('static', filename='image/staff/U-Win-Thint.png') }}" alt="Dr. U Win Tint">
           <h4>Dr. U Win Tint</h4>
           <p>Academic Dean</p>
         </li>
@@ -210,50 +220,42 @@
       <h3 class="staff-group-title">Teaching staff</h3>
       <ul class="staff-grid" role="list">
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-myo-khaing.jpg') }}" alt="U Myo Khaing"> -->
+          <img src="{{ url_for('static', filename='image/staff/Myokhaing.png') }}" alt="U Myo Khaing">
           <h4>U Myo Khaing</h4>
           <p>Senior Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-min-zin.jpg') }}" alt="U Min Zin"> -->
+          <img src="{{ url_for('static', filename='image/staff/Minzin.png') }}" alt="U Min Zin">
           <h4>U Min Zin</h4>
           <p>Senior Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-naung-naung-latt.jpg') }}" alt="U Naung Naung Latt"> -->
+          <img src="{{ url_for('static', filename='image/staff/NaungNaungLatt.png') }}" alt="U Naung Naung Latt">
           <h4>U Naung Naung Latt</h4>
           <p>Senior Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-hlaing-tun-oo.jpg') }}" alt="U Hlaing Tun Oo"> -->
+          <img src="{{ url_for('static', filename='image/staff/Hlaingtunoo.png') }}" alt="U Hlaing Tun Oo">
           <h4>U Hlaing Tun Oo</h4>
           <p>Program Leader, Food Production</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-sai-than-hlaing-soe.jpg') }}" alt="U Sai Than Hlaing Soe"> -->
+          <img src="{{ url_for('static', filename='image/staff/Sai-Than-Hlaing-Soe.png') }}" alt="U Sai Than Hlaing Soe">
           <h4>U Sai Than Hlaing Soe</h4>
           <p>Senior Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-toe-naing.jpg') }}" alt="U Toe Naing"> -->
+          <img src="{{ url_for('static', filename='image/staff/Toe-Naing.png') }}" alt="U Toe Naing">
           <h4>U Toe Naing</h4>
           <p>Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-kyaw-myo-aung.jpg') }}" alt="U Kyaw Myo Aung"> -->
+          <img src="{{ url_for('static', filename='image/staff/U-Kyaw-Myo-Aung.png') }}" alt="U Kyaw Myo Aung">
           <h4>U Kyaw Myo Aung</h4>
           <p>Visiting Senior Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-thaw-ka.jpg') }}" alt="U Thaw Ka"> -->
+          <img src="{{ url_for('static', filename='image/staff/U-Taw-Ka.png') }}" alt="U Thaw Ka">
           <h4>U Thaw Ka</h4>
           <p>Visiting Senior Lecturer</p>
         </li>
@@ -264,8 +266,7 @@
           <p>Visiting Lecturer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-saung-hay-man-oo.jpg') }}" alt="Daw Saung Hay Man Oo"> -->
+          <img src="{{ url_for('static', filename='image/staff/Saung-Hay-Man.png') }}" alt="Daw Saung Hay Man Oo">
           <h4>Daw Saung Hay Man Oo</h4>
           <p>Lecturer</p>
         </li>
@@ -273,68 +274,57 @@
       <h3 class="staff-group-title">Admissions, enrollment and student services</h3>
       <ul class="staff-grid" role="list">
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-aye-zin-thaw.jpg') }}" alt="U Aye Zin Thaw"> -->
+          <img src="{{ url_for('static', filename='image/staff/U-Aye-Zin-Thaw.png') }}" alt="U Aye Zin Thaw">
           <h4>U Aye Zin Thaw</h4>
           <p>Enrollment &amp; Development Manager</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-chu-hlaing-moe.jpg') }}" alt="Daw Chu Hlaing Moe"> -->
+          <img src="{{ url_for('static', filename='image/staff/Chu-Hlaing-Moe.png') }}" alt="Daw Chu Hlaing Moe">
           <h4>Daw Chu Hlaing Moe</h4>
           <p>Admission Manager</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-ye-gaung.jpg') }}" alt="U Ye Gaung"> -->
+          <img src="{{ url_for('static', filename='image/staff/U-Ye-Gaung.png') }}" alt="U Ye Gaung">
           <h4>U Ye Gaung</h4>
           <p>Global Career Service Officer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-may-phoo-thant.jpg') }}" alt="Daw May Phoo Thant"> -->
+          <img src="{{ url_for('static', filename='image/staff/May-Phoo-Thant.png') }}" alt="Daw May Phoo Thant">
           <h4>Daw May Phoo Thant</h4>
           <p>Global Career Service Officer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-chaw-ei-htwe.jpg') }}" alt="Daw Chaw Ei Htwe"> -->
+          <img src="{{ url_for('static', filename='image/staff/Chaw-Ei-Htwe.png') }}" alt="Daw Chaw Ei Htwe">
           <h4>Daw Chaw Ei Htwe</h4>
           <p>Admission Officer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-thwe-thwe-han.jpg') }}" alt="Daw Thwe Thwe Han"> -->
+          <img src="{{ url_for('static', filename='image/staff/Thwe-Thwe-Han.png') }}" alt="Daw Thwe Thwe Han">
           <h4>Daw Thwe Thwe Han</h4>
           <p>Student Service Officer</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-chit-su-myat.jpg') }}" alt="Daw Chit Su Myat"> -->
+          <img src="{{ url_for('static', filename='image/staff/Chit-Su-Myat.png') }}" alt="Daw Chit Su Myat">
           <h4>Daw Chit Su Myat</h4>
           <p>Student Service Coordinator</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-hay-mam-oo.jpg') }}" alt="Daw Hay Mam Oo"> -->
+          <img src="{{ url_for('static', filename='image/staff/Daw-Hay-Mam-Oo.png') }}" alt="Daw Hay Mam Oo">
           <h4>Daw Hay Mam Oo</h4>
           <p>Admission Coordinator</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-zin-mar-naing.jpg') }}" alt="Daw Zin Mar Naing"> -->
+          <img src="{{ url_for('static', filename='image/staff/Zin-Mar-Naing.png') }}" alt="Daw Zin Mar Naing">
           <h4>Daw Zin Mar Naing</h4>
           <p>Admission Coordinator</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-min-khant-kyaw.jpg') }}" alt="U Min Khant Kyaw"> -->
+          <img src="{{ url_for('static', filename='image/staff/U Min Khant Kyaw.png') }}" alt="U Min Khant Kyaw">
           <h4>U Min Khant Kyaw</h4>
           <p>Student Service Coordinator</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-tin-htay-oo.jpg') }}" alt="U Tin Htay Oo"> -->
+          <img src="{{ url_for('static', filename='image/staff/U Tin Htay Oo.png') }}" alt="U Tin Htay Oo">
           <h4>U Tin Htay Oo</h4>
           <p>Student Service Coordinator</p>
         </li>
@@ -342,20 +332,17 @@
       <h3 class="staff-group-title">Operations and support</h3>
       <ul class="staff-grid" role="list">
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/daw-lwin-kay-thwe-thein.jpg') }}" alt="Daw Lwin Kay Thwe Thein"> -->
+          <img src="{{ url_for('static', filename='image/staff/Lwin Kay Thwe Thein.png') }}" alt="Daw Lwin Kay Thwe Thein">
           <h4>Daw Lwin Kay Thwe Thein</h4>
           <p>Finance Coordinator</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/u-aung-myo-thu.jpg') }}" alt="U Aung Myo Thu"> -->
+          <img src="{{ url_for('static', filename='image/staff/U Aung Myo THu.png') }}" alt="U Aung Myo Thu">
           <h4>U Aung Myo Thu</h4>
           <p>IT Coordinator</p>
         </li>
         <li class="staff-card">
-          <div class="img-slot img-slot-portrait" aria-hidden="true"></div>
-          <!-- <img src="{{ url_for('static', filename='image/staff/salai-aye-thu-yein-tun.jpg') }}" alt="Salai Aye Thu Yein Tun"> -->
+          <img src="{{ url_for('static', filename='image/staff/Salai Aye Thu Yein Tun.png') }}" alt="Salai Aye Thu Yein Tun">
           <h4>Salai Aye Thu Yein Tun</h4>
           <p>M&amp;E Coordinator</p>
         </li>

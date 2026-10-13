@@ -349,7 +349,7 @@ label:focus-within {
   width: min(34vw, 640px);
   height: auto;
   object-fit: contain;
-  opacity: .95;
+  opacity: 1;
   animation: none;
 }
 
@@ -357,7 +357,7 @@ label:focus-within {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(11,61,145,.96) 0%, rgba(11,61,145,.84) 45%, rgba(11,61,145,.62) 100%);
+  background: linear-gradient(90deg, rgba(11,61,145,.88) 0%, rgba(11,61,145,.58) 45%, rgba(11,61,145,.22) 100%);
 }
 
 @keyframes heroZoom {
@@ -373,8 +373,8 @@ label:focus-within {
 
 @keyframes heroSlide {
   0%   { opacity: 0; }
-  3%   { opacity: .9; }
-  14%  { opacity: .9; }
+  3%   { opacity: 1; }
+  14%  { opacity: 1; }
   18%  { opacity: 0; }
   100% { opacity: 0; }
 }
@@ -405,13 +405,15 @@ label:focus-within {
   color: var(--white);
   margin-bottom: 22px;
   max-width: 680px;
+  text-shadow: 0 2px 14px rgba(8,36,92,.45);
 }
 
 .hero-lead {
   font-size: 18px;
-  color: rgba(255,255,255,.78);
+  color: rgba(255,255,255,.92);
   max-width: 520px;
   margin-bottom: 34px;
+  text-shadow: 0 1px 10px rgba(8,36,92,.5);
 }
 
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }

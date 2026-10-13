@@ -21,11 +21,21 @@
 .img-slot-portrait { aspect-ratio: 4 / 5; }
 .img-slot-logo { aspect-ratio: 16 / 9; background: var(--white); }
 
-.split-media img,
-.staff-card > img {
+.split-media img {
   width: 100%;
   border-radius: var(--radius-md);
   object-fit: cover;
+}
+
+/* Staff photos: same portrait frame as the blank slots, cropped from the top so faces stay in view */
+.staff-card > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: var(--radius-md);
+  background: var(--teal-soft);
 }
 
 .split-media { margin: 0; }
@@ -242,4 +252,59 @@
   .vision { padding: 36px 22px; }
   .staff-grid { grid-template-columns: repeat(2, 1fr); }
   .client-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Life at Star slideshow: one large photo at a time, fades automatically (no controls) */
+.life { background: var(--teal-soft); padding: 96px 0; }
+
+.life-slideshow {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--teal-deep);
+  box-shadow: 0 18px 40px rgba(11,61,145,.18);
+}
+
+.life-track { margin: 0; padding: 0; list-style: none; height: 100%; }
+
+.life-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: lifeFade 20s infinite backwards;
+}
+.life-slide:nth-child(1) { animation-delay: 0s; }
+.life-slide:nth-child(2) { animation-delay: 5s; }
+.life-slide:nth-child(3) { animation-delay: 10s; }
+.life-slide:nth-child(4) { animation-delay: 15s; }
+
+.life-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 4 photos x 5s; each fades in over 1s, holds, fades out as the next fades in */
+@keyframes lifeFade {
+  0%   { opacity: 0; }
+  5%   { opacity: 1; }
+  25%  { opacity: 1; }
+  30%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.split-media img { aspect-ratio: 4 / 3; }
+
+@media (prefers-reduced-motion: reduce) {
+  .life-slide { animation: none; }
+  .life-slide:first-child { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .life { padding: 64px 0; }
+  .life-slideshow { border-radius: var(--radius-md); }
 }

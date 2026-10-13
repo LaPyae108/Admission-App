@@ -1,0 +1,49 @@
+/* Services page — loaded after styleindex.css and about.css */
+
+.service-contact { background: var(--teal-soft); border-bottom: 1px solid var(--line); padding: 22px 0; }
+
+.service-contact-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 40px;
+}
+
+.service-contact-list li { display: flex; flex-direction: column; text-align: center; }
+.service-contact-list span { font-size: 12px; font-weight: 600; color: var(--brass-deep); }
+.service-contact-list a { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.service-contact-list a:hover { color: var(--teal); }
+
+.service + .service { border-top: 1px solid var(--line); }
+
+.star-principles { background: var(--teal-soft); padding: 96px 0; }
+
+.star-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.star-grid li {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--brass);
+  border-radius: var(--radius-md);
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.star-letter {
+  display: block;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--teal-deep);
+  margin-bottom: 10px;
+}
+
+.star-grid h3 { font-size: 18px; margin: 0; }
+
+@media (max-width: 900px) { .star-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .star-principles { padding: 64px 0; } }

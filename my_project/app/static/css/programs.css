@@ -73,7 +73,7 @@
 
 .program-card:hover { border-color: var(--brass); }
 
-.program-card > img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.program-card > img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: center 30%; background: var(--teal-soft); }
 
 .program-body { padding: 20px 22px 24px; }
 .program-body h3 { font-size: 18px; margin-bottom: 14px; }
