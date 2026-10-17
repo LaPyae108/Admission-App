@@ -326,7 +326,7 @@ label:focus-within {
   max-width: none;
   object-fit: cover;
   opacity: 0;
-  animation: heroSlide 36s infinite, heroZoom 36s infinite;
+  animation: heroSlide 96s infinite, heroZoom 96s infinite;
 }
 
 .hero-bg > :nth-child(1) { opacity: 1; }
@@ -335,13 +335,23 @@ label:focus-within {
 .hero-bg > :nth-child(4) { animation-delay: 18s; }
 .hero-bg > :nth-child(5) { animation-delay: 24s; }
 .hero-bg > :nth-child(6) { animation-delay: 30s; }
+.hero-bg > :nth-child(7) { animation-delay: 36s; }
+.hero-bg > :nth-child(8) { animation-delay: 42s; }
+.hero-bg > :nth-child(9) { animation-delay: 48s; }
+.hero-bg > :nth-child(10) { animation-delay: 54s; }
+.hero-bg > :nth-child(11) { animation-delay: 60s; }
+.hero-bg > :nth-child(12) { animation-delay: 66s; }
+.hero-bg > :nth-child(13) { animation-delay: 72s; }
+.hero-bg > :nth-child(14) { animation-delay: 78s; }
+.hero-bg > :nth-child(15) { animation-delay: 84s; }
+.hero-bg > :nth-child(16) { animation-delay: 90s; }
 
 /* Logo slide: first in the rotation, centred on the sapphire */
 .hero-bg-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--teal-deep);
+  background: var(--white);
 }
 
 .hero-bg-logo img {
@@ -357,12 +367,11 @@ label:focus-within {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(11,61,145,.88) 0%, rgba(11,61,145,.58) 45%, rgba(11,61,145,.22) 100%);
-}
+  background: linear-gradient(90deg, rgba(11,61,145,.85) 0%, rgba(11,61,145,.30) 50%, rgba(11,61,145,.85) 100%);}
 
 @keyframes heroZoom {
   0%   { transform: scale(1); }
-  18%  { transform: scale(1.05); }
+  6.77%  { transform: scale(1.05); }
   100% { transform: scale(1.05); }
 }
 
@@ -373,9 +382,9 @@ label:focus-within {
 
 @keyframes heroSlide {
   0%   { opacity: 0; }
-  3%   { opacity: 1; }
-  14%  { opacity: 1; }
-  18%  { opacity: 0; }
+  1.13%   { opacity: 1; }
+  5.25%  { opacity: 1; }
+  6.77%  { opacity: 0; }
   100% { opacity: 0; }
 }
 

@@ -54,37 +54,31 @@
         <img src="{{ url_for('static', filename='image/star-logo.png') }}" alt="">
       </div>
       <img src="{{ url_for('static', filename='image/group_photo1.jpg') }}" alt="">
-      <img src="{{ url_for('static', filename='image/group_photo2.jpg') }}" alt="">
       <img src="{{ url_for('static', filename='image/three_students.jpg') }}" alt="">
       <img src="{{ url_for('static', filename='image/group_photo3.jpg') }}" alt="">
       <img src="{{ url_for('static', filename='image/why_she_looking.jpg') }}" alt="">
+      <img src="{{ url_for('static', filename='image/DSC_7607.JPG') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/DSC_7614.JPG') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/DSC_7625.JPG') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/DSC_7628.JPG') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/DSC_7636.JPG') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/DSC_7644') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/hero/hero-graduation-07-graduates-waving-heart.jpg') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/hero/hero-graduation-08-graduate-taking-photo.jpg') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/hero/hero-graduation-09-graduates-selfie-bouquet.jpg') }}" alt="" decoding="async">
+      <img src="{{ url_for('static', filename='image/hero/hero-graduation-10-graduate-pair-blue-sash.jpg') }}" alt="" decoding="async">
     </div>
     <div class="hero-decor" aria-hidden="true"></div>
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="eyebrow eyebrow-on-dark">Admissions Open — 2026 / 2027</p>
         <h1 id="hero-heading">Star Leading to Success!</h1>
-        <p class="hero-lead">Star University is one of the leading hospitality schools in Myanmar, preparing students for careers in hotels, tourism and culinary arts since 2005.</p>
+        <p class="hero-lead">Star International College is one of the leading hospitality schools in Myanmar, preparing students for careers in hotels, tourism and culinary arts since 2005.</p>
         <div class="hero-actions">
           <a class="btn btn-outline" href="#programs">Explore Programs</a>
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
-        <div class="hero-card">
-          <div class="hero-card-art">
-            <img src="{{ url_for('static', filename='image/staff/Tr-gyi.jpg') }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:1px;">
-          </div>
-          <div class="hero-card-stats">
-            <div>
-              <span class="stat-number">55,678</span>
-              <span class="stat-label">Graduates since 2005</span>
-            </div>
-            <div>
-              <span class="stat-number stat-number-gold">2,400</span>
-              <span class="stat-label">New students each year</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -116,7 +110,7 @@
     <div class="container about-inner">
       <div class="about-visual" aria-hidden="true">
         <div class="about-art">
-          <img src="{{ url_for('static', filename='image/gettig_the_call.jpg') }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:3px;">
+          <img src="{{ url_for('static', filename='image/staff/Tr-gyi.jpg') }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:3px;">
         </div>
         <div class="about-badge">
           <span>
@@ -234,17 +228,6 @@
           </div>
 
         </div>
-
-        <button type="button" class="slide-arrow slide-prev" id="slide-prev" aria-label="Previous photo">&#8249;</button>
-        <button type="button" class="slide-arrow slide-next" id="slide-next" aria-label="Next photo">&#8250;</button>
-
-        <div class="slide-dots" id="slide-dots" role="tablist" aria-label="Choose a photo">
-          <button type="button" class="slide-dot" role="tab" aria-selected="true" aria-controls="slideshow-track" aria-label="Photo 1 of 5" data-index="0"></button>
-          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 2 of 5" data-index="1"></button>
-          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 3 of 5" data-index="2"></button>
-          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 4 of 5" data-index="3"></button>
-          <button type="button" class="slide-dot" role="tab" aria-selected="false" aria-controls="slideshow-track" aria-label="Photo 5 of 5" data-index="4"></button>
-        </div>
       </div>
     </div>
   </section>
@@ -302,7 +285,7 @@
       <div class="brand brand-footer">
         <span class="brand-name brand-name-footer">Star International College</span>
       </div>
-      <p>Star University, a hospitality school in Yangon, Myanmar, established in 2005.</p>
+      <p>Star International College, a hospitality school in Yangon, Myanmar, established in 2005.</p>
     </div>
 
     <nav class="footer-nav" aria-label="Quick links">
@@ -343,87 +326,11 @@
 
   <div class="footer-bottom">
     <div class="container footer-bottom-inner">
-      <p>&copy; 2026 Star University Myanmar. All rights reserved.</p>
+      <p>&copy; 2026 Star International College Myanmar. All rights reserved.</p>
       <p>Built with care, for our students.</p>
     </div>
   </div>
 </footer>
-
-<script>
-(function () {
-  "use strict";
-
-  var slideshow = document.getElementById("campus-slideshow");
-  if (!slideshow) return;
-
-  var track = document.getElementById("slideshow-track");
-  var slides = Array.prototype.slice.call(track.children);
-  var prevBtn = document.getElementById("slide-prev");
-  var nextBtn = document.getElementById("slide-next");
-  var dots = Array.prototype.slice.call(document.querySelectorAll("#slide-dots .slide-dot"));
-  var current = 0;
-  var total = slides.length;
-  var AUTO_DELAY = 6000;
-  var timer = null;
-
-  var prefersReducedMotion = window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  function goTo(index) {
-    current = (index + total) % total;
-    track.style.transform = "translateX(-" + (current * 100) + "%)";
-    dots.forEach(function (dot, i) {
-      var isActive = i === current;
-      dot.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-    slides.forEach(function (slide, i) {
-      slide.setAttribute("aria-hidden", i === current ? "false" : "true");
-    });
-  }
-
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
-
-  function startAuto() {
-    if (prefersReducedMotion) return;
-    stopAuto();
-    timer = window.setInterval(next, AUTO_DELAY);
-  }
-
-  function stopAuto() {
-    if (timer) {
-      window.clearInterval(timer);
-      timer = null;
-    }
-  }
-
-  nextBtn.addEventListener("click", function () {
-    next();
-    startAuto();
-  });
-
-  prevBtn.addEventListener("click", function () {
-    prev();
-    startAuto();
-  });
-
-  dots.forEach(function (dot, i) {
-    dot.addEventListener("click", function () {
-      goTo(i);
-      startAuto();
-    });
-  });
-
-  slideshow.addEventListener("mouseenter", stopAuto);
-  slideshow.addEventListener("mouseleave", startAuto);
-  slideshow.addEventListener("focusin", stopAuto);
-  slideshow.addEventListener("focusout", startAuto);
-
-  goTo(0);
-  startAuto();
-})();
-</script>
-
 
 <script>
 (function () {

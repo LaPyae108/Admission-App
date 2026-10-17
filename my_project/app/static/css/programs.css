@@ -100,3 +100,9 @@
   .program-section { padding-top: 52px; }
   .program-grid { grid-template-columns: 1fr; }
 }
+
+/* Awarding-university logo: outline hugs the logo (box is about 65px tall) */
+.award-logo { display: flex; align-items: center; width: fit-content; max-width: 100%; margin-bottom: 16px; padding: 2px 2px; border: 1.5px solid var(--brass); background: #fff; }
+.award-logo span { display: flex; align-items: center; }
+.award-logo img { display: block; height: 46px; width: auto; max-width: 100%; object-fit: contain; }
+.program-card:hover .award-logo { border-color: var(--teal); transition:  1s;}
