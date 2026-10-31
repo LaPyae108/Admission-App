@@ -1,0 +1,4 @@
+python3 -m venv flask
+source flask/bin/activate
+export FLASK_APP=run.py
+export FLASK_DEBUG=1

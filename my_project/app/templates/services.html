@@ -9,10 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styleindex.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about-us.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
 </head>
-<body style="--brand-logo: url('{{ url_for('static', filename='image/star-logo.png') }}');">
+<body style="--brand-logo: none;">
+
+<img src="{{ url_for('static', filename='image/services/services-background.jpg') }}" alt="" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4;z-index:-1;pointer-events:none;">
 
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
@@ -49,8 +51,10 @@
 
 <main id="main-content">
 
-  <section class="page-hero" aria-labelledby="page-title">
-    <div class="container">
+  <section class="page-hero" aria-labelledby="page-title" style="position:relative;overflow:hidden;isolation:isolate;">
+    <img src="{{ url_for('static', filename='image/services/services-header.jpg') }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 58%;z-index:-2;">
+    <div aria-hidden="true" style="position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,61,145,.9) 0%,rgba(11,61,145,.7) 42%,rgba(11,61,145,.1) 80%);"></div>
+    <div class="container" style="position:relative;z-index:1;">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
           <li><a href="{{ url_for('main.index') }}">Home</a></li>
@@ -73,44 +77,76 @@
   </section>
 
   <section class="about-block service" id="on-site-training" aria-labelledby="on-site-training-heading">
-    <div class="container split">
-      <div class="split-copy">
+    <div class="container split" style="display:flex;flex-wrap:wrap;align-items:center;gap:56px;">
+      <figure class="split-media" style="order:1;flex:1 1 340px;margin:0;min-width:0;">
+        <img src="{{ url_for('static', filename='image/services/interm-type-shi.jpg') }}" alt="Students practising front-desk service" loading="lazy">
+      </figure>
+      <div class="split-copy" style="order:2;flex:1 1 340px;min-width:0;">
         <p class="eyebrow">Service 01</p>
         <h2 id="on-site-training-heading">On-site training</h2>
         <p>Practical training delivered at your workplace, for businesses anywhere in Myanmar. We cover roles such as retail store management and hotel front-of-house operations.</p>
         <p>Our approach is hands-on and built on current, industry-relevant knowledge, so your team learns in the environment where they will use it.</p>
       </div>
-      <figure class="split-media">
-        <img src="{{ url_for('static', filename='image/services/on-site-training.jpg') }}" alt="Students practising front-desk service" loading="lazy">
-      </figure>
     </div>
   </section>
 
   <section class="about-block service" id="recruitment" aria-labelledby="recruitment-heading">
-    <div class="container split split-reverse">
-      <div class="split-copy">
+    <div class="container split" style="display:flex;flex-wrap:wrap;align-items:center;gap:56px;">
+      <figure class="split-media" style="order:1;flex:1 1 340px;margin:0;min-width:0;">
+        <img src="{{ url_for('static', filename='image/services/interm-type-shi.jpg') }}" alt="Star graduates working together as a team" loading="lazy">
+      </figure>
+      <div class="split-copy" style="order:2;flex:1 1 340px;min-width:0;">
         <p class="eyebrow">Service 02</p>
         <h2 id="recruitment-heading">Recruitment</h2>
         <p>We recruit for hospitality and business operations roles. Candidates are chosen for their ability to work independently, in a team or in management.</p>
         <p>Every candidate has completed education and skills development training with us.</p>
       </div>
-      <figure class="split-media">
-        <img src="{{ url_for('static', filename='image/services/recruitment.jpg') }}" alt="Star graduates working together as a team" loading="lazy">
-      </figure>
     </div>
   </section>
 
   <section class="about-block service" id="internship" aria-labelledby="internship-heading">
-    <div class="container split">
-      <div class="split-copy">
+    <div class="container split" style="display:flex;flex-wrap:wrap;align-items:center;gap:56px;">
+      <figure class="split-media" style="order:1;flex:1 1 340px;margin:0;min-width:0;">
+        <img src="{{ url_for('static', filename='image/services/interm-type-shi.jpg') }}" alt="Interns preparing a hotel room" loading="lazy">
+      </figure>
+      <div class="split-copy" style="order:2;flex:1 1 340px;min-width:0;">
         <p class="eyebrow">Service 03</p>
         <h2 id="internship-heading">Internship program</h2>
         <p>Diploma students complete a supervised industrial internship as part of their course.</p>
         <p>Through our network of industry partners, we help each student find a placement that matches their academic and career goals.</p>
       </div>
-      <figure class="split-media">
-        <img src="{{ url_for('static', filename='image/services/internship.jpg') }}" alt="Interns preparing a hotel room" loading="lazy">
-      </figure>
+    </div>
+  </section>
+
+  <section class="quote-band" aria-label="Get in touch">
+    <div class="container">
+      <blockquote><p>Need training or staff for your business?</p></blockquote>
+      <a class="btn btn-primary" href="mailto:salesandmarketing@staruniversity.edu.mm">Email our team</a>
+    </div>
+  </section>
+
+  <section class="map-section" id="find-us" aria-labelledby="map-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Find us</p>
+        <h2 id="map-heading">Visit our campus in Yangon</h2>
+      </div>
+      <div class="map-layout">
+        <div class="map-info">
+          <h3>Star International College</h3>
+          <address>
+            <p>No. 252 A, U Wisara Road, corner of Dhammazedi Road, Kamaryut Township, Yangon</p>
+            <p><a href="tel:+959797004988">(+95) 09 79 700 4988</a><br>
+               <a href="tel:+959797004989">(+95) 09 79 700 4989</a><br>
+               <a href="tel:+95950020302">(+95) 09 50 20 302</a></p>
+            <p>Student services: 9:00 AM to 6:00 PM</p>
+          </address>
+          <a class="btn btn-primary" href="https://www.google.com/maps/dir/?api=1&amp;destination=No.+252+A%2C+U+Wisara+Road%2C+corner+of+Dhammazedi+Road%2C+Kamaryut+Township%2C+Yangon%2C+Myanmar" target="_blank" rel="noopener">Get directions</a>
+        </div>
+        <div class="map-frame">
+          <iframe title="Map showing Star International College Myanmar on U Wisara Road, Kamaryut Township, Yangon" src="https://www.google.com/maps?q=No.+252+A%2C+U+Wisara+Road%2C+corner+of+Dhammazedi+Road%2C+Kamaryut+Township%2C+Yangon%2C+Myanmar&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -126,13 +162,6 @@
         <li><span class="star-letter" aria-hidden="true">A</span><h3>Attitude</h3></li>
         <li><span class="star-letter" aria-hidden="true">R</span><h3>Responsibility</h3></li>
       </ul>
-    </div>
-  </section>
-
-  <section class="quote-band" aria-label="Get in touch">
-    <div class="container">
-      <blockquote><p>Need training or staff for your business?</p></blockquote>
-      <a class="btn btn-primary" href="mailto:salesandmarketing@staruniversity.edu.mm">Email our team</a>
     </div>
   </section>
 

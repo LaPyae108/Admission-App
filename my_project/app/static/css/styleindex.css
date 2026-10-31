@@ -303,7 +303,7 @@ label:focus-within {
 
 /* HERO */
 .hero {
-  background: var(--teal-deep);
+  background: var(--white);
   position: relative;
 }
 
@@ -367,7 +367,8 @@ label:focus-within {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(11,61,145,.85) 0%, rgba(11,61,145,.30) 50%, rgba(11,61,145,.85) 100%);}
+  background: linear-gradient(90deg, rgba(11,61,145,.85) 0%, rgba(11,61,145,.30) 50%, rgba(11,61,145,.85) 100%);
+}
 
 @keyframes heroZoom {
   0%   { transform: scale(1); }
@@ -903,3 +904,45 @@ address p { font-size: 14px; margin-bottom: 9px; }
 .js .reveal-up  { transform: translateY(16px); }
 .js .reveal-pop { transform: scale(.96); }
 .js .reveal.is-visible { opacity: 1; transform: none; }
+/* Gallery: yearly photo-dump */
+.year-block { display: grid; grid-template-columns: 200px 1fr; gap: 40px; max-width: 1100px; margin: 0 auto; padding: 56px 0; border-top: 1px solid var(--line); }
+.year-block:first-of-type { border-top: 0; }
+.year-head { position: sticky; top: 100px; align-self: start; }
+.year-num { font-family: 'Fraunces', serif; font-size: clamp(56px, 7vw, 88px); line-height: 1; margin: 0; color: var(--teal-deep); letter-spacing: -.02em; }
+.year-label { margin: 10px 0 0; font-size: 14px; font-weight: 600; color: var(--brass-deep); text-transform: uppercase; letter-spacing: .08em; }
+.photo-dump { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 190px; gap: 18px; }
+.dump-item { margin: 0; overflow: hidden; background: var(--teal-soft); border: 6px solid #fff; border-radius: 4px; box-shadow: 0 14px 30px -14px rgba(11,61,145,.45); transition: transform .3s ease, box-shadow .3s ease; grid-column: span 2; }
+.dump-item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dump-item:nth-child(1) { grid-column: span 4; grid-row: span 2; transform: rotate(-.8deg); }
+.dump-item:nth-child(2) { transform: rotate(1.2deg); }
+.dump-item:nth-child(3) { transform: rotate(-1deg); }
+.dump-item:nth-child(4) { grid-column: span 3; transform: rotate(.9deg); }
+.dump-item:nth-child(5) { grid-column: span 3; transform: rotate(-1.1deg); }
+.dump-item:hover { transform: rotate(0) scale(1.03); box-shadow: 0 22px 40px -14px rgba(11,61,145,.55); position: relative; z-index: 2; }
+.dump-empty { display: flex; align-items: center; justify-content: center; border: 2px dashed var(--line); box-shadow: none; color: var(--teal); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+@media (max-width: 860px) {
+  .year-block { grid-template-columns: 1fr; gap: 20px; padding: 40px 0; }
+  .year-head { position: static; display: flex; align-items: baseline; gap: 14px; }
+  .year-label { margin: 0; }
+  .photo-dump { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; gap: 12px; }
+  .dump-item, .dump-item:nth-child(n) { grid-column: span 1; grid-row: span 1; }
+  .dump-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+}
+@media (prefers-reduced-motion: reduce) { .dump-item { transition: none; } }
+
+/* S.T.A.R. principles section (shared by every page, placed just above the footer) */
+.star-principles { background: rgba(238,244,255,.92); padding: 96px 0; border-top: 1px solid var(--line); }
+.star-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.star-grid li {
+  position: relative; background: var(--white); border: 1px solid var(--line); border-top: 4px solid var(--brass);
+  border-radius: var(--radius-md); padding: 34px 24px 30px; text-align: center;
+  box-shadow: 0 12px 28px -22px rgba(11,61,145,.5);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.star-grid li:hover { transform: translateY(-6px); box-shadow: 0 24px 40px -22px rgba(11,61,145,.55); border-top-color: var(--teal); }
+.star-letter { display: block; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 72px; line-height: 1; color: var(--teal-deep); margin-bottom: 12px; }
+.star-grid li:hover .star-letter { color: var(--teal); }
+.star-grid h3 { font-size: 18px; margin: 0; }
+@media (max-width: 900px) { .star-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .star-principles { padding: 64px 0; } .star-letter { font-size: 56px; } }
+@media (prefers-reduced-motion: reduce) { .star-grid li { transition: none; } .star-grid li:hover { transform: none; } }
