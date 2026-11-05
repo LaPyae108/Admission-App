@@ -3,7 +3,7 @@
    Sapphire blue / yellow / white palette, serif display type
    (Fraunces) over a clean sans body (Work Sans).
    ========================================================== */
-
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
 :root {
   --paper: #FFFFFF;
   --white: #FFFFFF;
@@ -42,21 +42,20 @@ body {
   position: relative;
 }
 
-/* Faded logo watermark, fixed behind all page content.
-   The image itself comes from an inline CSS variable set on
-   <body style="--brand-logo: url('...')"> in the template, since
-   this stylesheet can't reach Flask's url_for(). */
+/* Faded Star logo watermark behind page content */
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: var(--brand-logo);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: min(58vw, 620px) auto;
-  opacity: 0.14;
-  z-index: -1;
-  pointer-events: none;
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image: var(--brand-logo);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: min(58vw, 620px) auto;
+
+    opacity: 0.14;
+    z-index: -1;
+    pointer-events: none;
 }
 
 img, svg { max-width: 100%; display: block; }
@@ -316,6 +315,7 @@ label:focus-within {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
+  border: 3px solid var(--brass);
 }
 
 .hero-bg > * {
@@ -423,7 +423,14 @@ label:focus-within {
   color: rgba(255,255,255,.92);
   max-width: 520px;
   margin-bottom: 34px;
-  text-shadow: 0 1px 10px rgba(8,36,92,.5);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  line-height: 1.5;
+  -webkit-text-stroke: 0.30px var(--brass-deep);
+
+
 }
 
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }

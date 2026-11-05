@@ -12,9 +12,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/about-us.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
 </head>
-<body style="--brand-logo: none;">
+<body class="services-page" style="--brand-logo: none;">
 
-<img src="{{ url_for('static', filename='image/services/services-background.jpg') }}" alt="" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4;z-index:-1;pointer-events:none;">
+<img src="{{ url_for('static', filename='image/services/services-background.jpg') }}" class="services-background" alt="" aria-hidden="true">
 
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
@@ -51,10 +51,10 @@
 
 <main id="main-content">
 
-  <section class="page-hero" aria-labelledby="page-title" style="position:relative;overflow:hidden;isolation:isolate;">
-    <img src="{{ url_for('static', filename='image/services/services-header.jpg') }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 58%;z-index:-2;">
-    <div aria-hidden="true" style="position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,61,145,.9) 0%,rgba(11,61,145,.7) 42%,rgba(11,61,145,.1) 80%);"></div>
-    <div class="container" style="position:relative;z-index:1;">
+  <section class="page-hero" aria-labelledby="page-title">
+    <img src="{{ url_for('static', filename='image/services/services-header.jpg') }}" class="services-hero-image" alt="">
+    <div class="services-hero-overlay" aria-hidden="true"></div>
+    <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
           <li><a href="{{ url_for('main.index') }}">Home</a></li>
@@ -77,11 +77,11 @@
   </section>
 
   <section class="about-block service" id="on-site-training" aria-labelledby="on-site-training-heading">
-    <div class="container split" style="display:flex;flex-wrap:wrap;align-items:center;gap:56px;">
-      <figure class="split-media" style="order:1;flex:1 1 340px;margin:0;min-width:0;">
+    <div class="container split">
+      <figure class="split-media">
         <img src="{{ url_for('static', filename='image/services/interm-type-shi.jpg') }}" alt="Students practising front-desk service" loading="lazy">
       </figure>
-      <div class="split-copy" style="order:2;flex:1 1 340px;min-width:0;">
+      <div class="split-copy">
         <p class="eyebrow">Service 01</p>
         <h2 id="on-site-training-heading">On-site training</h2>
         <p>Practical training delivered at your workplace, for businesses anywhere in Myanmar. We cover roles such as retail store management and hotel front-of-house operations.</p>
@@ -91,11 +91,11 @@
   </section>
 
   <section class="about-block service" id="recruitment" aria-labelledby="recruitment-heading">
-    <div class="container split" style="display:flex;flex-wrap:wrap;align-items:center;gap:56px;">
-      <figure class="split-media" style="order:1;flex:1 1 340px;margin:0;min-width:0;">
+    <div class="container split">
+      <figure class="split-media">
         <img src="{{ url_for('static', filename='image/services/interm-type-shi.jpg') }}" alt="Star graduates working together as a team" loading="lazy">
       </figure>
-      <div class="split-copy" style="order:2;flex:1 1 340px;min-width:0;">
+      <div class="split-copy">
         <p class="eyebrow">Service 02</p>
         <h2 id="recruitment-heading">Recruitment</h2>
         <p>We recruit for hospitality and business operations roles. Candidates are chosen for their ability to work independently, in a team or in management.</p>
@@ -105,11 +105,11 @@
   </section>
 
   <section class="about-block service" id="internship" aria-labelledby="internship-heading">
-    <div class="container split" style="display:flex;flex-wrap:wrap;align-items:center;gap:56px;">
-      <figure class="split-media" style="order:1;flex:1 1 340px;margin:0;min-width:0;">
+    <div class="container split">
+      <figure class="split-media">
         <img src="{{ url_for('static', filename='image/services/interm-type-shi.jpg') }}" alt="Interns preparing a hotel room" loading="lazy">
       </figure>
-      <div class="split-copy" style="order:2;flex:1 1 340px;min-width:0;">
+      <div class="split-copy">
         <p class="eyebrow">Service 03</p>
         <h2 id="internship-heading">Internship program</h2>
         <p>Diploma students complete a supervised industrial internship as part of their course.</p>

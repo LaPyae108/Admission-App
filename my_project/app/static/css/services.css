@@ -1,94 +1,563 @@
-/* Services page — loaded after styleindex.css and about.css */
+/* ============================================================
+   SERVICES PAGE — Minimal sapphire / yellow / white
+   Loaded after styleindex.css and about-us.css.
+   All page-specific styles are scoped to .services-page.
+   ============================================================ */
 
-/* ---------- Contact strip: sits below the hero (no overlap) ---------- */
-.service-contact { background: transparent; border: 0; padding: 36px 0 0; position: relative; z-index: 2; margin-top: 0; }
-.service-contact .container { display: flex; justify-content: center; }
+.services-page {
+  --service-blue: #0b3d91;
+  --service-blue-dark: #082c6c;
+  --service-yellow: #f2c94c;
+  --service-white: #ffffff;
+  --service-border: rgba(11, 61, 145, 0.18);
+  --service-width: 1160px;
+  background: var(--service-white);
+}
 
-.service-contact-list {
+/* Keep the original page photo, behind the page contents.
+   Header/footer sit above it and are unaffected by this stylesheet. */
+.services-page .services-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.services-page > main {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: transparent;
+  color: var(--service-blue-dark);
+}
+
+.services-page > .site-header,
+.services-page > .site-footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Consistent content width, without affecting other pages. */
+.services-page main .container {
+  width: min(calc(100% - 48px), var(--service-width));
+  max-width: var(--service-width);
+  margin-inline: auto;
+}
+
+.services-page main h1,
+.services-page main h2,
+.services-page main h3,
+.services-page main p,
+.services-page main a,
+.services-page main .eyebrow {
+  text-shadow: none;
+}
+
+.services-page main h1,
+.services-page main h2,
+.services-page main h3 {
+  color: var(--service-blue-dark);
+  line-height: 1.16;
+}
+
+.services-page main .eyebrow {
+  margin: 0 0 12px;
+  color: var(--service-blue);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Hero is its own independent section. */
+.services-page main .page-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 430px;
+  padding: 88px 0;
+  overflow: hidden;
+  background: var(--service-blue);
+}
+
+.services-page main .services-hero-image,
+.services-page main .services-hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.services-page main .services-hero-image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+.services-page main .services-hero-overlay {
+  z-index: -1;
+  background: linear-gradient(90deg,
+    rgba(8, 44, 108, 0.94) 0%,
+    rgba(11, 61, 145, 0.78) 50%,
+    rgba(11, 61, 145, 0.3) 100%);
+}
+
+.services-page main .page-hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.services-page main .page-hero h1 {
+  max-width: 760px;
+  margin: 18px 0;
+  font-size: clamp(36px, 5vw, 62px);
+  color: var(--service-white);
+}
+
+.services-page main .page-hero p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--service-white);
+  font-size: clamp(16px, 1.8vw, 19px);
+  line-height: 1.7;
+}
+
+.services-page main .page-hero .breadcrumb,
+.services-page main .page-hero .breadcrumb a,
+.services-page main .page-hero .breadcrumb li {
+  color: var(--service-white);
+}
+
+/* Contact details: three distinct white panels, not a single strip. */
+.services-page main .service-contact {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 50px 0 22px;
+  background: transparent;
+  border: 0;
+}
+
+.services-page main .service-contact-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.services-page main .service-contact-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  min-height: 100px;
+  padding: 22px 24px;
+  text-align: left;
+  background: var(--service-white);
+  border: 1px solid var(--service-border);
+  border-top: 4px solid var(--service-yellow);
+}
+
+.services-page main .service-contact-list li + li {
+  border-left: 1px solid var(--service-border);
+}
+
+.services-page main .service-contact-list span {
+  margin-bottom: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--service-blue);
+}
+
+.services-page main .service-contact-list a {
+  color: var(--service-blue-dark);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.services-page main .service-contact-list a:hover,
+.services-page main .service-contact-list a:focus-visible {
+  color: var(--service-blue);
+  text-decoration: underline;
+}
+
+/* Independent service panels, with no alternating shared effects. */
+.services-page main .service {
+  margin: 26px 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.services-page main .service + .service {
+  border: 0;
+}
+
+.services-page main .service > .split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+  padding: clamp(24px, 4vw, 48px);
+  background: var(--service-white);
+  border: 1px solid var(--service-border);
+}
+
+.services-page main .service .split-media,
+.services-page main .service .split-copy {
+  min-width: 0;
+  margin: 0;
+}
+
+.services-page main .service .split-media {
+  order: 1;
+}
+
+.services-page main .service .split-media::before,
+.services-page main .service .split-media::after {
+  content: none;
+}
+
+.services-page main .service .split-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.services-page main .service .split-copy {
+  order: 2;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.services-page main .service h2 {
+  margin: 0 0 22px;
+  padding: 0 0 18px;
+  font-size: clamp(28px, 3vw, 40px);
+}
+
+.services-page main .service h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 48px;
+  height: 3px;
+  background: var(--service-yellow);
+  border-radius: 0;
+}
+
+.services-page main .service .split-copy p:not(.eyebrow) {
+  margin: 0 0 14px;
+  color: var(--service-blue-dark);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.services-page main .service .split-copy p:last-child {
+  margin-bottom: 0;
+}
+
+/* Call-to-action: separate, simple sapphire panel. */
+.services-page main .quote-band {
+  margin: 46px 0;
+  padding: 48px 0;
+  background: var(--service-blue);
+  border: 0;
+}
+
+.services-page main .quote-band .container {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.services-page main .quote-band blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.services-page main .quote-band blockquote p {
+  margin: 0;
+  color: var(--service-white);
+  font-size: clamp(22px, 2.7vw, 32px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.services-page main .quote-band .btn,
+.services-page main .map-info .btn {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--brass);
+  min-height: 46px;
+  padding: 12px 22px;
+  border: 2px solid var(--service-yellow);
   border-radius: 0;
-  box-shadow: 0 18px 40px -20px rgba(11,61,145,.45);
+  background: var(--service-yellow);
+  color: var(--service-blue-dark);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.services-page main .quote-band .btn:hover,
+.services-page main .map-info .btn:hover {
+  background: var(--service-white);
+  border-color: var(--service-white);
+  color: var(--service-blue);
+}
+
+/* Location: heading, address, and map are distinct blocks. */
+.services-page main .map-section {
+  padding: 58px 0;
+  background: transparent;
+  border: 0;
+}
+
+.services-page main .section-intro {
+  margin: 0 0 28px;
+  text-align: left;
+}
+
+.services-page main .section-intro h2 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 38px);
+}
+
+.services-page main .map-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.3fr);
+  align-items: stretch;
+  gap: 20px;
+}
+
+.services-page main .map-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px;
+  background: var(--service-white);
+  border: 1px solid var(--service-border);
+  border-top: 4px solid var(--service-yellow);
+  box-shadow: none;
+}
+
+.services-page main .map-info h3 {
+  margin: 0 0 18px;
+  font-size: 23px;
+}
+
+.services-page main .map-info address {
+  margin-bottom: 24px;
+  font-style: normal;
+}
+
+.services-page main .map-info address p {
+  margin: 0 0 14px;
+  color: var(--service-blue-dark);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.services-page main .map-info a:not(.btn) {
+  color: var(--service-blue);
+  font-weight: 600;
+}
+
+.services-page main .map-info .btn {
+  margin-top: auto;
+}
+
+.services-page main .map-frame {
+  position: relative;
+  min-height: 390px;
+  background: var(--service-white);
+  border: 1px solid var(--service-border);
+  box-shadow: none;
   overflow: hidden;
 }
 
-.service-contact-list li { display: flex; flex-direction: column; text-align: center; padding: 16px 32px; }
-.service-contact-list li + li { border-left: 1px solid var(--line); }
-.service-contact-list span { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--brass-deep); margin-bottom: 2px; }
-.service-contact-list a { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; transition: color .2s; }
-.service-contact-list a:hover { color: var(--teal); }
-
-/* ---------- Page hero: taller so the header photo fits ---------- */
-.page-hero { display: flex; align-items: center; min-height: 430px; padding: 72px 0 96px; }
-.page-hero .container { width: 100%;color: #faf7f7; }
-/* Fonts: h1 and intro text inherit the same sizes/colours as the other pages' hero (see about.css) */
-/* Overlay: same gradient as the home page hero (strong blue on both sides, lighter in the middle) */
-.page-hero > div[aria-hidden="true"] { background: linear-gradient(90deg, rgba(11,61,145,.55) 0%, rgba(11,61,145,.15) 50%, rgba(11,61,145,.55) 100%) !important; }
-
-/* ---------- Service blocks: white cards floating over the page photo ---------- */
-.service { background: transparent; padding: 72px 0; border: 0; }
-.service + .service { border-top: 0; }
-.service > .container { background: none; border: 0; box-shadow: none; backdrop-filter: none; padding-top: 0; padding-bottom: 0; }
-
-.service .split-media { position: relative; margin: 0; }
-.service .split-media::before {
-  content: ""; position: absolute; inset: -12px;
-  border: 2px solid var(--brass); border-radius: 0; z-index: 0;
+.services-page main .map-frame iframe {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
-.service .split-media::before { inset: -12px; }
-.service .split-media img {
-  position: relative; z-index: 1; display: block; width: 100%;
-  aspect-ratio: 4 / 3; object-fit: cover;
+
+/* STAR principles as four independent, equal-height panels. */
+.services-page main .star-principles {
+  padding: 58px 0 90px;
+  background: transparent;
+  border: 0;
+}
+
+.services-page main .star-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.services-page main .star-grid li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 175px;
+  padding: 24px;
+  background: var(--service-white);
+  border: 1px solid var(--service-border);
+  border-top: 4px solid var(--service-yellow);
   border-radius: 0;
-  box-shadow: 0 24px 44px -26px rgba(11,61,145,.55);
+  box-shadow: none;
 }
 
-.service .eyebrow { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.service h2 { font-size: clamp(30px, 3.6vw, 42px); position: relative; padding-bottom: 14px; margin-bottom: 18px; }
-.service h2::after { content: ""; position: absolute; left: 0; bottom: 0; width: 56px; height: 4px; border-radius: 0; background: var(--brass); }
-.service .split-copy p:not(.eyebrow) { font-size: 17px; line-height: 1.75; }
+.services-page main .star-letter {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--service-blue);
+  background: transparent;
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: none;
+}
 
-/* ---------- Responsive ---------- */
+.services-page main .star-grid h3 {
+  margin: auto 0 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Sharp corners only inside main; header/footer keep global styling. */
+.services-page main .service-contact-list li,
+.services-page main .service > .split,
+.services-page main .map-info,
+.services-page main .map-frame,
+.services-page main .star-grid li {
+  border-radius: 0;
+}
+
+.services-page main a:focus-visible {
+  outline: 3px solid var(--service-yellow);
+  outline-offset: 3px;
+}
+
 @media (max-width: 900px) {
-  .page-hero { min-height: 360px; padding: 56px 0 84px; }
-  .service { padding: 48px 0; }
-  .service .split-media::before { inset: -8px; }
+  .services-page main .page-hero {
+    min-height: 360px;
+    padding: 64px 0;
+  }
+
+  .services-page main .service > .split {
+    gap: 28px;
+  }
+
+  .services-page main .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .services-page main .map-frame {
+    min-height: 340px;
+  }
+
+  .services-page main .star-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
-@media (max-width: 700px) {
-  .service-contact { padding-top: 24px; }
-  .service-contact-list { width: 100%; }
-  .service-contact-list li { width: 100%; padding: 12px 20px; }
-  .service-contact-list li + li { border-left: 0; border-top: 1px solid var(--line); }
+
+@media (max-width: 680px) {
+  .services-page main .container {
+    width: min(calc(100% - 32px), var(--service-width));
+  }
+
+  .services-page main .page-hero {
+    min-height: 340px;
+    padding: 58px 0;
+  }
+
+  .services-page main .service-contact-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .services-page main .service-contact-list li {
+    min-height: 82px;
+    padding: 18px 20px;
+  }
+
+  .services-page main .service > .split {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+
+  .services-page main .service {
+    margin: 18px 0;
+  }
+
+  .services-page main .quote-band {
+    margin: 32px 0;
+    padding: 36px 0;
+  }
+
+  .services-page main .map-section {
+    padding: 44px 0;
+  }
+
+  .services-page main .star-principles {
+    padding: 44px 0 64px;
+  }
 }
 
+@media (max-width: 440px) {
+  .services-page main .star-grid {
+    grid-template-columns: 1fr;
+  }
 
-/* Sharp edges everywhere on this page */
-main *, .site-header .btn, .site-footer * { border-radius: 0; }
+  .services-page main .star-grid li {
+    min-height: 130px;
+  }
 
-/* Layout: photo on the left, text on the right, side by side (stacks on small screens) */
-.service .split { grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; }
-.service .split .split-media { order: 1; }
-.service .split .split-copy { order: 2; }
-@media (max-width: 640px) { .service .split { grid-template-columns: 1fr; gap: 28px; } }
-@media (max-width: 900px) and (min-width: 641px) { .service .split { gap: 32px; } }
+  .services-page main .map-info {
+    padding: 24px;
+  }
+}
 
-/* Text sits directly on the page background: soft light halo keeps it readable */
-.service .split-copy { text-shadow: 0 0 14px rgba(255,255,255,.95), 0 0 4px rgba(255,255,255,.9); }
-.service .split-copy p:not(.eyebrow) { color: var(--ink); }
-/* ---------- Map section ---------- */
-.map-section { padding: 88px 0; background: rgba(255,255,255,.86); border-top: 1px solid var(--line); }
-.map-layout { display: grid; grid-template-columns: 1fr 1.6fr; gap: 40px; align-items: stretch; }
-.map-info { background: var(--white); border: 1px solid var(--line); border-top: 4px solid var(--brass); padding: 32px 30px; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 12px 28px -22px rgba(11,61,145,.5); }
-.map-info h3 { font-size: 22px; margin-bottom: 16px; }
-.map-info address { font-style: normal; margin-bottom: 22px; }
-.map-info address p { color: var(--ink); font-size: 15px; margin-bottom: 12px; }
-.map-info a:not(.btn) { color: var(--ink); font-weight: 600; }
-.map-info a:not(.btn):hover { color: var(--teal); }
-.map-info .btn { margin-top: auto; }
-.map-frame { position: relative; min-height: 380px; border: 1px solid var(--line); box-shadow: 0 24px 44px -26px rgba(11,61,145,.55); background: var(--teal-soft); }
-.map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
-@media (max-width: 900px) { .map-layout { grid-template-columns: 1fr; } .map-frame { min-height: 320px; } .map-section { padding: 64px 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .services-page main .btn {
+    transition: none;
+  }
+}
